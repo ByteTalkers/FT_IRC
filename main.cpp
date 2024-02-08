@@ -8,5 +8,5 @@ int main(int ac, char **av)
         exit(EXIT_SUCCESS);
     }
 
-    return 1;
+    return 0;
 }
