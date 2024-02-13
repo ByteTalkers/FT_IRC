@@ -103,3 +103,20 @@ void Message::setParams(std::vector<std::string> &params)
 {
     this->m_params = params;
 }
+
+/** test */
+void Message::display() const 
+{
+    std::cout << "origin: " << this->getOrigin() << std::endl;
+    std::cout << "prefix: " << this->getPrefix() << std::endl;
+    std::cout << "command: " << this->getCommand() << std::endl;
+    std::cout << "params: ";
+    for (int i = 0; i < this->m_params.size(); i++) {
+        std::cout << this->m_params[i];
+        if (i != this->m_params.size() - 1) {
+            std::cout << " ";
+        } else {
+            std::cout << std::endl;
+        }
+    }
+}

@@ -3,6 +3,7 @@
 
 #include <string>
 #include <vector>
+#include <iostream>
 
 class Message
 {
@@ -31,6 +32,9 @@ class Message
 	void setPrefix(std::string &prefix);
 	void setCommand(std::string &command);
 	void setParams(std::vector<std::string> &params);
+
+	/** test */
+	void display() const;
 };
 
 #endif
