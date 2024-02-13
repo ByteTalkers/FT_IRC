@@ -17,15 +17,21 @@ class Message
   public:
     Message(std::string &origin);
     ~Message();
+    Message(const Message &src);
+    Message &operator=(Message const &rhs);
+
 
     bool crlfCheck();
     void seperateOrigin();
 
+    void commandCheck();
+    void commandExecute();
+
     /** Getter */
-    const std::string getOrigin() const;
-    const std::string getPrefix() const;
-    const std::string getCommand() const;
-    const std::vector<std::string> getParams() const;
+    const std::string &getOrigin() const;
+    const std::string &getPrefix() const;
+    const std::string &getCommand() const;
+    const std::vector<std::string> &getParams() const;
 
     /** Setter */
     void setOrigin(std::string &origin);
@@ -34,7 +40,7 @@ class Message
     void setParams(std::vector<std::string> &params);
 
     /** test */
-    void display() const;
+    void display();
 };
 
 #endif

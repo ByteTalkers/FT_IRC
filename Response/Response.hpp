@@ -9,8 +9,10 @@ class Response
     std::string m_response;
 
   public:
-    Response(void);
-    ~Response(void);
+    Response();
+    ~Response();
+    Response(const Response &src);
+    Response &operator=(Response const &rhs);
 
     /** 유저 등록 후 응답 */
     void rplWelcome_001();

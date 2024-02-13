@@ -26,62 +26,51 @@ void Message::seperateOrigin()
     std::size_t start;
     std::size_t pos;
 
-    bool is_prefix;
-    bool is_command;
-    bool is_params;
-
-    is_prefix = true;
-    is_command = false;
-    is_params = false;
-
     pos = this->m_origin.find(' ');
-    while (pos != std::string::npos)
+    start = 0;
+    while ((pos = this->m_origin.find(' ', start)) != std::string::npos)
     {
         std::string tmp;
-        tmp = m_origin.substr(start, pos);
+        tmp = this->m_origin.substr(start, pos - start);
 
-        if (is_prefix)
-        {
-            is_prefix = false;
-            is_command = true;
-            if (tmp[0] == ':')
-            {
-                this->m_prefix = tmp;
+        if (start == 0 && tmp[0] == ':') {
+            this->m_prefix = tmp;
+        } else {
+            if (this->m_command == "") {
+                this->m_command = tmp;
+            } else {
+                this->m_params.push_back(tmp);
             }
         }
-        else if (is_command)
-        {
-            is_command = false;
-            is_params = true;
-            this->m_command = tmp;
-        }
-        else if (is_params)
-        {
-            this->m_params.push_back(tmp);
-        }
 
-        pos = this->m_origin.find(' ', pos + 1);
+        start = pos + 1;
     }
+    std::string last = this->m_origin.substr(start, pos - start);
+    this->m_params.push_back(last);
 }
+
+void commandCheck();
+void commandExecute();
+
 
 /** Getter */
 
-const std::string Message::getOrigin() const
+const std::string &Message::getOrigin() const
 {
     return this->m_origin;
 }
 
-const std::string Message::getPrefix() const
+const std::string &Message::getPrefix() const
 {
     return this->m_prefix;
 }
 
-const std::string Message::getCommand() const
+const std::string &Message::getCommand() const
 {
     return this->m_command;
 }
 
-const std::vector<std::string> Message::getParams() const
+const std::vector<std::string> &Message::getParams() const
 {
     return this->m_params;
 }
@@ -106,9 +95,13 @@ void Message::setParams(std::vector<std::string> &params)
 }
 
 /** test */
-void Message::display() const
+void Message::display()
 {
-    std::cout << "origin: " << this->getOrigin() << std::endl;
+    std::cout << "origin: " << this->getOrigin();
+    if (!this->crlfCheck()) {
+        std::cout << std::endl << "Invalid" << std::endl;
+        return ;
+    }
     std::cout << "prefix: " << this->getPrefix() << std::endl;
     std::cout << "command: " << this->getCommand() << std::endl;
     std::cout << "params: ";
@@ -119,9 +112,6 @@ void Message::display() const
         {
             std::cout << " ";
         }
-        else
-        {
-            std::cout << std::endl;
-        }
     }
+    std::cout << std::endl;
 }
