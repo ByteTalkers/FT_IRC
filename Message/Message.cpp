@@ -8,6 +8,18 @@ Message::~Message()
 {
 }
 
+bool Message::crlfCheck()
+{
+    std::string crlf;
+
+    crlf = this->m_origin.substr(this->m_origin.length() - 2);
+    if (crlf == "\r\n") {
+        this->m_origin = this->m_origin.substr(0, this->m_origin.length() - 2);
+        return true;
+    }
+    return false;
+}
+
 void Message::seperateOrigin()
 {
     std::size_t start;

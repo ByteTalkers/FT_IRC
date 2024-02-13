@@ -17,6 +17,7 @@ class Message
     Message(std::string &origin);
     ~Message();
 
+	bool crlfCheck();
     void seperateOrigin();
 
 	/** Getter */
