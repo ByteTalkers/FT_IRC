@@ -4,6 +4,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <cctype>
 
 class Message
 {
@@ -24,22 +25,21 @@ class Message
     bool crlfCheck();
     void seperateOrigin();
 
-    void commandCheck();
     void commandExecute();
 
-    /** Getter */
+    // Getter
     const std::string &getOrigin() const;
     const std::string &getPrefix() const;
     const std::string &getCommand() const;
     const std::vector<std::string> &getParams() const;
 
-    /** Setter */
+    // Setter
     void setOrigin(std::string &origin);
     void setPrefix(std::string &prefix);
     void setCommand(std::string &command);
     void setParams(std::vector<std::string> &params);
 
-    /** test */
+    // test
     void display();
 };
 

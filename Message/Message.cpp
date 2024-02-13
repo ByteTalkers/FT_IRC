@@ -21,6 +21,7 @@ bool Message::crlfCheck()
     return false;
 }
 
+// 스페이스 기준으로 파싱
 void Message::seperateOrigin()
 {
     std::size_t start;
@@ -33,27 +34,86 @@ void Message::seperateOrigin()
         std::string tmp;
         tmp = this->m_origin.substr(start, pos - start);
 
-        if (start == 0 && tmp[0] == ':') {
+        // 첫 번째 문자열이면서, :로 시작하면 prefix
+        if (start == 0 && tmp[0] == ':')
+        {
             this->m_prefix = tmp;
-        } else {
-            if (this->m_command == "") {
+        }
+        else
+        {
+            // 커맨드가 비어있으면 커맨드 먼저 채우기
+            if (this->m_command == "")
+            {
                 this->m_command = tmp;
-            } else {
+            }
+            else
+            {
                 this->m_params.push_back(tmp);
             }
         }
 
         start = pos + 1;
     }
-    std::string last = this->m_origin.substr(start, pos - start);
-    this->m_params.push_back(last);
+
+    // 남은 파라미터 추가
+    if (start < this->m_origin.length())
+    {
+        std::string last = this->m_origin.substr(start, pos - start);
+        this->m_params.push_back(last);
+    }
 }
 
-void commandCheck();
-void commandExecute();
+// 커맨드 체크
+void Message::commandExecute()
+{
+    for (int i = 0; i < this->m_command.length(); i++)
+    {
+        this->m_command[i] = std::toupper(this->m_command[i]);
+    }
+
+    if (this->m_command == "CAP")
+    {
+    }
+    else if (this->m_command == "PASS")
+    {
+    }
+    else if (this->m_command == "NICK")
+    {
+    }
+    else if (this->m_command == "USER")
+    {
+    }
+    else if (this->m_command == "PING")
+    {
+    }
+    else if (this->m_command == "QUIT")
+    {
+    }
+    else if (this->m_command == "JOIN")
+    {
+    }
+    else if (this->m_command == "PART")
+    {
+    }
+    else if (this->m_command == "TOPIC")
+    {
+    }
+    else if (this->m_command == "MODE")
+    {
+    }
+    else if (this->m_command == "INVITE")
+    {
+    }
+    else if (this->m_command == "PRIVMSG")
+    {
+    }
+    else if (this->m_command == "WHO")
+    {
+    }
+}
 
 
-/** Getter */
+// Getter
 
 const std::string &Message::getOrigin() const
 {
@@ -75,7 +135,7 @@ const std::vector<std::string> &Message::getParams() const
     return this->m_params;
 }
 
-/** Setter */
+// Setter
 
 void Message::setOrigin(std::string &origin)
 {
@@ -94,13 +154,14 @@ void Message::setParams(std::vector<std::string> &params)
     this->m_params = params;
 }
 
-/** test */
+// test
 void Message::display()
 {
     std::cout << "origin: " << this->getOrigin();
-    if (!this->crlfCheck()) {
+    if (!this->crlfCheck())
+    {
         std::cout << std::endl << "Invalid" << std::endl;
-        return ;
+        return;
     }
     std::cout << "prefix: " << this->getPrefix() << std::endl;
     std::cout << "command: " << this->getCommand() << std::endl;
