@@ -13,7 +13,8 @@ bool Message::crlfCheck()
     std::string crlf;
 
     crlf = this->m_origin.substr(this->m_origin.length() - 2);
-    if (crlf == "\r\n") {
+    if (crlf == "\r\n")
+    {
         this->m_origin = this->m_origin.substr(0, this->m_origin.length() - 2);
         return true;
     }
@@ -105,17 +106,21 @@ void Message::setParams(std::vector<std::string> &params)
 }
 
 /** test */
-void Message::display() const 
+void Message::display() const
 {
     std::cout << "origin: " << this->getOrigin() << std::endl;
     std::cout << "prefix: " << this->getPrefix() << std::endl;
     std::cout << "command: " << this->getCommand() << std::endl;
     std::cout << "params: ";
-    for (int i = 0; i < this->m_params.size(); i++) {
+    for (int i = 0; i < this->m_params.size(); i++)
+    {
         std::cout << this->m_params[i];
-        if (i != this->m_params.size() - 1) {
+        if (i != this->m_params.size() - 1)
+        {
             std::cout << " ";
-        } else {
+        }
+        else
+        {
             std::cout << std::endl;
         }
     }
