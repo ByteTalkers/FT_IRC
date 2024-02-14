@@ -30,4 +30,6 @@ class Client
     void setRecvData(const char *data);
     std::string getRecvData();
     void startListen(int serv_sock);
+
+    std::string getNick();
 };

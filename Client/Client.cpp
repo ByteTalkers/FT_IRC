@@ -56,3 +56,7 @@ void Client::startListen(int serv_sock)
     // nonblock 처리
     fcntl(m_socket_fd, F_SETFL, O_NONBLOCK);
 }
+
+std::string Client::getNick() {
+    return m_nick;
+}
