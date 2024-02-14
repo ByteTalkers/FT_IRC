@@ -4,6 +4,10 @@
 #include <string>
 #include <vector>
 
+#include "../Client/Client.hpp"
+#include "../Server/Server.hpp"
+#include "../utils/utils.hpp"
+
 class Response
 {
   private:
@@ -15,28 +19,30 @@ class Response
     Response(const Response &src);
     Response &operator=(Response const &rhs);
 
-    std::string &rplPrefix();
+    std::string rplPrefix(Server &se);
+    std::string rplCRLF();
+
 
     // 유저 등록 후 응답
-    void rplWelcome_001();
-    void rplYourHost_002();
-    void rplCreated_003();
-    void rplMyInfo_004();
-    void rplISupport_005();
+    std::string rplWelcome_001(Client &cl, Server &se);
+    std::string rplYourHost_002(Client &cl, Server &se);
+    std::string rplCreated_003(Client &cl, Server &se);
+    std::string rplMyInfo_004(Client &cl, Server &se);
+    std::string rplISupport_005(Client &cl, Server &se);
 
     // LUSER 응답
-    void rplLUserClient_251();
-    void rplLUserOp_252();
-    void rplLUserUnknown_253();
-    void rplLUserChannels_254();
-    void rplLUserMe_255();
-    void rplLocalUsers_265();
-    void rplGlobalUsers_266();
+    std::string rplLUserClient_251(Client &cl, Server &se);
+    // void rplLUserOp_252();
+    // void rplLUserUnknown_253();
+    // void rplLUserChannels_254();
+    std::string rplLUserMe_255(Client &cl, Server &se);
+    // void rplLocalUsers_265();
+    // void rplGlobalUsers_266();
 
     // motd
-    void rplMotd_372();
-    void rplMotdStart_375();
-    void rplEndOfMotd_376();
+    std::string rplMotd_372(Client &cl, Server &se);
+    std::string rplMotdStart_375(Client &cl, Server &se);
+    std::string rplEndOfMotd_376(Client &cl, Server &se);
 
     // join -> mode -> who -> mode 밴리스트 (클라이언트가 join 이후 보내는 순서)
     void rplNamReply_353();
@@ -45,7 +51,7 @@ class Response
     // mode
     void rplChannelModeIs_324();
     void rplCreationTime_329();
-    
+
     // mode banlist
     void rplBanList_367();
     void rplEndofBanList_368();
@@ -53,7 +59,6 @@ class Response
     // who
     void rplWhoReply_352();
     void rplEndOfWho_315();
-
 };
 
 #endif
