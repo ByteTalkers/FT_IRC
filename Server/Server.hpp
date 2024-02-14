@@ -10,6 +10,7 @@
 #include <sys/event.h>
 #include <sys/socket.h>
 #include <unistd.h>
+#include <ctime>
 
 #include <map>
 #include <vector>
@@ -27,6 +28,10 @@ class Server
     int m_kqueue;
     std::map<int, Client> m_clients;         // 클라이언트 목록
     std::vector<struct kevent> m_change_vec; // 이벤트 목록
+
+    std::string m_name;     // 서버 이름
+    time_t m_created;       // 생성시간
+    std::string m_version;  // 서버 버전
 
   public:
     Server();
@@ -48,4 +53,12 @@ class Server
     void handleDisconnect();
     void handleSend(int fd);
     void handleRecv(int fd);
+
+    std::string getName();
+    time_t getCreated();
+    std::string getVersion();
+
+    void setName(std::string name);
+    void setCreated(time_t time);
+    void setVersion(std::string version);
 };

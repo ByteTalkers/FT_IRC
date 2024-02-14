@@ -211,3 +211,34 @@ void Server::handleDisconnect()
 {
     exit(EXIT_SUCCESS);
 }
+
+std::string Server::getName()
+{
+    return m_name;
+}
+
+time_t Server::getCreated()
+{
+    return m_created;
+}
+
+std::string Server::getVersion()
+{
+    return m_version;
+}
+
+
+void Server::setName(std::string name)
+{
+    m_name = name;
+}
+
+void Server::setCreated(time_t time)
+{
+    m_created = time;
+}
+
+void Server::setVersion(std::string version)
+{
+    m_version = version;
+}
