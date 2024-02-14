@@ -57,6 +57,22 @@ void Client::startListen(int serv_sock)
     fcntl(m_socket_fd, F_SETFL, O_NONBLOCK);
 }
 
-std::string Client::getNick() {
+std::string Client::getNick()
+{
     return m_nick;
+}
+
+std::string Client::getUser()
+{
+    return m_username;
+}
+
+void Client::setNick(std::string nick)
+{
+    m_nick = nick;
+}
+
+void Client::setUser(std::string user)
+{
+    m_username = user;
 }
