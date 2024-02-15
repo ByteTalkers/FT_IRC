@@ -32,6 +32,23 @@ int Client::getsockfd()
     return m_socket_fd;
 }
 
+// setter
+
+void Client::setPassword(const std::string &password)
+{
+    m_password = password;
+}
+
+void Client::setNick(const std::string &nick)
+{
+    m_nick = nick;
+}
+
+void Client::setUsername(const std::string &username)
+{
+    m_username = username;
+}
+
 void Client::setRecvData(const char *data)
 {
     std::string newstr(data);

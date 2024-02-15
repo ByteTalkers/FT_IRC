@@ -16,6 +16,7 @@ class Client
 
     std::string m_nick;        // 닉네임
     std::string m_username;    // 유저네임
+    std::string m_password;    // 패스워드
     std::string m_cur_channel; // 현재 채널명
     int m_flag_connect;        // 연결 여부
     bool m_is_op;              // op(방장) 여부
@@ -30,4 +31,7 @@ class Client
     void setRecvData(const char *data);
     std::string getRecvData();
     void startListen(int serv_sock);
+    void setPassword(const std::string &password);
+    void setNick(const std::string &nick);
+    void setUsername(const std::string &username);
 };
