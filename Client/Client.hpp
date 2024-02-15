@@ -31,7 +31,12 @@ class Client
     void setRecvData(const char *data);
     std::string getRecvData();
     void startListen(int serv_sock);
+<<<<<<< HEAD
     void setPassword(const std::string &password);
     void setNick(const std::string &nick);
     void setUsername(const std::string &username);
+=======
+
+    std::string getNick();
+>>>>>>> 73035439b029db57e4f9ad17a30b99f10896e5c3
 };
