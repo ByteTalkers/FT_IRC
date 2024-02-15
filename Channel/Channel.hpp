@@ -7,6 +7,8 @@
 #include <string>
 #include <vector>
 
+class Client; // 전방 선언
+
 class Channel
 {
   private:
