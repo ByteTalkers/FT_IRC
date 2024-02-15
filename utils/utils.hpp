@@ -1,4 +1,4 @@
 #include <ctime>
 #include <string>
 
-std::string timeToString(time_t time);
+const std::string timeToString(time_t time);

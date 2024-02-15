@@ -1,6 +1,6 @@
 #include "utils.hpp"
 
-std::string timeToString(time_t time)
+const std::string timeToString(time_t time)
 {
     char buffer[80];
     struct tm* timeinfo;
