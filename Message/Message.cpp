@@ -114,9 +114,10 @@ void Message::seperateOrigin()
 // }
 
 // 커맨드 체크
+
 void Message::commandExecute(Server &server, Client &client)
 {
-    for (int i = 0; i < this->m_command.length(); i++)
+    for (std::size_t i = 0; i < this->m_command.length(); i++)
     {
         this->m_command[i] = std::toupper(this->m_command[i]);
     }
@@ -138,6 +139,9 @@ void Message::commandExecute(Server &server, Client &client)
     }
     else if (this->m_command == "PING")
     {
+        cl->setSendMsg(Response::pongResponse(se.getName(), this.m_params[0]));
+        // test 코드
+        // std::cout << Response::pongResponse(se->getName(), this->m_params[0]) << std::endl;
     }
     else if (this->m_command == "QUIT")
     {
@@ -218,7 +222,7 @@ void Message::display()
     std::cout << "prefix: " << this->getPrefix() << std::endl;
     std::cout << "command: " << this->getCommand() << std::endl;
     std::cout << "params: ";
-    for (int i = 0; i < this->m_params.size(); i++)
+    for (std::size_t i = 0; i < this->m_params.size(); i++)
     {
         std::cout << this->m_params[i];
         if (i != this->m_params.size() - 1)

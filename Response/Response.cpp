@@ -8,38 +8,50 @@ Response::~Response()
 {
 }
 
-std::string Response::generateResponse(const std::string &command, const std::string &to, const std::string &args)
+std::string Response::generateRpl(const std::string &command, const std::string &to, const std::string &args)
 {
     return command + " " + to + " " + args + "\r\n";
 }
+
+std::string Response::generateMessage(const std::string &command, const std::string &args)
+{
+    return command + " " + args + "\r\n";
+}
+
+// pong 응답
+std::string Response::pongResponse(const std::string &se_name, const std::string &token)
+{
+    return generateMessage("PONG", se_name + " :" + token);
+}
+
 
 std::string Response::rplWelcome_001(const std::string &nick, const std::string &user)
 {
     // :irc.local 001 hj :Welcome to the Localnet IRC Network hj!root@127.0.0.1
     // " 001 " + nickname + ":welcome message " + nickname + "!" + username + "@" + ip
 
-    return generateResponse("001", nick, ":Welcome to the FT-IRC Network " + nick + "!" + user);
+    return generateRpl("001", nick, ":Welcome to the FT-IRC Network " + nick + "!" + user);
 }
 
 std::string Response::rplYourHost_002(const std::string &nick, const std::string &se_name)
 {
     // :irc.local 002 hj :Your host is irc.local, running version InspIRCd-3
 
-    return generateResponse("002", nick, ":Your host is " + se_name);
+    return generateRpl("002", nick, ":Your host is " + se_name);
 }
 
 std::string Response::rplCreated_003(const std::string &nick, time_t se_created)
 {
     //: irc.local 003 hj :This server was created 00:34:38 Feb 13 2024
 
-    return generateResponse("003", nick, ":This server was created " + timeToString(se_created));
+    return generateRpl("003", nick, ":This server was created " + timeToString(se_created));
 }
 
 std::string Response::rplMyInfo_004(const std::string &nick, const std::string &se_name)
 {
     //: irc.local 004 hj irc.local InspIRCd-3 iosw biklmnopstv :bklov
 
-    return generateResponse("004", nick, se_name + " iklt :kl");
+    return generateRpl("004", nick, se_name + " iklt :kl");
 }
 
 std::string Response::rplISupport_005(const std::string &nick)
@@ -53,7 +65,7 @@ std::string Response::rplISupport_005(const std::string &nick)
     // 서버 객체에서 가져올지?
     // 서버 객체는 이런 설정들을 config 파일에서 따로 관리할지?
 
-    return generateResponse("005", nick, " CHANLIMIT=#:20 CHANNELLEN=64 NICKLEN=30 :are supported by this server");
+    return generateRpl("005", nick, " CHANLIMIT=#:20 CHANNELLEN=64 NICKLEN=30 :are supported by this server");
 }
 
 std::string Response::rplLUserClient_251(const std::string &nick, const std::string &cl_count)
@@ -61,7 +73,7 @@ std::string Response::rplLUserClient_251(const std::string &nick, const std::str
     // "<client> :There are <u> users and <i> invisible on <s> servers"
     // todo: server clnt count
 
-    return generateResponse("251", nick, ":There are " + cl_count + " users on 1 servers");
+    return generateRpl("251", nick, ":There are " + cl_count + " users on 1 servers");
 }
 
 std::string Response::rplLUserMe_255(const std::string &nick, const std::string &cl_count)
@@ -69,7 +81,7 @@ std::string Response::rplLUserMe_255(const std::string &nick, const std::string 
     // "<client> :I have <c> clients and <s> servers"
     // todo: server clnt count
 
-    return generateResponse("255", nick, ":I have " + cl_count + " clients and 0 servers");
+    return generateRpl("255", nick, ":I have " + cl_count + " clients and 0 servers");
 }
 
 std::string Response::rplMotd_372(const std::string &nick)
@@ -90,7 +102,7 @@ std::string Response::rplMotd_372(const std::string &nick)
 
     // todo: 여러번 나눠서 보내야함 어떻게?
 
-    return generateResponse("372", nick, ":- *             H    E    L    L    O              *");
+    return generateRpl("372", nick, ":- *             H    E    L    L    O              *");
 }
 
 std::string Response::rplMotdStart_375(const std::string &nick, const std::string &se_name)
@@ -98,7 +110,7 @@ std::string Response::rplMotdStart_375(const std::string &nick, const std::strin
     // "<client> :- <server> Message of the day - "
     // :irc.local 375 nickname :irc.local message of the day
 
-    return generateResponse("375", nick, ":" + se_name + " Message of the day");
+    return generateRpl("375", nick, ":" + se_name + " Message of the day");
 }
 
 std::string Response::rplEndOfMotd_376(const std::string &nick)
@@ -106,5 +118,5 @@ std::string Response::rplEndOfMotd_376(const std::string &nick)
     // "<client> :End of /MOTD command."
     // :irc.local 376 nickname :End of message of the day.
 
-    return generateResponse("376", nick, ":End of message of the day");
+    return generateRpl("376", nick, ":End of message of the day");
 }

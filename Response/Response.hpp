@@ -17,7 +17,12 @@ class Response
     Response &operator=(Response const &rhs);
   public:
     // 응답 기본 틀
-    static std::string generateResponse(const std::string &command, const std::string &to, const std::string &args);
+    static std::string generateRpl(const std::string &command, const std::string &to, const std::string &args);
+    static std::string generateMessage(const std::string &command, const std::string &args);
+
+    // pong 응답
+    static std::string pongResponse(const std::string &se_name, const std::string &token);
+
 
     // 유저 등록 후 응답
     static std::string rplWelcome_001(const std::string &nick, const std::string &user);

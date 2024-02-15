@@ -6,8 +6,13 @@
 #include <string>
 #include <vector>
 
-class Server; // 전방 선언
+#include <cctype>
+#include "../Response/Response.hpp"
+#include "../Client/Client.hpp"
+#include "../Server/Server.hpp"
+
 class Client;
+class Server;
 
 class Message
 {

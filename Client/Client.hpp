@@ -10,7 +10,12 @@
 #include <sys/socket.h>
 #include <unistd.h>
 
+#include "../Message/Message.hpp"
+#include "../Server/Server.hpp"
+
 class Channel; // 전방 선언
+class Message;
+class Server;
 
 class Client
 {
@@ -47,4 +52,6 @@ class Client
     void startParseMessage();
     void startResponse(std::map<int, Channel> &channels);
     void startSend();
+ 
+    void setSendMsg(std::string msg);
 };
