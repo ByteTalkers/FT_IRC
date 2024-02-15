@@ -62,6 +62,21 @@ void Client::startListen(int serv_sock)
     fcntl(m_socket_fd, F_SETFL, O_NONBLOCK);
 }
 
+std::string Client::getUser()
+{
+    return m_username;
+}
+
+void Client::setNick(std::string nick)
+{
+    m_nick = nick;
+}
+
+void Client::setUser(std::string user)
+{
+    m_username = user;
+}
+
 void Client::startParseMessage()
 {
     // message 클래스의 객체 넣기

@@ -219,6 +219,35 @@ void Server::handleDisconnect()
     exit(EXIT_SUCCESS);
 }
 
+std::string Server::getClientCount()
+{
+    std::stringstream ss;
+    ss << m_clients.size();
+    std::string ret = ss.str();
+    return ret;
+}
+
+std::string Server::getName()
+{
+    return m_name;
+}
+
+time_t Server::getCreated()
+{
+    return m_created;
+}
+
+void Server::setName(std::string name)
+{
+    m_name = name;
+}
+
+void Server::setCreated(time_t time)
+{
+    m_created = time;
+}
+
 void Server::handleTimeout()
 {
 }
+
