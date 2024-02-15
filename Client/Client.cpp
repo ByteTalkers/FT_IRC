@@ -80,6 +80,13 @@ void Client::setUser(std::string user)
 void Client::startParseMessage()
 {
     // message 클래스의 객체 넣기
+    Message msg(m_recv_data);
+    msg.seperateOrigin();
+    // 테스트용 임시 서버객체 
+    Server a;
+    a.setName("test");
+    a.setCreated(time(NULL));
+    msg.commandExecute(this, &a);
 }
 
 void Client::startResponse(std::map<int, Channel> &channels)
@@ -91,4 +98,9 @@ void Client::startSend()
 {
     int clnt_sock = getsockfd();
     send(clnt_sock, m_send_msg.c_str(), m_send_msg.length(), 0);
+}
+
+void Client::setSendMsg(std::string msg)
+{
+    m_send_msg = msg;
 }
