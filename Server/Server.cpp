@@ -127,6 +127,7 @@ void Server::handleKqueue()
     while (1)
     {
         struct kevent event_arr[MAX_EVENTS];
+        // struct timespec timeout = {1, 0};
         int event_cnt = kevent(m_kqueue, &m_change_vec[0], m_change_vec.size(), event_arr, MAX_EVENTS, NULL);
         if (event_cnt == -1)
             break;
@@ -193,6 +194,10 @@ void Server::handleRecv(int fd)
     clnt.setRecvData(buffer);
 
     // 추후 추가 : 데이터 체크 및 파싱
+    // clnt.startParseMessage();
+
+    // 추후 추가 : 데이터에 대한 응답 생성
+    // clnt.startResponse(m_channels);
 }
 
 void Server::handleSend(int fd)
@@ -205,9 +210,44 @@ void Server::handleSend(int fd)
     }
 
     // 추후 추가 : 데이터 재전송
+    // Client clnt = iter->second;
+    // clnt.startSend();
 }
 
 void Server::handleDisconnect()
 {
     exit(EXIT_SUCCESS);
 }
+
+std::string Server::getClientCount()
+{
+    std::stringstream ss;
+    ss << m_clients.size();
+    std::string ret = ss.str();
+    return ret;
+}
+
+std::string Server::getName()
+{
+    return m_name;
+}
+
+time_t Server::getCreated()
+{
+    return m_created;
+}
+
+void Server::setName(std::string name)
+{
+    m_name = name;
+}
+
+void Server::setCreated(time_t time)
+{
+    m_created = time;
+}
+
+void Server::handleTimeout()
+{
+}
+
