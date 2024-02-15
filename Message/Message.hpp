@@ -1,16 +1,18 @@
 #ifndef MESSAGE_HPP
 #define MESSAGE_HPP
 
+#include <cctype>
 #include <iostream>
 #include <string>
 #include <vector>
-#include <cctype>
+
+class Server; // 전방 선언
+class Client;
 
 class Message
 {
   private:
     std::string m_origin;
-
     std::string m_prefix;
     std::string m_command;
     std::vector<std::string> m_params;
@@ -21,11 +23,11 @@ class Message
     Message(const Message &src);
     Message &operator=(Message const &rhs);
 
-
     bool crlfCheck();
     void seperateOrigin();
 
-    void commandExecute();
+    // Command
+    void commandExecute(Server &server, Client &client);
 
     // Getter
     const std::string &getOrigin() const;

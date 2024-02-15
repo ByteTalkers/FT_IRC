@@ -1,4 +1,5 @@
 #include "Message.hpp"
+#include "../Client/Client.hpp"
 
 Message::Message(std::string &origin) : m_origin(origin)
 {
@@ -63,8 +64,57 @@ void Message::seperateOrigin()
     }
 }
 
+// cap 명령어 처리
+// void Message::handleCommandCap()
+// {
+//     if (m_params.empty())
+//     {
+//         std::cout << "m_params is empty" << std::endl;
+//         return;
+//     }
+//     std::vector<std::string> basicCapabilities = {"multi-prefix", "sasl"};
+//     std::vector<std::string> extendedCapabilities = {"multi-prefix", "sasl", "cap-notify", "batch"};
+//     std::string sub_command = this->m_params[0];
+
+//     if (sub_command == "LS") // 클라이언트가 서버에게 사용 가능한 모든 capability를 요청
+//     {
+//         std::string version;
+//         if (this->m_params.size() > 1)
+//         {
+//             version = this->m_params[1];
+//         }
+//         if (version.empty()) // 버전 정보 없을 때 (모든 capabilities 전송)
+//         {
+//             std::cout << "CAP * LS :";
+//             for (size_t i = 0; i < basicCapabilities.size(); i++)
+//             {
+//                 std::cout << basicCapabilities[i];
+//                 if (i != basicCapabilities.size() - 1)
+//                 {
+//                     std::cout << " ";
+//                 }
+//             }
+//             std::cout << std::endl;
+//         }
+//         else if (version == "302") // 특정 버전 명시
+//         {
+//             std::cout << "CAP * LS :";
+//             for (size_t i = 0; i < extendedCapabilities.size(); i++)
+//             {
+//                 std::cout << extendedCapabilities[i];
+//                 if (i != extendedCapabilities.size() - 1)
+//                 {
+//                     std::cout << " ";
+//                 }
+//             }
+//             std::cout << std::endl;
+//         }
+//     }
+//     return;
+// }
+
 // 커맨드 체크
-void Message::commandExecute()
+void Message::commandExecute(Server &server, Client &client)
 {
     for (int i = 0; i < this->m_command.length(); i++)
     {
@@ -76,12 +126,15 @@ void Message::commandExecute()
     }
     else if (this->m_command == "PASS")
     {
+        client.setPassword(this->m_params[0]);
     }
     else if (this->m_command == "NICK")
     {
+        client.setNick(this->m_params[0]);
     }
     else if (this->m_command == "USER")
     {
+        client.setUsername(this->m_params[0]);
     }
     else if (this->m_command == "PING")
     {
@@ -111,7 +164,6 @@ void Message::commandExecute()
     {
     }
 }
-
 
 // Getter
 

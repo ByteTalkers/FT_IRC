@@ -1,8 +1,6 @@
 #include "Client.hpp"
 
-Client::Client()
-{
-}
+Client::Client() {}
 
 Client::Client(const Client &other)
 {
@@ -19,17 +17,38 @@ Client &Client::operator=(const Client &other)
         m_cur_channel = other.m_cur_channel;
         m_flag_connect = other.m_flag_connect;
         m_is_op = other.m_is_op;
+        // 추가된 멤버 변수가 있다면 여기에 복사 로직을 추가
     }
     return *this;
 }
 
-Client::~Client()
-{
-}
+Client::~Client() {}
 
 int Client::getsockfd()
 {
     return m_socket_fd;
+}
+
+// Setter 함수들
+void Client::setPassword(const std::string &password)
+{
+    m_password = password;
+}
+
+void Client::setNick(const std::string &nick)
+{
+    m_nick = nick;
+}
+
+void Client::setUsername(const std::string &username)
+{
+    m_username = username;
+}
+
+void Client::setRecvData(const char *data)
+{
+    std::string newstr(data);
+    m_recv_data += newstr;
 }
 
 std::string Client::getNick()
@@ -37,15 +56,9 @@ std::string Client::getNick()
     return m_nick;
 }
 
-std::string Client::getRecvData()
+std::string Client::getUser()
 {
-    return m_recv_data;
-}
-
-void Client::setRecvData(const char *data)
-{
-    std::string newstr(data);
-    m_recv_data += newstr;
+    return m_username;
 }
 
 void Client::startListen(int serv_sock)
@@ -60,21 +73,6 @@ void Client::startListen(int serv_sock)
 
     // nonblock 처리
     fcntl(m_socket_fd, F_SETFL, O_NONBLOCK);
-}
-
-std::string Client::getUser()
-{
-    return m_username;
-}
-
-void Client::setNick(std::string nick)
-{
-    m_nick = nick;
-}
-
-void Client::setUser(std::string user)
-{
-    m_username = user;
 }
 
 void Client::startParseMessage()
