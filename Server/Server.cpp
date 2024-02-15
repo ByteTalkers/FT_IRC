@@ -212,6 +212,14 @@ void Server::handleDisconnect()
     exit(EXIT_SUCCESS);
 }
 
+std::string Server::getClientCount()
+{
+    std::stringstream ss;
+    ss << m_clients.size();
+    std::string ret = ss.str();
+    return ret;
+}
+
 std::string Server::getName()
 {
     return m_name;
@@ -221,12 +229,6 @@ time_t Server::getCreated()
 {
     return m_created;
 }
-
-std::string Server::getVersion()
-{
-    return m_version;
-}
-
 
 void Server::setName(std::string name)
 {
@@ -238,7 +240,3 @@ void Server::setCreated(time_t time)
     m_created = time;
 }
 
-void Server::setVersion(std::string version)
-{
-    m_version = version;
-}

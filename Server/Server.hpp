@@ -31,7 +31,6 @@ class Server
 
     std::string m_name;     // 서버 이름
     time_t m_created;       // 생성시간
-    std::string m_version;  // 서버 버전
 
   public:
     Server();
@@ -56,9 +55,8 @@ class Server
 
     std::string getName();
     time_t getCreated();
-    std::string getVersion();
+    std::string getClientCount();
 
     void setName(std::string name);
     void setCreated(time_t time);
-    void setVersion(std::string version);
 };
