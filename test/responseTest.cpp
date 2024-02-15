@@ -9,27 +9,24 @@ int main() {
     a.setNick("test");
     a.setUser("user");
 
-    Response b;
-
     Server c;
     c.setName("ft_irc");
-    c.setVersion("ft_irc-42");
     c.setCreated(time(NULL));
 
     std::cout << c.getName() << std::endl;
 
-    std::cout << b.rplWelcome_001(a, c) << std::endl;
-    std::cout << b.rplYourHost_002(a, c) << std::endl;
-    std::cout << b.rplCreated_003(a, c) << std::endl;
-    std::cout << b.rplMyInfo_004(a, c) << std::endl;
-    std::cout << b.rplISupport_005(a, c) << std::endl;
+    std::cout << Response::rplWelcome_001(a.getNick(), a.getUser()) << std::endl;
+    std::cout << Response::rplYourHost_002(a.getNick(), a.getUser()) << std::endl;
+    std::cout << Response::rplCreated_003(a.getNick(), c.getCreated()) << std::endl;
+    std::cout << Response::rplMyInfo_004(a.getNick(), c.getName()) << std::endl;
+    std::cout << Response::rplISupport_005(a.getNick()) << std::endl;
 
-    std::cout << b.rplLUserClient_251(a, c) << std::endl;
-    std::cout << b.rplLUserMe_255(a, c) << std::endl;
+    std::cout << Response::rplLUserClient_251(a.getNick(), c.getClientCount()) << std::endl;
+    std::cout << Response::rplLUserMe_255(a.getNick(), c.getClientCount()) << std::endl;
 
-    std::cout << b.rplMotd_372(a, c) << std::endl;
-    std::cout << b.rplMotdStart_375(a, c) << std::endl;
-    std::cout << b.rplEndOfMotd_376(a, c) << std::endl;
+    std::cout << Response::rplMotd_372(a.getNick()) << std::endl;
+    std::cout << Response::rplMotdStart_375(a.getNick(), c.getName()) << std::endl;
+    std::cout << Response::rplEndOfMotd_376(a.getNick()) << std::endl;
 
 
     return 0;
