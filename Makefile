@@ -1,7 +1,8 @@
 CC = g++
 CFLAGS = -Wall -Wextra -Werror -g 
 NAME = ircserv
-FILE = Server/Server.cpp Client/Client.cpp main.cpp Channel/Channel.cpp \
+FILE = Server/Server.cpp Server/utils.cpp \
+	Client/Client.cpp main.cpp Channel/Channel.cpp \
 	Message/Message.cpp Response/Response.cpp utils/utils.cpp
 
 all : make

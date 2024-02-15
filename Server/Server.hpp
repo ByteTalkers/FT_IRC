@@ -3,6 +3,7 @@
 #include "../Client/Client.hpp"
 
 #include <arpa/inet.h>
+#include <ctime>
 #include <fcntl.h>
 #include <iostream>
 #include <netinet/in.h>
@@ -11,9 +12,9 @@
 #include <sys/event.h>
 #include <sys/socket.h>
 #include <unistd.h>
-#include <ctime>
 
 #include <map>
+#include <utility>
 #include <vector>
 
 #define BACKLOG 10
@@ -31,8 +32,8 @@ class Server
     std::map<int, Channel> m_channels;       // 채널 목록
     std::vector<struct kevent> m_change_vec; // 이벤트 목록
 
-    std::string m_name;     // 서버 이름
-    time_t m_created;       // 생성시간
+    std::string m_name; // 서버 이름
+    time_t m_created;   // 생성시간
 
   public:
     Server();
@@ -45,16 +46,21 @@ class Server
     int getPortnum();
     void setPortnum(int number);
 
-    Server(std::string s1, std::string s2);
+    Server(std::string password);
     void checkPortnum(std::string str);
     void initServSock();
     void initKqueue();
     void handleKqueue();
     void handleConnect();
     void handleDisconnect();
-	void handleTimeout();
+    void handleTimeout();
     void handleSend(int fd);
     void handleRecv(int fd);
+
+    void addReadEvent(int sockfd);
+    void addWriteEvent(int sockfd);
+    void disableWriteEvent(int sockfd);
+    void enableWriteEvent(int sockfd);
 
     std::string getName();
     time_t getCreated();
