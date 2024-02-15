@@ -5,6 +5,12 @@
 #include <string>
 #include <vector>
 #include <cctype>
+#include "../Response/Response.hpp"
+#include "../Client/Client.hpp"
+#include "../Server/Server.hpp"
+
+class Client;
+class Server;
 
 class Message
 {
@@ -25,7 +31,7 @@ class Message
     bool crlfCheck();
     void seperateOrigin();
 
-    void commandExecute();
+    void commandExecute(Client *cl, Server *se);
 
     // Getter
     const std::string &getOrigin() const;
