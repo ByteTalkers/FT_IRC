@@ -84,12 +84,13 @@ void Client::startParseMessage()
     Server a;
     a.setName("test");
     a.setCreated(time(NULL));
-    msg.commandExecute(this, &a);
+    msg.commandExecute(a, *this);
 }
 
 void Client::startResponse(std::map<int, Channel> &channels)
 {
     // response 클래스의 객체 넣기
+    (void)channels;
 }
 
 void Client::startSend()
