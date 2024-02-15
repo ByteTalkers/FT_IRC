@@ -1,7 +1,7 @@
 CC = g++
 CFLAGS = -Wall -Wextra -Werror -g
 NAME = ircserv
-FILE = Server/Server.cpp Client/Client.cpp main.cpp
+FILE = Server/Server.cpp Client/Client.cpp main.cpp Channel/Channel.cpp
 
 all : make
 	rm -rf *.dSYM

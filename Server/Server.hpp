@@ -1,4 +1,5 @@
 #pragma once
+#include "../Channel/Channel.hpp"
 #include "../Client/Client.hpp"
 
 #include <arpa/inet.h>
@@ -26,6 +27,7 @@ class Server
     int m_serv_sock;
     int m_kqueue;
     std::map<int, Client> m_clients;         // 클라이언트 목록
+    std::map<int, Channel> m_channels;       // 채널 목록
     std::vector<struct kevent> m_change_vec; // 이벤트 목록
 
   public:
@@ -46,6 +48,7 @@ class Server
     void handleKqueue();
     void handleConnect();
     void handleDisconnect();
+	void handleTimeout();
     void handleSend(int fd);
     void handleRecv(int fd);
 };

@@ -32,15 +32,20 @@ int Client::getsockfd()
     return m_socket_fd;
 }
 
-void Client::setRecvData(const char *data)
+std::string Client::getNick()
 {
-    std::string newstr(data);
-    m_recv_data += newstr;
+    return m_nick;
 }
 
 std::string Client::getRecvData()
 {
     return m_recv_data;
+}
+
+void Client::setRecvData(const char *data)
+{
+    std::string newstr(data);
+    m_recv_data += newstr;
 }
 
 void Client::startListen(int serv_sock)
@@ -57,6 +62,18 @@ void Client::startListen(int serv_sock)
     fcntl(m_socket_fd, F_SETFL, O_NONBLOCK);
 }
 
-std::string Client::getNick() {
-    return m_nick;
+void Client::startParseMessage()
+{
+    // message 클래스의 객체 넣기
+}
+
+void Client::startResponse(std::map<int, Channel> &channels)
+{
+    // response 클래스의 객체 넣기
+}
+
+void Client::startSend()
+{
+    int clnt_sock = getsockfd();
+    send(clnt_sock, m_send_msg.c_str(), m_send_msg.length(), 0);
 }
