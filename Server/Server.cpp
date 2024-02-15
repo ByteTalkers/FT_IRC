@@ -113,9 +113,7 @@ void Server::initKqueue()
     }
 
     // serv_sock의 read를 이벤트벡터에 등록
-    struct kevent serv_event;
-    EV_SET(&serv_event, m_serv_sock, EVFILT_READ, EV_ADD, 0, 0, NULL);
-    m_change_vec.push_back(serv_event);
+    addReadEvent(m_serv_sock);
 }
 
 void Server::handleKqueue()
@@ -139,6 +137,7 @@ void Server::handleKqueue()
                     throw std::runtime_error("server socket error");
                 else
                     Server::handleConnect();
+                continue;
             }
             if (event_arr[i].flags & EV_EOF) // 연결이 끊어진 경우
                 Server::handleDisconnect();
@@ -166,13 +165,14 @@ void Server::handleConnect()
 
     // 클라이언트의 map에 등록
     m_clients.insert(std::make_pair(clnt.getsockfd(), clnt));
+    std::cout << "insert!" << std::endl;
 }
 
 void Server::handleRecv(int fd)
 {
     // 데이터 받기
     int clnt_sock = fd;
-    Client &clnt = m_clients[fd];
+    Client clnt = m_clients.at(fd);
     char buffer[BUFFER_SIZE];
 
     memset(buffer, 0, sizeof(buffer));
@@ -189,16 +189,19 @@ void Server::handleRecv(int fd)
     // clnt.startResponse(m_channels);
 
     // 클라이언트 소켓의 write 이벤트 활성화
-    enableWriteEvent(clnt.getsockfd());
+    std::cout << 222222 << "\t";
+    enableWriteEvent(clnt_sock);
 }
 
 void Server::handleSend(int fd)
 {
-    Client clnt = m_clients[fd];
+    // clnt 찾기 (at()을 써야 이미 있는 원소가 찾아진다.)
+    Client clnt = m_clients.at(fd);
 
     // 추후 추가 : 데이터 재전송
     clnt.startSend();
 
+    std::cout << "start to send" << std::endl;
     // 클라이언트 소켓의 write 이벤트 비활성화
     disableWriteEvent(clnt.getsockfd());
 }
