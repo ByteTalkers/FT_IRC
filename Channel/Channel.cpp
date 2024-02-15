@@ -34,13 +34,13 @@ void Channel::joinChannel(Client cl) {
 // 채널 나가기
 void Channel::partChannel(Client cl) {
     this->m_user_count--;
-    for (int i = 0; i < this->m_operators.size(); i++) {
+    for (std::size_t i = 0; i < this->m_operators.size(); i++) {
         if (this->m_operators[i].getNick() == cl.getNick()) {
             this->m_operators.erase(this->m_operators.begin() + i);
             return ;
         }
     }
-    for (int i = 0; i < this->m_normals.size(); i++) {
+    for (std::size_t i = 0; i < this->m_normals.size(); i++) {
         if (this->m_normals[i].getNick() == cl.getNick()) {
             this->m_normals.erase(this->m_normals.begin() + i);
             return ;
