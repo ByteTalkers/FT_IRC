@@ -11,38 +11,36 @@
 class Response
 {
   private:
-    std::vector<std::string> m_response;
-
-  public:
     Response();
     ~Response();
     Response(const Response &src);
     Response &operator=(Response const &rhs);
-
-    std::string rplPrefix(Server &se);
-    std::string rplCRLF();
-
+  public:
+    // 응답 기본 틀
+    static std::string generateResponse(const std::string &command, const std::string &to, const std::string &args);
 
     // 유저 등록 후 응답
-    std::string rplWelcome_001(Client &cl, Server &se);
-    std::string rplYourHost_002(Client &cl, Server &se);
-    std::string rplCreated_003(Client &cl, Server &se);
-    std::string rplMyInfo_004(Client &cl, Server &se);
-    std::string rplISupport_005(Client &cl, Server &se);
+    static std::string rplWelcome_001(const std::string &nick, const std::string &user);
+    static std::string rplYourHost_002(const std::string &nick, const std::string &se_name);
+    static std::string rplCreated_003(const std::string &nick, time_t se_created);
+    static std::string rplMyInfo_004(const std::string &nick, const std::string &se_name);
+    static std::string rplISupport_005(const std::string &nick);
 
     // LUSER 응답
-    std::string rplLUserClient_251(Client &cl, Server &se);
+    static std::string rplLUserClient_251(const std::string &nick, const std::string &cl_count);
+    static std::string rplLUserMe_255(const std::string &nick, const std::string &cl_count);
+
+    // 아래는 should
     // void rplLUserOp_252();
     // void rplLUserUnknown_253();
     // void rplLUserChannels_254();
-    std::string rplLUserMe_255(Client &cl, Server &se);
     // void rplLocalUsers_265();
     // void rplGlobalUsers_266();
 
     // motd
-    std::string rplMotd_372(Client &cl, Server &se);
-    std::string rplMotdStart_375(Client &cl, Server &se);
-    std::string rplEndOfMotd_376(Client &cl, Server &se);
+    static std::string rplMotd_372(const std::string &nick);
+    static std::string rplMotdStart_375(const std::string &nick, const std::string &se_name);
+    static std::string rplEndOfMotd_376(const std::string &nick);
 
     // join -> mode -> who -> mode 밴리스트 (클라이언트가 join 이후 보내는 순서)
     void rplNamReply_353();
