@@ -4,12 +4,12 @@ NAME = test
 FILE = ../Server/Server.cpp \
 	../Client/Client.cpp \
 	../Message/Message.cpp \
-	../Response/Response.cpp \
 	../utils/utils.cpp \
-	#../Channel/Channel.cpp \
+	../Channel/Channel.cpp \
+	../Response/Response.cpp \
 
-# TEST = messageTest.cpp
-TEST = responseTest.cpp
+ TEST = messageTest.cpp
+# TEST = responseTest.cpp
 
 all : make
 	rm -rf *.dSYM

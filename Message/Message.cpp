@@ -139,12 +139,24 @@ void Message::commandExecute(Server &server, Client &client)
     }
     else if (this->m_command == "PING")
     {
-        cl->setSendMsg(Response::pongResponse(se.getName(), this.m_params[0]));
+        client.setSendMsg(Response::pongResponse(server.getName(), this->m_params[0]));
         // test 코드
         // std::cout << Response::pongResponse(se->getName(), this->m_params[0]) << std::endl;
     }
     else if (this->m_command == "QUIT")
     {
+        std::string quitMsg;
+
+        quitMsg = this->m_params[0];
+        // 조건 1 quit 뒤에 parameter가 없을 때
+        if (quitMsg.empty())
+        {
+            // 클라이언트가 현재 참여하고 있는 모든 채널에서
+        }
+        // 조건 2 quit 뒤에 parameter가 있을 때
+        else
+        {
+        }
     }
     else if (this->m_command == "JOIN")
     {

@@ -12,6 +12,7 @@ int main()
     std::string test5 = "PING irc.local\r\n";
     std::string test6 = "JOIN #a\r\n";
     std::string test7 = "MODE #a b\r\n";
+    std::string test8 = "QUIT hihi\r\n";
 
     std::string invalid1 = "JOIN #a";
     std::string invalid2 = "PING #a\r";
@@ -27,6 +28,7 @@ int main()
     test.push_back(test5);
     test.push_back(test6);
     test.push_back(test7);
+    test.push_back(test8);
 
     invalid.push_back(invalid1);
     invalid.push_back(invalid2);

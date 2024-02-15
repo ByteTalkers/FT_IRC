@@ -3,6 +3,7 @@
 #include "../Client/Client.hpp"
 
 #include <arpa/inet.h>
+#include <ctime>
 #include <fcntl.h>
 #include <iostream>
 #include <netinet/in.h>
@@ -11,7 +12,6 @@
 #include <sys/event.h>
 #include <sys/socket.h>
 #include <unistd.h>
-#include <ctime>
 
 #include <map>
 #include <vector>
@@ -19,6 +19,9 @@
 #define BACKLOG 10
 #define MAX_EVENTS 10
 #define BUFFER_SIZE 1024
+
+class Channel;
+class Client;
 
 class Server
 {
@@ -31,8 +34,8 @@ class Server
     std::map<int, Channel> m_channels;       // 채널 목록
     std::vector<struct kevent> m_change_vec; // 이벤트 목록
 
-    std::string m_name;     // 서버 이름
-    time_t m_created;       // 생성시간
+    std::string m_name; // 서버 이름
+    time_t m_created;   // 생성시간
 
   public:
     Server();
@@ -52,7 +55,7 @@ class Server
     void handleKqueue();
     void handleConnect();
     void handleDisconnect();
-	void handleTimeout();
+    void handleTimeout();
     void handleSend(int fd);
     void handleRecv(int fd);
 
