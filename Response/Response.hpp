@@ -16,12 +16,10 @@ class Response
     Response(const Response &src);
     Response &operator=(Response const &rhs);
 
+    static std::string generateResponse(const std::string &prefix, const std::string &command, const std::string &args);
+
   public:
     // 응답 기본 틀
-
-
-    static std::string generateRpl(const std::string &command, const std::string &to, const std::string &args);
-    static std::string generateMessage(const std::string &command, const std::string &args);
 
     // pong 응답
     static std::string pongResponse(const std::string &se_name, const std::string &token);
@@ -31,10 +29,21 @@ class Response
     static std::string rplWelcome_001(const std::string &nick, const std::string &user);
 
 
-    // PASS
-    // err
-    static std::string errNeedMoreParams_461();
+    // ERROR
+    static std::string errNeedMoreParams_461(const std::string &se_name, const std::string &nick, std::string &command);
 
+    // PASS, USER
+    static std::string errAlreadyRegistered_462(const std::string &se_name, const std::string &nick);
+    
+    // NICK
+    static std::string errNoNicknameGiven_431(const std::string &se_name, const std::string &nick);
+    static std::string errErroneusNickname_432(const std::string &se_name, const std::string &nick, const std::string &fail_nick);
+    static std::string errNickNameInUse_433(const std::string &se_name, const std::string &nick, const std::string &fail_nick);
+    static std::string errNickCollision_436(const std::string &se_name, const std::string &nick, const std::string &fail_nick);
+
+    // USER
+
+    // QUIT
 
     // join -> mode -> who -> mode 밴리스트 (클라이언트가 join 이후 보내는 순서)
     void rplNamReply_353();
