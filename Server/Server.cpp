@@ -172,7 +172,7 @@ void Server::handleRecv(int fd)
 {
     // 데이터 받기
     int clnt_sock = fd;
-    Client clnt = m_clients.at(fd);
+    Client &clnt = m_clients.at(fd);
     char buffer[BUFFER_SIZE];
 
     memset(buffer, 0, sizeof(buffer));
@@ -189,19 +189,23 @@ void Server::handleRecv(int fd)
     // clnt.startResponse(m_channels);
 
     // 클라이언트 소켓의 write 이벤트 활성화
+    std::cout << "================ start ==========\n";
+    std::cout << "clnt: " << buffer << std::endl;
     std::cout << "read success" << std::endl;
+    clnt.startParseMessage();
+
     enableWriteEvent(clnt_sock);
 }
 
 void Server::handleSend(int fd)
 {
     // clnt 찾기 (at()을 써야 이미 있는 원소가 찾아진다.)
-    Client clnt = m_clients.at(fd);
+    Client &clnt = m_clients.at(fd);
 
     // 추후 추가 : 데이터 재전송
     clnt.startSend();
     std::cout << "write success" << std::endl;
-
+    std::cout << "================ end ==========\n";
     // 클라이언트 소켓의 write 이벤트 비활성화
     disableWriteEvent(clnt.getsockfd());
 }

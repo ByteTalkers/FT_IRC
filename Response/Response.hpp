@@ -26,7 +26,7 @@ class Response
 
 
     // 유저 등록 후 응답
-    static std::string rplWelcome_001(const std::string &nick, const std::string &user);
+    static std::string rplWelcome_001(const std::string &se_name, const std::string &nick, const std::string &user);
 
 
     // ERROR

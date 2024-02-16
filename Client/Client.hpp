@@ -39,6 +39,7 @@ class Client
     int getsockfd();
     std::string getNick();
     std::string getRecvData();
+    std::string getSendMsg();
 
     // Setter 함수들
     void setPassword(const std::string &password);

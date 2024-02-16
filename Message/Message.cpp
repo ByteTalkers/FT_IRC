@@ -136,10 +136,11 @@ void Message::commandExecute(Server &server, Client &client)
     else if (this->m_command == "USER")
     {
         client.setUsername(this->m_params[0]);
+        client.setSendMsg(Response::rplWelcome_001(server.getName(), client.getNick(), client.getUser()));
     }
     else if (this->m_command == "PING")
     {
-        client.setSendMsg(Response::pongResponse(client.getNick(), server.getName()));
+        client.setSendMsg(Response::pongResponse(server.getName(), this->m_params[0]));
         // test 코드
         // std::cout << Response::pongResponse(se->getName(), this->m_params[0]) << std::endl;
     }
