@@ -108,3 +108,8 @@ void Client::setSendMsg(std::string msg)
 {
     m_send_msg = msg;
 }
+
+std::string Client::getSendMsg()
+{
+    return m_send_msg;
+}
