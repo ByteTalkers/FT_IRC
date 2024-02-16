@@ -189,7 +189,7 @@ void Server::handleRecv(int fd)
     // clnt.startResponse(m_channels);
 
     // 클라이언트 소켓의 write 이벤트 활성화
-    std::cout << 222222 << "\t";
+    std::cout << "read success" << std::endl;
     enableWriteEvent(clnt_sock);
 }
 
@@ -200,8 +200,8 @@ void Server::handleSend(int fd)
 
     // 추후 추가 : 데이터 재전송
     clnt.startSend();
+    std::cout << "write success" << std::endl;
 
-    std::cout << "start to send" << std::endl;
     // 클라이언트 소켓의 write 이벤트 비활성화
     disableWriteEvent(clnt.getsockfd());
 }

@@ -100,10 +100,8 @@ void Client::startResponse(std::map<int, Channel> &channels)
 void Client::startSend()
 {
     int clnt_sock = getsockfd();
-    // send(clnt_sock, m_send_msg.c_str(), m_send_msg.length(), 0);
-
-    std::string s1 = "okay!";
-    send(clnt_sock, s1.c_str(), s1.length(), 0);
+    std::cout << "m_send_msg : " << m_send_msg << std::endl;
+    send(clnt_sock, m_send_msg.c_str(), m_send_msg.length(), 0);
 }
 
 void Client::setSendMsg(std::string msg)
