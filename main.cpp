@@ -7,9 +7,14 @@ int main(int ac, char **av)
         std::cout << "Usage : " << av[0] << " <port> <password>" << std::endl;
         exit(EXIT_SUCCESS);
     }
+
+    Server server(av[2]);
     try
     {
-        Server server(av[1], av[2]);
+        server.checkPortnum(av[1]);
+        server.initServSock();
+        server.initKqueue();
+        server.handleKqueue();
     }
     catch (const std::runtime_error &e)
     {

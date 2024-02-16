@@ -1,6 +1,8 @@
 #include "Client.hpp"
 
-Client::Client() {}
+Client::Client()
+{
+}
 
 Client::Client(const Client &other)
 {
@@ -22,7 +24,9 @@ Client &Client::operator=(const Client &other)
     return *this;
 }
 
-Client::~Client() {}
+Client::~Client()
+{
+}
 
 int Client::getsockfd()
 {
@@ -80,21 +84,23 @@ void Client::startParseMessage()
     // message 클래스의 객체 넣기
     Message msg(m_recv_data);
     msg.seperateOrigin();
-    // 테스트용 임시 서버객체 
+    // 테스트용 임시 서버객체
     Server a;
     a.setName("test");
     a.setCreated(time(NULL));
-    msg.commandExecute(this, &a);
+    msg.commandExecute(a, *this);
 }
 
 void Client::startResponse(std::map<int, Channel> &channels)
 {
     // response 클래스의 객체 넣기
+    (void)channels;
 }
 
 void Client::startSend()
 {
     int clnt_sock = getsockfd();
+    std::cout << "m_send_msg : " << m_send_msg << std::endl;
     send(clnt_sock, m_send_msg.c_str(), m_send_msg.length(), 0);
 }
 

@@ -139,7 +139,7 @@ void Message::commandExecute(Server &server, Client &client)
     }
     else if (this->m_command == "PING")
     {
-        cl->setSendMsg(Response::pongResponse(se.getName(), this.m_params[0]));
+        client.setSendMsg(Response::pongResponse(client.getNick(), server.getName()));
         // test 코드
         // std::cout << Response::pongResponse(se->getName(), this->m_params[0]) << std::endl;
     }
