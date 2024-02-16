@@ -34,6 +34,9 @@ class Message
     // Command
     void commandExecute(Server &server, Client &client);
 
+    void topicExecute(Server &server, Client &client);
+    void modeExecute(Server &server, Client &client);
+
     // Getter
     const std::string &getOrigin() const;
     const std::string &getPrefix() const;

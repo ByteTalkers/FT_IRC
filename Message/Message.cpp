@@ -155,6 +155,7 @@ void Message::commandExecute(Server &server, Client &client)
     }
     else if (this->m_command == "TOPIC")
     {
+        
     }
     else if (this->m_command == "MODE")
     {
