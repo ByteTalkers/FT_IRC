@@ -55,6 +55,17 @@ void Client::setRecvData(const char *data)
     m_recv_data += newstr;
 }
 
+void Client::setSendMsg(std::string msg)
+{
+    m_send_msg = msg;
+}
+
+void Client::setWritable(const bool boolean)
+{
+    m_is_writable = boolean;
+}
+
+// Getter 함수들
 std::string Client::getNick()
 {
     return m_nick;
@@ -63,6 +74,21 @@ std::string Client::getNick()
 std::string Client::getUser()
 {
     return m_username;
+}
+
+std::string Client::getRecvData()
+{
+    return m_recv_data;
+}
+
+std::string Client::getSendMsg()
+{
+    return m_send_msg;
+}
+
+bool Client::getWritable()
+{
+    return m_is_writable;
 }
 
 void Client::startListen(int serv_sock)
@@ -102,14 +128,7 @@ void Client::startSend()
     int clnt_sock = getsockfd();
     std::cout << "m_send_msg : " << m_send_msg << std::endl;
     send(clnt_sock, m_send_msg.c_str(), m_send_msg.length(), 0);
-}
 
-void Client::setSendMsg(std::string msg)
-{
-    m_send_msg = msg;
-}
-
-std::string Client::getSendMsg()
-{
-    return m_send_msg;
+    // m_send_msg 비워주기
+    m_send_msg.clear();
 }

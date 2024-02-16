@@ -162,6 +162,7 @@ void Server::handleConnect()
 
     // 클라이언트 소켓의 write 이벤트 비활성화
     disableWriteEvent(clnt.getsockfd());
+    clnt.setWritable(false);
 
     // 클라이언트의 map에 등록
     m_clients.insert(std::make_pair(clnt.getsockfd(), clnt));
@@ -182,18 +183,18 @@ void Server::handleRecv(int fd)
     buffer[bytes_read] = '\0';
     clnt.setRecvData(buffer);
 
-    // 추후 추가 : 데이터 체크 및 파싱
-    // clnt.startParseMessage();
-
-    // 추후 추가 : 데이터에 대한 응답 생성
-    // clnt.startResponse(m_channels);
-
-    // 클라이언트 소켓의 write 이벤트 활성화
+    // 데이터 체크 및 파싱
     std::cout << "================ start ==========\n";
     std::cout << "clnt: " << buffer << std::endl;
     std::cout << "read success" << std::endl;
     clnt.startParseMessage();
 
+    // 추후 추가 : 데이터에 대한 응답 생성
+    // clnt.startResponse(m_channels);
+
+    // 클라이언트 소켓의 write 이벤트 활성화
+    // if (clnt.getWritable() == true)
+    // 	enableWriteEvent(clnt_sock);
     enableWriteEvent(clnt_sock);
 }
 
@@ -206,8 +207,10 @@ void Server::handleSend(int fd)
     clnt.startSend();
     std::cout << "write success" << std::endl;
     std::cout << "================ end ==========\n";
+
     // 클라이언트 소켓의 write 이벤트 비활성화
     disableWriteEvent(clnt.getsockfd());
+    clnt.setWritable(false);
 }
 
 void Server::handleDisconnect()
