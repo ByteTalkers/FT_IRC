@@ -6,10 +6,10 @@
 #include <string>
 #include <vector>
 
-#include <cctype>
-#include "../Response/Response.hpp"
 #include "../Client/Client.hpp"
+#include "../Response/Response.hpp"
 #include "../Server/Server.hpp"
+#include <cctype>
 
 class Client;
 class Server;
@@ -32,6 +32,7 @@ class Message
     void seperateOrigin();
 
     // Command
+    void handleCommandJoin(Server &server, Client &client);
     void commandExecute(Server &server, Client &client);
 
     // Getter

@@ -1,9 +1,9 @@
 #include "Channel.hpp"
 
-Channel::Channel(std::string name, Client cl) : m_name(name), m_user_count(1)
+Channel::Channel(const std::string &name, const Client &cl, std::string password = "")
+    : m_name(name), m_user_count(1), m_password(password), m_cretaed(time(NULL))
 {
     this->m_operators.push_back(cl);
-    this->m_cretaed = time(NULL);
 }
 
 Channel::~Channel()
@@ -14,36 +14,46 @@ Channel::~Channel()
 }
 
 // 채널에 들어옴
-void Channel::joinChannel(Client cl) {
-    if (this->m_is_mode_invite) {
+void Channel::joinChannel(Client cl)
+{
+    if (this->m_is_mode_invite)
+    {
         // todo: 초대 여부 확인
     }
-    if (this->m_is_mode_key) {
+    if (this->m_is_mode_key)
+    {
         // todo: 비밀번호 입력 확인
     }
-    if (this->m_is_mode_limit) {
-        if (this->m_user_count == this->m_limit_count) {
+    if (this->m_is_mode_limit)
+    {
+        if (this->m_user_count == this->m_limit_count)
+        {
             // todo: error reply 설정
         }
-    } 
+    }
 
     this->m_user_count++;
     this->m_normals.push_back(cl);
 }
 
 // 채널 나가기
-void Channel::partChannel(Client cl) {
+void Channel::partChannel(Client cl)
+{
     this->m_user_count--;
-    for (std::size_t i = 0; i < this->m_operators.size(); i++) {
-        if (this->m_operators[i].getNick() == cl.getNick()) {
+    for (std::size_t i = 0; i < this->m_operators.size(); i++)
+    {
+        if (this->m_operators[i].getNick() == cl.getNick())
+        {
             this->m_operators.erase(this->m_operators.begin() + i);
-            return ;
+            return;
         }
     }
-    for (std::size_t i = 0; i < this->m_normals.size(); i++) {
-        if (this->m_normals[i].getNick() == cl.getNick()) {
+    for (std::size_t i = 0; i < this->m_normals.size(); i++)
+    {
+        if (this->m_normals[i].getNick() == cl.getNick())
+        {
             this->m_normals.erase(this->m_normals.begin() + i);
-            return ;
+            return;
         }
     }
 }

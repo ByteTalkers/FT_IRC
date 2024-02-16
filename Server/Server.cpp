@@ -237,6 +237,11 @@ time_t Server::getCreated()
     return m_created;
 }
 
+std::map<std::string, Channel *> &Server::getChannels() // Channel 포인터로 처리하기
+{
+    return m_channels;
+}
+
 void Server::setName(std::string name)
 {
     m_name = name;
@@ -250,4 +255,3 @@ void Server::setCreated(time_t time)
 void Server::handleTimeout()
 {
 }
-

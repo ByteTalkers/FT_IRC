@@ -19,6 +19,7 @@ class Channel
     std::vector<std::string> m_bans;
     std::string m_topic;
     std::string m_key;
+    std::string m_password;
     int m_user_count;
     int m_limit_count;
 
@@ -30,6 +31,7 @@ class Channel
   public:
     Channel(std::string name, Client cl);
     Channel(const Channel &src);
+    Channel(const std::string &name, const Client &cl, std::string password);
     ~Channel(void);
     Channel &operator=(Channel const &rhs);
 

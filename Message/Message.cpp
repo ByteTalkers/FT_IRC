@@ -115,6 +115,44 @@ void Message::seperateOrigin()
 
 // 커맨드 체크
 
+void Message::handleCommandJoin(Server &server, Client &client)
+{
+    if (this->m_params.empty())
+    {
+        // JOIN 명령어에 채널 이름이 없는 경우
+        // client.setSendMsg(); // 채널 이름이 없다는 에러 메시지 전송
+        return;
+    }
+    std::string channelName = this->m_params[0];
+    std::string key;
+    std::string password;
+    // 패스워드 체크 인자 추가
+    if (this->m_params.size() < 1) // 패스워드 걸려있으면 패스워드 체크
+    {
+        // no parameter 에러 처리
+        return;
+    }
+    key = this->m_params[1];
+    // todo : 채널 존재 여부 및 채널에 클라이언트 추가 로직
+    std::map<std::string, Channel> &channels = server.getChannels(); // map의 int -> std::string으로 변경하기
+    std::map<std::string, Channel>::iterator it = channels.find(channelName); // map의 int -> std::string으로 변경하기
+    if (it != channels.end())
+    {
+        it->second.joinChannel(client);
+    }
+    else
+    {
+        Channel newChannel(channelName); // 채널 생성시 # 붙이기
+        newChannel.joinChannel(client);
+        channels.insert(std::pair<int, Channel>(channelName, newChannel));
+    }
+    // 채널에 성공적으로 참여한 후 서버 응답 처리
+    // 1. JOIN 메시지 전송
+    // 채널에 JOIN 했다는 Response 전송
+    // 2. 채널에 주제(Topic) 전송
+    // 3. 현재 채널에 참여한 사용자 목록 전송
+}
+
 void Message::commandExecute(Server &server, Client &client)
 {
     for (std::size_t i = 0; i < this->m_command.length(); i++)
@@ -160,9 +198,13 @@ void Message::commandExecute(Server &server, Client &client)
     }
     else if (this->m_command == "JOIN")
     {
+        handleCommandJoin(server, client);
     }
-    else if (this->m_command == "PART")
+    else if (this->m_command == "PART") // 채널 나가기
     {
+        // 채널에 없는데 나가려 할때 처리하기
+        // 여러 채널에 참여하고 있는데 PART만 눌렀을 때 해당 채널에서 나가지고, 채널 목록 돌면서 채널에 속해
+        // 있으면 첫번째 채널 목록으로 들어가기
     }
     else if (this->m_command == "TOPIC")
     {
