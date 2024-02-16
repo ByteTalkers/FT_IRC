@@ -195,7 +195,6 @@ void Server::handleRecv(int fd)
     // 클라이언트 소켓의 write 이벤트 활성화
     // if (clnt.getWritable() == true)
     // 	enableWriteEvent(clnt_sock);
-
     enableWriteEvent(clnt_sock);
 }
 
