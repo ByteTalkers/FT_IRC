@@ -14,9 +14,12 @@ class Channel
   private:
     std::string m_name;
     time_t m_cretaed;
-    std::vector<Client> m_operators;
-    std::vector<Client> m_normals;
-    std::vector<std::string> m_bans;
+    // std::vector<Client> m_operators;
+    // std::vector<Client> m_normals;
+    std::vector<Client *> m_operators;
+    std::vector<Client *> m_normals;
+    std::vector<Client *> m_invited;
+
     std::string m_topic;
     std::string m_key;
     int m_user_count;
@@ -27,21 +30,25 @@ class Channel
     bool m_is_mode_topic;
     bool m_is_mode_limit;
 
+    bool m_is_set_topic; // 토픽 세팅 여부
+
   public:
-    Channel(std::string name, Client cl);
+    Channel(std::string name, Client *cl);
     Channel(const Channel &src);
     ~Channel(void);
     Channel &operator=(Channel const &rhs);
 
-    void joinChannel(Client cl);
-    void partChannel(Client cl);
+    void joinChannel(Client *cl);
+    void partChannel(Client *cl);
+
+    bool checkOp(Client *cl);
 
     // Getter
     std::string getName() const;
     time_t getCreated() const;
-    std::vector<Client> getOperators() const;
-    std::vector<Client> getNormals() const;
-    std::vector<std::string> getBans() const;
+    std::vector<Client *> getOperators() const;
+    std::vector<Client *> getNormals() const;
+    std::vector<Client *> getInvited() const;
     std::string getTopic() const;
     std::string getKey() const;
     int getUserCount() const;
@@ -52,12 +59,14 @@ class Channel
     bool getModeTopic() const;
     bool getModeLimit() const;
 
+    bool getSetTopic() const;
+
     // Setter
     void setName(std::string name);
     void setCreated(time_t created);
-    void setOperators(std::vector<Client> opers);
-    void setNormals(std::vector<Client> normals);
-    void setBans(std::vector<std::string> bans);
+    void setOperators(std::vector<Client *> opers);
+    void setNormals(std::vector<Client *> normals);
+    void setInvited(std::vector<Client *> invited);
     void setTopic(std::string topic);
     void setKey(std::string key);
     void setUserCount(int count);
@@ -67,6 +76,8 @@ class Channel
     void setModeKey(bool tf);
     void setModeTopic(bool tf);
     void setModeLimit(bool tf);
+
+    void setSetTopic(bool tf);
 };
 
 #endif

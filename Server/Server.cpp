@@ -249,3 +249,17 @@ void Server::setCreated(time_t time)
 void Server::handleTimeout()
 {
 }
+
+bool Server::channelExist(std::string &ch_name)
+{
+    if (this->m_channels.count(ch_name) > 0)
+    {
+        return true;
+    }
+    return false;
+}
+
+std::map<std::string, Channel*> &Server::getChannels()
+{
+    return this->m_channels;
+}
