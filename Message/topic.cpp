@@ -30,6 +30,7 @@ void Message::topicExecute(Server &server, Client &client)
             // 채널명 + 인자인 경우 => 토픽 세팅
             else
             {
+                // 채널의 토픽 설정 운영자 전용인지 아닌지 확인
                 // 채널 op인지 확인
                 if (channel->checkOp(&client) == true)
                 {

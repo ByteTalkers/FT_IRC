@@ -2,17 +2,21 @@
 #define MESSAGE_HPP
 
 #include <cctype>
+#include <cstdlib>
 #include <iostream>
+#include <map>
 #include <string>
+#include <utility>
 #include <vector>
 
-#include <cctype>
-#include "../Response/Response.hpp"
+#include "../Channel/Channel.hpp"
 #include "../Client/Client.hpp"
+#include "../Response/Response.hpp"
 #include "../Server/Server.hpp"
 
 class Client;
 class Server;
+class Channel;
 
 class Message
 {
