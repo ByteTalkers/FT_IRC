@@ -58,4 +58,5 @@ class Client
     void startSend();
 
     void setSendMsg(std::string msg);
+    void addSendMsg(std::string msg);
 };

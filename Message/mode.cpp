@@ -109,16 +109,6 @@ void Message::modeExecute(Server &server, Client &client)
             Response::errNoSuchChannel_403(server.getName(), client.getNick(), channel_name);
         }
     }
-    // 존재하는 모드면 나머지 파라미터 확인
-    // 파라미터 없으면 neemore err
-    // 파라미터 있는 애면 op인지도 확인
-    // i
-    // t
-    // k
-    // o
-    // l
-    // op 아니면 privil 에러
-    // 존재하지 않는 모드면 unknown err
     else
     {
         // 파라미터 없으면 needmore err

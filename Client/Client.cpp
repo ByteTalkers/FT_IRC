@@ -132,3 +132,8 @@ void Client::startSend()
     // m_send_msg 비워주기
     m_send_msg.clear();
 }
+
+void Client::addSendMsg(std::string msg)
+{
+    this->m_send_msg += msg;
+}
