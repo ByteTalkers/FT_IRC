@@ -119,32 +119,39 @@ void Message::handleCommandJoin(Server &server, Client &client)
 {
     if (this->m_params.empty())
     {
-        // JOIN 명령어에 채널 이름이 없는 경우
         // client.setSendMsg(); // 채널 이름이 없다는 에러 메시지 전송
         return;
     }
     std::string channelName = this->m_params[0];
-    std::string key;
-    std::string password;
-    // 패스워드 체크 인자 추가
-    if (this->m_params.size() < 1) // 패스워드 걸려있으면 패스워드 체크
-    {
-        // no parameter 에러 처리
-        return;
-    }
-    key = this->m_params[1];
-    // todo : 채널 존재 여부 및 채널에 클라이언트 추가 로직
-    std::map<std::string, Channel> &channels = server.getChannels(); // map의 int -> std::string으로 변경하기
-    std::map<std::string, Channel>::iterator it = channels.find(channelName); // map의 int -> std::string으로 변경하기
+    std::string key = this->m_params.size() > 1 ? this->m_params[1] : "";
+    std::string password = this->m_params.size() > 2 ? this->m_params[2] : "";
+
+    std::map<std::string, Channel *> &channels = server.getChannels();
+    std::map<std::string, Channel *>::iterator it = channels.find(channelName);
+
     if (it != channels.end())
     {
-        it->second.joinChannel(client);
-    }
-    else
-    {
-        Channel newChannel(channelName); // 채널 생성시 # 붙이기
-        newChannel.joinChannel(client);
-        channels.insert(std::pair<int, Channel>(channelName, newChannel));
+        Channel *channel = it->second;
+
+        // 채널이 설정한 key와 사용자가 제공한 key가 일치하는지 확인
+        if (!key.empty() && !channel->checkKey(key))
+        {
+            // key가 일치하지 않을 때
+            // client.setSendMsg(); // key가 일치하지 않는다는 에러 메시지 전송
+            return;
+        }
+        // 초대 모드 및 비밀번호 확인
+        if (channel->getModeInvite() && !channel->isInvited(client.getNick())
+        {
+            // client.setSendMsg(); // 초대되지 않았다는 에러 메시지 전송
+            return;
+        }
+        if (!password.empty() && !channel->checkPassword(password))
+        {
+            // password가 일치하지 않을 때
+            // client.setSendMsg(); // password가 일치하지 않는다는 에러 메시지 전송
+            return;
+        }
     }
     // 채널에 성공적으로 참여한 후 서버 응답 처리
     // 1. JOIN 메시지 전송

@@ -17,6 +17,7 @@ class Channel
     std::vector<Client> m_operators;
     std::vector<Client> m_normals;
     std::vector<std::string> m_bans;
+    std::map<std::string, std::vector<std::string>> m_invitations; // 초대 받은 유저 리스트 목록
     std::string m_topic;
     std::string m_key;
     std::string m_password;
@@ -37,6 +38,11 @@ class Channel
 
     void joinChannel(Client cl);
     void partChannel(Client cl);
+
+    // 초대받은 유저 리스트 함수들
+    void addInvitation(const std::string &user, const std::string &inviter);
+    bool isInvited(const std::string &user, const std::string &inviter);
+    void removeInvitation(const std::string &user, const std::string &inviter);
 
     // Getter
     std::string getName() const;

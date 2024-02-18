@@ -167,3 +167,29 @@ void Channel::setModeLimit(bool tf)
 {
     this->m_is_mode_limit = tf;
 }
+
+void Channel::addInvitation(const std::string &user, const std::string &inviter)
+{
+    this->m_invitations[user].push_back(inviter);
+}
+
+bool Channel::isInvited(const std::string &user, const std::string &inviter) // 추후에 inviter는 필요 없을 수도 있음
+{
+    if (this->m_invitations.find(user) == this->m_invitations.end())
+        return false;
+    std::vector<std::string> &inviteList = this->m_invitations[user];
+    return std::find(inviteList.begin(), inviteList.end(), inviter) != inviteList.end();
+    // return m_invitations.find(user) != m_invitations.end(); // 초대 리스트에 유저가 있는지 확인만 하기 inviter
+    // 필요없음
+}
+
+void Channel::removeInvitation(const std::string &user, const std::string &inviter)
+{
+    if (this->m_invitations.find(user) != this->m_invitations.end())
+    {
+        std::vector<std::string> &inviteList = this->m_invitations[user];
+        std::vector<std::string>::iterator it = std::find(inviteList.begin(), inviteList.end(), inviter);
+        if (it != inviteList.end())
+            inviteList.erase(it); // 초대 리스트에서 삭제
+    }
+}
