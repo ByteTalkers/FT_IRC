@@ -5,7 +5,6 @@
 #include <iostream>
 #include <string>
 #include <vector>
-
 #include "../Client/Client.hpp"
 #include "../Response/Response.hpp"
 #include "../Server/Server.hpp"

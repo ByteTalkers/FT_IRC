@@ -46,6 +46,8 @@ class Channel
 
     bool checkKey(const std::string &key);
     bool checkPassword(const std::string &password);
+	bool isMember(Client cl);
+	void addMember(Client cl);
 
     // Getter
     std::string getName() const;

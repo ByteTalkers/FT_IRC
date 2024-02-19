@@ -191,3 +191,23 @@ bool Channel::checkPassword(const std::string &password)
 {
     return this->m_password == password;
 }
+
+bool Channel::isMember(const Client &client) const
+{
+    for (std::vector<Client>::const_iterator it = m_normals.begin(); it != m_normals.end(); ++it)
+    {
+        if (it->getNick() == client.getNick())
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
+void Channel::addMember(const Client &client)
+{
+    if (!isMember(client))
+    {
+        m_normals.push_back(client);
+    }
+}
