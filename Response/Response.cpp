@@ -176,6 +176,11 @@ std::string Response::errTooManyTargets_407(const std::string &se_name, const st
     return generateResponse(se_name, "407", nick + " :Too many targets");
 }
 
+std::string Response::rplPrivmsg(const std::string &from, const std::string &to, const std::string &msg)
+{
+    return generateResponse(":" + from, "PRIVMSG", to + " :" + msg);
+}
+
 // WHO
 std::string Response::rplWhoReply_352(const std::string &se_name, const std::string &nick, const std::string &ch_name, const std::string &user)
 {
