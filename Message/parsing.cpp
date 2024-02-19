@@ -22,7 +22,7 @@ void Message::parsingOrigin()
         parsingSpace(splitInput, cmd);
 
         // 세팅된 Command 클래스 넣어주기
-        this->m_inputs.push_back(cmd);
+        this->m_cmds.push_back(cmd);
         start = pos + 1;
     }
 
@@ -32,7 +32,8 @@ void Message::parsingOrigin()
         std::string last = this->m_origin.substr(start, pos - start);
         Command *cmd = new Command();
         parsingSpace(last, cmd);
-        start = pos + 1;
+
+        this->m_cmds.push_back(cmd);
     }
 }
 

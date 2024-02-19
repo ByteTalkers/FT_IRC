@@ -135,19 +135,9 @@ const std::string &Message::getOrigin() const
     return this->m_origin;
 }
 
-const std::string &Message::getPrefix() const
+const std::vector<Command*> &Message::getCmds() const
 {
-    return this->m_prefix;
-}
-
-const std::string &Message::getCommand() const
-{
-    return this->m_command;
-}
-
-const std::vector<std::string> &Message::getParams() const
-{
-    return this->m_params;
+    return this->m_cmds;
 }
 
 // Setter
@@ -156,17 +146,10 @@ void Message::setOrigin(std::string &origin)
 {
     this->m_origin = origin;
 }
-void Message::setPrefix(std::string &prefix)
+
+void Message::setCmds(std::vector<Command*> &cmds)
 {
-    this->m_prefix = prefix;
-}
-void Message::setCommand(std::string &command)
-{
-    this->m_command = command;
-}
-void Message::setParams(std::vector<std::string> &params)
-{
-    this->m_params = params;
+    this->m_cmds = cmds;
 }
 
 // test

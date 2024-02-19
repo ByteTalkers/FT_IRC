@@ -19,11 +19,8 @@ class Message
 {
   private:
     std::string m_origin;
-    std::string m_prefix;
-    std::string m_command;
-    std::vector<std::string> m_params;
 
-    std::vector<Command*> m_inputs;
+    std::vector<Command*> m_cmds;
 
   public:
     Message(std::string &origin);
@@ -45,15 +42,12 @@ class Message
 
     // Getter
     const std::string &getOrigin() const;
-    const std::string &getPrefix() const;
-    const std::string &getCommand() const;
-    const std::vector<std::string> &getParams() const;
+    const std::vector<Command*> &getCmds() const;
 
     // Setter
     void setOrigin(std::string &origin);
-    void setPrefix(std::string &prefix);
-    void setCommand(std::string &command);
-    void setParams(std::vector<std::string> &params);
+    void setCmds(std::vector<Command*> &cmds);
+
 
     // test
     void display();
