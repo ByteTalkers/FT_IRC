@@ -25,25 +25,18 @@ void Message::joinExecute(Server &server, Client &client, Command *cmd)
     if (cmd->getParams().size() > 1)
     {
         const std::string &keyParam = cmd->getParams()[1];
-        size_t pos = 0;
-        size_t keyStart = 0;
-
-        for (size_t i = 0; i < channelNames.size(); ++i)
+        if (keyParam.find(',') != std::string::npos)
         {
-            if ((pos = keyParam.find(',', keyStart)) != std::string::npos)
+            std::istringstream keyIss(keyParam);
+            std::string keyToken;
+            while (std::getline(keyIss, keyToken, ','))
             {
-                keys.push_back(keyParam.substr(keyStart, pos - keyStart));
-                keyStart = pos + 1;
+                keys.push_back(keyToken);
             }
-            else if (i == 0)
-            {
-                keys.push_back(keyParam.substr(keyStart));
-                break;
-            }
-            else
-            {
-                keys.push_back("");
-            }
+        }
+        else
+        {
+            keys.push_back(keyParam);
         }
     }
 
