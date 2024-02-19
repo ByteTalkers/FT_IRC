@@ -12,9 +12,15 @@ void Message::parsingOrigin()
     start = 0;
     while ((pos = this->m_origin.find('\n', start)) != std::string::npos)
     {
-
         std::string splitInput;
-        splitInput = this->m_origin.substr(start, pos - start);
+        if (this->m_origin[pos - 1] == '\r')
+        {
+            splitInput = this->m_origin.substr(start, pos - start - 1);
+        }
+        else
+        {
+            splitInput = this->m_origin.substr(start, pos - start);
+        }
 
         Command *cmd = new Command();
 
@@ -59,7 +65,7 @@ static void parsingSpace(std::string &split_input, Command *cmd)
         }
         start = pos + 1;
     }
-    
+
     // 마지막 남은 부분
     if (start < split_input.length())
     {

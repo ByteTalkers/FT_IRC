@@ -44,3 +44,13 @@ void Command::addParams(std::string &param)
 {
     this->m_params.push_back(param);
 }
+
+void Command::display()
+{
+    std::cout << "prefix: " << m_prefix <<std::endl;
+    std::cout << "command: " << m_command <<std::endl;
+    for (std::size_t i = 0; i < m_params.size(); i++)
+    {
+        std::cout << "param " << i << ": " << m_params[i] << std::endl;
+    }
+}

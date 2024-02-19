@@ -78,7 +78,7 @@ void Message::execute(Server &server, Client &client)
 
     for (it = this->m_cmds.begin(); it != this->m_cmds.end(); it++)
     {
-        std::cout << (*it)->getCommand() << std::endl;
+        // (*it)->display();
         // 등록 여부 확인
         if (!client.getRegisterd())
         {
@@ -93,7 +93,7 @@ void Message::execute(Server &server, Client &client)
 
 int findCommands(const std::string &cmd)
 {
-    const std::string commands[13] = {"CAP", "PASS", "NICK", "USER", "PING", "QUIT", "JOIN", "PART", "MODE", "TOPIC", "INVITE", "PRIVMSG", "WHO"};
+    const std::string commands[13] = {"CAP", "PASS", "NICK", "USER", "PING", "QUIT", "JOIN", "PART", "MODE", "TOPIC", "INVITE", "PRIVMSG", "WHOIS"};
     
     for (int i = 0; i < 13; i++)
     {
@@ -143,7 +143,7 @@ void Message::commandExecute(Server &server, Client &client, Command *cmd)
             userExecute(server, client, cmd);
             break;
         case PING:
-            client.addSendMsg(Response::pongResponse(server.getName(), cmd->getParams()[0]));
+            pingExecute(server, client, cmd);
             break;
         case QUIT:
             break;
@@ -152,6 +152,7 @@ void Message::commandExecute(Server &server, Client &client, Command *cmd)
         case PART:
             break;
         case MODE:
+            modeExecute(server, client, cmd);
             break;
         case TOPIC:
             break;
@@ -159,7 +160,8 @@ void Message::commandExecute(Server &server, Client &client, Command *cmd)
             break;
         case PRIVMSG:
             break;
-        case WHO:
+        case WHOIS:
+            whoisExecute(server, client, cmd);
             break;
         default:
             break;

@@ -125,6 +125,7 @@ void Client::startParseMessage()
     a.setCreated(time(NULL));
 
     msg.parsingOrigin();
+    m_recv_data.clear();
     msg.execute(a, *this);
 }
 
