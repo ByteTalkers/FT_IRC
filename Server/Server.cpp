@@ -17,6 +17,11 @@ Server &Server::operator=(const Server &other)
         m_portnum = other.m_portnum;
         m_serv_sock = other.m_serv_sock;
         m_kqueue = other.m_kqueue;
+        m_clients = other.m_clients;
+        m_channels = other.m_channels;
+        m_change_vec = other.m_change_vec;
+        m_name = other.m_name;
+        m_created = other.m_created;
     }
     return *this;
 }
@@ -45,12 +50,8 @@ void Server::setPassword(std::string pw)
     m_password = pw;
 }
 
-Server::Server(std::string s1, std::string s2) : m_password(s2)
+Server::Server(std::string password) : m_password(password)
 {
-    checkPortnum(s1);
-    initServSock();
-    initKqueue();
-    handleKqueue();
 }
 
 void Server::checkPortnum(std::string str)
@@ -117,9 +118,7 @@ void Server::initKqueue()
     }
 
     // serv_sock의 read를 이벤트벡터에 등록
-    struct kevent serv_event;
-    EV_SET(&serv_event, m_serv_sock, EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, NULL);
-    m_change_vec.push_back(serv_event);
+    addReadEvent(m_serv_sock);
 }
 
 void Server::handleKqueue()
@@ -143,6 +142,7 @@ void Server::handleKqueue()
                     throw std::runtime_error("server socket error");
                 else
                     Server::handleConnect();
+                continue;
             }
             if (event_arr[i].flags & EV_EOF) // 연결이 끊어진 경우
                 Server::handleDisconnect();
@@ -161,57 +161,59 @@ void Server::handleConnect()
     Client clnt;
     clnt.startListen(this->m_serv_sock);
 
-    struct kevent clnt_read_event;
-    struct kevent clnt_write_event;
-    EV_SET(&clnt_read_event, clnt.getsockfd(), EVFILT_READ, EV_ADD | EV_ENABLE, 0, 0, NULL);
-    EV_SET(&clnt_write_event, clnt.getsockfd(), EVFILT_WRITE, EV_ADD | EV_ENABLE, 0, 0, NULL);
+    // 클라이언트 소켓의 read, write 이벤트 활성화
+    addReadEvent(clnt.getsockfd());
+    addWriteEvent(clnt.getsockfd());
 
-    m_change_vec.push_back(clnt_read_event);
-    m_change_vec.push_back(clnt_write_event);
+    // 클라이언트 소켓의 write 이벤트 비활성화
+    disableWriteEvent(clnt.getsockfd());
+    clnt.setWriteTypes(NONE);
 
     // 클라이언트의 map에 등록
-    m_clients[clnt.getsockfd()] = clnt;
+    m_clients.insert(std::make_pair(clnt.getsockfd(), clnt));
+    std::cout << "insert!" << std::endl;
 }
 
 void Server::handleRecv(int fd)
 {
-    std::map<int, Client>::iterator iter;
-    for (iter = m_clients.begin(); iter != m_clients.end(); iter++)
-    {
-        if (iter->first == fd)
-            break;
-    }
-
     // 데이터 받기
-    int clnt_sock = iter->first;
-    Client &clnt = iter->second;
+    int clnt_sock = fd;
+    Client &clnt = m_clients.at(fd);
     char buffer[BUFFER_SIZE];
 
     memset(buffer, 0, sizeof(buffer));
     ssize_t bytes_read = recv(clnt_sock, buffer, sizeof(buffer) - 1, 0);
+    if (bytes_read == -1)
+        std::runtime_error("something is wrong on clnt_sock or recv()");
     buffer[bytes_read] = '\0';
-    // std::cout << buffer << std::endl;
     clnt.setRecvData(buffer);
 
-    // 추후 추가 : 데이터 체크 및 파싱
-    // clnt.startParseMessage();
+    // 데이터 파싱
+    std::cout << "================ start ==========\n";
+    std::cout << "clnt: " << buffer << std::endl;
+    std::cout << "read success" << std::endl;
+    clnt.startParseMessage(*this);
 
-    // 추후 추가 : 데이터에 대한 응답 생성
-    // clnt.startResponse(m_channels);
+    // 클라이언트 소켓의 write 이벤트 활성화
+    if (clnt.getWriteTypes() == MYSELF)
+        enableWriteEvent(clnt_sock);
+    else if (clnt.getWriteTypes() == EVERYBUTME || clnt.getWriteTypes() == EVERYONE)
+        enableMultipleWrite(clnt);
 }
 
 void Server::handleSend(int fd)
 {
-    std::map<int, Client>::iterator iter;
-    for (iter = m_clients.begin(); iter != m_clients.end(); iter++)
-    {
-        if (iter->first == fd)
-            break;
-    }
+    // clnt 찾기 (at()을 써야 이미 있는 원소가 찾아진다.)
+    Client &clnt = m_clients.at(fd);
 
     // 추후 추가 : 데이터 재전송
-    // Client clnt = iter->second;
-    // clnt.startSend();
+    clnt.startSend();
+    std::cout << "write success" << std::endl;
+    std::cout << "================ end ==========\n";
+
+    // 클라이언트 소켓의 write 이벤트 비활성화
+    disableWriteEvent(clnt.getsockfd());
+    clnt.setWriteTypes(NONE);
 }
 
 void Server::handleDisconnect()

@@ -1,6 +1,8 @@
 #include "Client.hpp"
 
-Client::Client() {}
+Client::Client()
+{
+}
 
 Client::Client(const Client &other)
 {
@@ -12,17 +14,24 @@ Client &Client::operator=(const Client &other)
     if (this != &other)
     {
         m_socket_fd = other.m_socket_fd;
+        m_recv_data = other.m_recv_data;
+        m_send_msg = other.m_send_msg;
         m_nick = other.m_nick;
         m_username = other.m_username;
+        m_password = other.m_password;
         m_cur_channel = other.m_cur_channel;
         m_flag_connect = other.m_flag_connect;
         m_is_op = other.m_is_op;
+        m_is_registered = other.m_is_registered;
+        m_write_types = other.m_write_types;
         // 추가된 멤버 변수가 있다면 여기에 복사 로직을 추가
     }
     return *this;
 }
 
-Client::~Client() {}
+Client::~Client()
+{
+}
 
 int Client::getsockfd()
 {
@@ -51,6 +60,27 @@ void Client::setRecvData(const char *data)
     m_recv_data += newstr;
 }
 
+void Client::setSendMsg(std::string msg)
+{
+    m_send_msg = msg;
+}
+
+void Client::setWriteTypes(const writeEvent type)
+{
+    m_write_types = type;
+}
+
+void Client::setRegistered(bool tf)
+{
+    m_is_registered = tf;
+}
+
+void Client::setCurChannel(const std::string channel)
+{
+    m_cur_channel = channel;
+}
+
+// Getter 함수들
 std::string Client::getNick()
 {
     return m_nick;
@@ -59,6 +89,31 @@ std::string Client::getNick()
 std::string Client::getUser()
 {
     return m_username;
+}
+
+std::string Client::getRecvData()
+{
+    return m_recv_data;
+}
+
+std::string Client::getSendMsg()
+{
+    return m_send_msg;
+}
+
+std::string Client::getCurChannel()
+{
+    return m_cur_channel;
+}
+
+writeEvent Client::getWriteTypes()
+{
+    return m_write_types;
+}
+
+bool Client::getRegisterd()
+{
+    return m_is_registered;
 }
 
 void Client::startListen(int serv_sock)
@@ -75,31 +130,38 @@ void Client::startListen(int serv_sock)
     fcntl(m_socket_fd, F_SETFL, O_NONBLOCK);
 }
 
-void Client::startParseMessage()
+void Client::startParseMessage(Server &serv)
 {
     // message 클래스의 객체 넣기
     Message msg(m_recv_data);
-    msg.seperateOrigin();
-    // 테스트용 임시 서버객체 
+    // 테스트용 임시 서버객체
+
     Server a;
     a.setName("test");
     a.setCreated(time(NULL));
-    msg.commandExecute(a, *this);
+
+    msg.parsingOrigin();
+    m_recv_data.clear();
+    msg.execute(a, *this);
 }
 
 void Client::startResponse(std::map<int, Channel> &channels)
 {
     // response 클래스의 객체 넣기
-	(void)channels;
+    (void)channels;
 }
 
 void Client::startSend()
 {
     int clnt_sock = getsockfd();
+    std::cout << "m_send_msg : " << m_send_msg << std::endl;
     send(clnt_sock, m_send_msg.c_str(), m_send_msg.length(), 0);
+
+    // m_send_msg 비워주기
+    m_send_msg.clear();
 }
 
-void Client::setSendMsg(std::string msg)
+void Client::addSendMsg(std::string msg)
 {
-    m_send_msg = msg;
+    this->m_send_msg += msg;
 }

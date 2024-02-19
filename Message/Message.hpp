@@ -5,21 +5,40 @@
 #include <iostream>
 #include <string>
 #include <vector>
+
+#include <map>
+
 #include "../Client/Client.hpp"
 #include "../Response/Response.hpp"
 #include "../Server/Server.hpp"
-#include <cctype>
+#include "Command.hpp"
 
 class Client;
 class Server;
+
+enum eCmds
+{
+    CAP,
+    PASS,
+    NICK,
+    USER,
+    PING,
+    QUIT,
+    JOIN,
+    PART,
+    MODE,
+    TOPIC,
+    INVITE,
+    PRIVMSG,
+    WHOIS
+};
 
 class Message
 {
   private:
     std::string m_origin;
-    std::string m_prefix;
-    std::string m_command;
-    std::vector<std::string> m_params;
+
+    std::vector<Command *> m_cmds;
 
   public:
     Message(std::string &origin);
@@ -28,23 +47,27 @@ class Message
     Message &operator=(Message const &rhs);
 
     bool crlfCheck();
-    void seperateOrigin();
+    void parsingOrigin();
 
+    void execute(Server &server, Client &client);
     // Command
     void handleCommandJoin(Server &server, Client &client);
-    void commandExecute(Server &server, Client &client);
+    void commandExecute(Server &server, Client &client, Command *cmd);
+
+    void passExecute(Server &server, Client &client, Command *cmd);
+    void nickExecute(Server &server, Client &client, Command *cmd);
+    void userExecute(Server &server, Client &client, Command *cmd);
+    void modeExecute(Server &server, Client &client, Command *cmd);
+    void whoisExecute(Server &server, Client &client, Command *cmd);
+    void pingExecute(Server &server, Client &client, Command *cmd);
 
     // Getter
     const std::string &getOrigin() const;
-    const std::string &getPrefix() const;
-    const std::string &getCommand() const;
-    const std::vector<std::string> &getParams() const;
+    const std::vector<Command *> &getCmds() const;
 
     // Setter
     void setOrigin(std::string &origin);
-    void setPrefix(std::string &prefix);
-    void setCommand(std::string &command);
-    void setParams(std::vector<std::string> &params);
+    void setCmds(std::vector<Command *> &cmds);
 
     // test
     void display();

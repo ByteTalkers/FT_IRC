@@ -32,7 +32,8 @@ void Channel::joinChannel(Client cl)
     }
 
     this->m_user_count++;
-    this->m_normals.push_back(cl);
+    cl.setCurChannel(this->getName()); // 클라이언트의 현재 채널이름 설정
+    this->m_normals.push_back(cl);     // 목록에 넣기
 }
 
 // 채널 나가기
@@ -51,6 +52,7 @@ void Channel::partChannel(Client cl)
     {
         if (this->m_normals[i].getNick() == cl.getNick())
         {
+            cl.setCurChannel(NULL); // 클라이언트의 현재 채널이름도 NULL로
             this->m_normals.erase(this->m_normals.begin() + i);
             return;
         }
