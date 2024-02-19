@@ -65,6 +65,11 @@ void Client::setWritable(const bool boolean)
     m_is_writable = boolean;
 }
 
+void Client::setRegistered(bool tf)
+{
+    m_is_registered = tf;
+}
+
 // Getter 함수들
 std::string Client::getNick()
 {
@@ -91,6 +96,11 @@ bool Client::getWritable()
     return m_is_writable;
 }
 
+bool Client::getRegisterd()
+{
+    return m_is_registered;
+}
+
 void Client::startListen(int serv_sock)
 {
     struct sockaddr_in clnt_adr;
@@ -109,12 +119,13 @@ void Client::startParseMessage()
 {
     // message 클래스의 객체 넣기
     Message msg(m_recv_data);
-    msg.seperateOrigin();
     // 테스트용 임시 서버객체
     Server a;
     a.setName("test");
     a.setCreated(time(NULL));
-    msg.commandExecute(a, *this);
+
+    msg.parsingOrigin();
+    msg.execute(a, *this);
 }
 
 void Client::startResponse(std::map<int, Channel> &channels)
@@ -131,4 +142,9 @@ void Client::startSend()
 
     // m_send_msg 비워주기
     m_send_msg.clear();
+}
+
+void Client::addSendMsg(std::string msg)
+{
+    this->m_send_msg += msg;
 }

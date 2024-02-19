@@ -3,7 +3,9 @@ CFLAGS = -Wall -Wextra -Werror -g
 NAME = ircserv
 FILE = Server/Server.cpp Server/utils.cpp \
 	Client/Client.cpp main.cpp Channel/Channel.cpp \
-	Message/Message.cpp Response/Response.cpp utils/utils.cpp
+	Message/Message.cpp Response/Response.cpp utils/utils.cpp \
+	Message/nick.cpp Message/pass.cpp Message/user.cpp Message/parsing.cpp \
+	Message/Command.cpp
 
 all : make
 	rm -rf *.dSYM
