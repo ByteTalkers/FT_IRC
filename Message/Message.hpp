@@ -29,7 +29,7 @@ enum eCmds
   TOPIC, 
   INVITE, 
   PRIVMSG, 
-  WHO
+  WHOIS
 };
 
 class Message
@@ -56,6 +56,9 @@ class Message
     void passExecute(Server &server, Client &client, Command *cmd);
     void nickExecute(Server &server, Client &client, Command *cmd);
     void userExecute(Server &server, Client &client, Command *cmd);
+    void modeExecute(Server &server, Client &client, Command *cmd);
+    void whoisExecute(Server &server, Client &client, Command *cmd);
+    void pingExecute(Server &server, Client &client, Command *cmd);
 
     // Getter
     const std::string &getOrigin() const;
