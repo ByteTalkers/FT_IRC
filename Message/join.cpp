@@ -83,10 +83,24 @@ void Message::joinExecute(Server &server, Client &client, Command *cmd)
                     }
                 }
 
-                // 새 클라이언트에게 채널 정보 전송
+                // 새 클라이언트에게 채널 정보 전송(채널 사용자 목록, 채널 생성 시간, 채널 동기화 시간)
                 // Irssi: #a: Total of 2 nicks [1 ops, 0 halfops, 0 voices, 1 normal]
                 // Channel #a created Mon Feb 19 12:05:15 2024
                 // Irssi: Join to #a was synced in 0 secs
+                int opsCount = 0;
+                int normalCount = 0;
+                for (std::vector<Client>::iterator it = members.begin(); it != members.end(); ++it)
+                {
+                    if (it->getIsOp() == true)
+                        opsCount++;
+                    else
+                        normalCount++;
+                }
+                int totalNicks = opsCount + normalCount;
+                client.addSendMsg("Irssi: " + channelName + ": Total of " + totalNicks + " nicks [" + opsCount +
+                                  " ops, 0 halfops, 0 voices, " + normalCount + " normal]");
+                client.addSendMsg("Channel " + channelName + " created " + channel->getCreated());
+                client.addSendMsg("Irssi: Join to " + channelName + " was synced in 0 secs");
             }
             else
             {
