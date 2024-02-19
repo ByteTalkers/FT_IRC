@@ -74,5 +74,6 @@ class Server
     void setCreated(time_t time);
 
     const std::map<std::string, Channel> &getChannels() const;
-    Channel *findChannel(std::string &ch_name);
+    Channel *findChannel(const std::string &ch_name);
+    Client *findClient(const std::string &client_name);
 };

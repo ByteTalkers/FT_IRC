@@ -253,7 +253,7 @@ void Server::handleTimeout()
 {
 }
 
-Channel *Server::findChannel(std::string &ch_name)
+Channel *Server::findChannel(const std::string &ch_name)
 {
     try
     {
@@ -264,6 +264,19 @@ Channel *Server::findChannel(std::string &ch_name)
     {
         return NULL;
     }
+}
+
+Client *Server::findClient(const std::string &client_name)
+{
+    std::map<int, Client>::iterator it;
+    for (it = this->m_clients.begin(); it != this->m_clients.end(); it++)
+    {
+        if ((*it).second.getNick() == client_name)
+        {
+            return &(*it).second;
+        }
+    }
+    return NULL;
 }
 
 const std::map<std::string, Channel> &Server::getChannels() const

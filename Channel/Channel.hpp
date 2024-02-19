@@ -76,6 +76,8 @@ class Channel
     void setModeLimit(bool tf);
 
     void setSetTopic(bool tf);
+
+    void addSendMsgAll(const std::string &from, const std::string &msg);
 };
 
 #endif
