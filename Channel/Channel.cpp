@@ -222,3 +222,14 @@ void Channel::addSendMsgAll(const std::string &from, const std::string &msg)
         (*it).addSendMsg(Response::rplPrivmsg(from, this->m_name, msg));
     }
 }
+
+bool Channel::checkClientIn(Client &cl)
+{
+    std::vector<Client>::iterator it;    
+    it = std::find(this->m_normals.begin(), this->m_normals.end(), cl);
+    if (it == this->m_normals.end())
+    {
+        return false;
+    }
+    return true;
+}

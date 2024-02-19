@@ -6,6 +6,7 @@
 #include <ctime>
 #include <string>
 #include <vector>
+#include <algorithm>
 
 class Client; // 전방 선언
 
@@ -78,6 +79,8 @@ class Channel
     void setSetTopic(bool tf);
 
     void addSendMsgAll(const std::string &from, const std::string &msg);
+
+    bool checkClientIn(Client &cl);
 };
 
 #endif
