@@ -2,6 +2,7 @@
 #include "../Channel/Channel.hpp"
 #include "../Message/Message.hpp"
 #include "../Server/Server.hpp"
+#include "../Message/Command.hpp"
 
 #include <arpa/inet.h>
 #include <fcntl.h>
@@ -31,6 +32,8 @@ class Client
     bool m_is_op;              // op(방장) 여부
     bool m_is_writable;        // 소켓의 write 이벤트 활성화 여부
 
+    bool m_is_registered;      // 서버 등록 여부
+
   public:
     Client();
     Client(const Client &other);
@@ -45,6 +48,8 @@ class Client
     std::string getUser();
     bool getWritable();
 
+    bool getRegisterd();
+
     // Setter 함수들
     void setPassword(const std::string &password);
     void setNick(const std::string &nick);
@@ -58,5 +63,8 @@ class Client
     void startSend();
 
     void setSendMsg(std::string msg);
+    void setRegistered(bool tf);
+
+
     void addSendMsg(std::string msg);
 };
