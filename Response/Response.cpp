@@ -193,3 +193,28 @@ std::string Response::errNoOrigin_409(const std::string &se_name, const std::str
     return generateResponse(se_name, "409", nick + " :No origin specified");
 }
 
+// MODE user +i
+std::string Response::rplUmodeIs_221(const std::string &user, const std::string &nick)
+{
+    return generateResponse(user, "MODE", nick + " :+i");
+}
+
+// WHOIS
+std::string Response::rplWhoIsUser_311(const std::string &se_name, const std::string &nick, const std::string &user)
+{
+// nick> <user> <host> * :<real_name>
+    return generateResponse(se_name, "311", nick + nick + user + " * " + " :" + user);
+}
+
+std::string Response::rplWhoIsServer_312(const std::string &se_name, const std::string &nick)
+{
+	// <nick> <server> :<server_info>
+    // irc.local :Local IRC Server
+    return generateResponse(se_name, "312", nick + " " + se_name + " :Local FT_IRC");
+}
+
+std::string Response::rplEndofWhoIs_318(const std::string &se_name, const std::string &nick)
+{
+	// <nick> :<info>
+    return generateResponse(se_name, "318", nick + " :End of /WHOIS list.");
+}

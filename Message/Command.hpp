@@ -28,6 +28,8 @@ class Command
         void setParams(std::vector<std::string> &params);
 
         void addParams(std::string &param);
+
+        void display();
 };
 
 #endif

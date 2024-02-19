@@ -1,5 +1,8 @@
 #include "Message.hpp"
-
+void Message::modeExecute(Server &server, Client &client, Command *cmd)
+{
+    client.addSendMsg(Response::rplUmodeIs_221(client.getUser(), client.getNick()));
+}
 static bool checkModeModifier(std::string &params, bool &is_plus);
 
 static void checkModeChar(std::vector<std::string> &params, std::map<char, std::pair<bool, std::string>> &mode,
