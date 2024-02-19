@@ -12,10 +12,10 @@ class Client; // 전방 선언
 class Channel
 {
   private:
-    std::string m_name;
+    std::string m_name;				// 현재 채널의 이름
     time_t m_cretaed;
-    std::vector<Client> m_operators;
-    std::vector<Client> m_normals;
+    std::vector<Client> m_operators; // op인 유저들의 목록
+    std::vector<Client> m_normals;   // 채팅방 속 모든 유저들의 목록
     std::vector<std::string> m_bans;
     std::string m_topic;
     std::string m_key;

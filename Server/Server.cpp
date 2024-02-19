@@ -17,6 +17,11 @@ Server &Server::operator=(const Server &other)
         m_portnum = other.m_portnum;
         m_serv_sock = other.m_serv_sock;
         m_kqueue = other.m_kqueue;
+        m_clients = other.m_clients;
+        m_channels = other.m_channels;
+        m_change_vec = other.m_change_vec;
+        m_name = other.m_name;
+        m_created = other.m_created;
     }
     return *this;
 }
@@ -162,7 +167,7 @@ void Server::handleConnect()
 
     // 클라이언트 소켓의 write 이벤트 비활성화
     disableWriteEvent(clnt.getsockfd());
-    clnt.setWritable(false);
+    clnt.setWriteTypes(NONE);
 
     // 클라이언트의 map에 등록
     m_clients.insert(std::make_pair(clnt.getsockfd(), clnt));
@@ -183,19 +188,17 @@ void Server::handleRecv(int fd)
     buffer[bytes_read] = '\0';
     clnt.setRecvData(buffer);
 
-    // 데이터 체크 및 파싱
+    // 데이터 파싱
     std::cout << "================ start ==========\n";
     std::cout << "clnt: " << buffer << std::endl;
     std::cout << "read success" << std::endl;
-    clnt.startParseMessage();
-
-    // 추후 추가 : 데이터에 대한 응답 생성
-    // clnt.startResponse(m_channels);
+    clnt.startParseMessage(*this);
 
     // 클라이언트 소켓의 write 이벤트 활성화
-    // if (clnt.getWritable() == true)
-    // 	enableWriteEvent(clnt_sock);
-    enableWriteEvent(clnt_sock);
+    if (clnt.getWriteTypes() == MYSELF)
+        enableWriteEvent(clnt_sock);
+    else if (clnt.getWriteTypes() == EVERYBUTME || clnt.getWriteTypes() == EVERYONE)
+        enableMultipleWrite(clnt);
 }
 
 void Server::handleSend(int fd)
@@ -210,7 +213,7 @@ void Server::handleSend(int fd)
 
     // 클라이언트 소켓의 write 이벤트 비활성화
     disableWriteEvent(clnt.getsockfd());
-    clnt.setWritable(false);
+    clnt.setWriteTypes(NONE);
 }
 
 void Server::handleDisconnect()
