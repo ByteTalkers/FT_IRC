@@ -32,8 +32,8 @@ class Server
     int m_serv_sock;
     int m_kqueue;
     std::map<int, Client> m_clients;         // 클라이언트 목록
-    std::map<int, Channel> m_channels;       // 채널 목록
-    std::vector<struct kevent> m_change_vec; // 이벤트 목록
+    std::map<std::string, Channel> m_channels; // 채널 목록
+    std::vector<struct kevent> m_change_vec;  // 이벤트 목록
 
     std::string m_name; // 서버 이름
     time_t m_created;   // 생성시간
@@ -64,6 +64,7 @@ class Server
     void addWriteEvent(int sockfd);
     void disableWriteEvent(int sockfd);
     void enableWriteEvent(int sockfd);
+    void enableMultipleWrite(Client &clnt);
 
     std::string getName();
     time_t getCreated();

@@ -14,11 +14,16 @@ Client &Client::operator=(const Client &other)
     if (this != &other)
     {
         m_socket_fd = other.m_socket_fd;
+        m_recv_data = other.m_recv_data;
+        m_send_msg = other.m_send_msg;
         m_nick = other.m_nick;
         m_username = other.m_username;
+        m_password = other.m_password;
         m_cur_channel = other.m_cur_channel;
         m_flag_connect = other.m_flag_connect;
         m_is_op = other.m_is_op;
+        m_is_registered = other.m_is_registered;
+        m_write_types = other.m_write_types;
         // 추가된 멤버 변수가 있다면 여기에 복사 로직을 추가
     }
     return *this;
@@ -60,14 +65,19 @@ void Client::setSendMsg(std::string msg)
     m_send_msg = msg;
 }
 
-void Client::setWritable(const bool boolean)
+void Client::setWriteTypes(const writeEvent type)
 {
-    m_is_writable = boolean;
+    m_write_types = type;
 }
 
 void Client::setRegistered(bool tf)
 {
     m_is_registered = tf;
+}
+
+void Client::setCurChannel(const std::string channel)
+{
+    m_cur_channel = channel;
 }
 
 // Getter 함수들
@@ -91,9 +101,14 @@ std::string Client::getSendMsg()
     return m_send_msg;
 }
 
-bool Client::getWritable()
+std::string Client::getCurChannel()
 {
-    return m_is_writable;
+    return m_cur_channel;
+}
+
+writeEvent Client::getWriteTypes()
+{
+    return m_write_types;
 }
 
 bool Client::getRegisterd()
