@@ -115,49 +115,111 @@ void Message::seperateOrigin()
 
 // 커맨드 체크
 
+// void Message::handleCommandJoin(Server &server, Client &client)
+// {
+//     if (this->m_params.empty())
+//     {
+//         // client.setSendMsg(); // 채널 이름이 없다는 에러 메시지 전송
+//         return;
+//     }
+//     std::string channelName = this->m_params[0];
+//     std::string key = this->m_params.size() > 1 ? this->m_params[1] : "";
+//     std::string password = this->m_params.size() > 2 ? this->m_params[2] : "";
+
+//     std::map<std::string, Channel *> &channels = server.getChannels();
+//     std::map<std::string, Channel *>::iterator it = channels.find(channelName);
+
+//     if (it != channels.end())
+//     {
+//         Channel *channel = it->second;
+
+//         // 채널이 설정한 key와 사용자가 제공한 key가 일치하는지 확인
+//         if (!key.empty() && !channel->checkKey(key))
+//         {
+//             // key가 일치하지 않을 때
+//             // client.setSendMsg(); // key가 일치하지 않는다는 에러 메시지 전송
+//             return;
+//         }
+//         // 초대 모드 및 비밀번호 확인
+//         if (channel->getModeInvite() && !channel->isInvited(client.getNick()))
+//         {
+//             // client.setSendMsg(); // 초대되지 않았다는 에러 메시지 전송
+//             return;
+//         }
+//         if (!password.empty() && !channel->checkPassword(password))
+//         {
+//             // password가 일치하지 않을 때
+//             // client.setSendMsg(); // password가 일치하지 않는다는 에러 메시지 전송
+//             return;
+//         }
+//     }
+// }
+
 void Message::handleCommandJoin(Server &server, Client &client)
 {
+    // 클라이언트가 JOIN 명령으로 여러 채널에 참여할 수 있도록 처리. 채널 이름은 ','로 구분.
+    // 채널 이름이 '&' 또는 '#'으로 시작하는지 검사. 규칙에 맞지 않으면 에러 메시지 전송.
+    // 존재하지 않는 채널에 JOIN 요청 시, 새 채널 생성 및 클라이언트를 첫 번째 멤버로 추가.
+    // 클라이언트가 이미 채널의 멤버인 경우, 다시 JOIN하지 않도록 처리. 이미 멤버인 경우 에러 메시지 전송.
+    // 채널의 인원 제한을 초과하지 않도록 체크. 인원 제한 초과 시 에러 메시지 전송.
+    // 채널에 성공적으로 참여 시, 채널의 주제(Topic), 현재 채널에 참여한 사용자 목록 등 응답 메시지 전송.
+    // 유효하지 않은 채널 이름, 인원 제한 초과, 이미 채널 멤버인 경우 등에 대한 에러 처리.
+    // Server, Client, Channel 클래스 간 상호 작용 최적화를 위한 메소드나 멤버 변수 검토 및 수정.
+
     if (this->m_params.empty())
     {
-        // client.setSendMsg(); // 채널 이름이 없다는 에러 메시지 전송
+        // 채널 이름이 없는 경우 에러 메시지 전송
         return;
     }
-    std::string channelName = this->m_params[0];
-    std::string key = this->m_params.size() > 1 ? this->m_params[1] : "";
-    std::string password = this->m_params.size() > 2 ? this->m_params[2] : "";
 
-    std::map<std::string, Channel *> &channels = server.getChannels();
-    std::map<std::string, Channel *>::iterator it = channels.find(channelName);
+    std::vector<std::string> channelNames;
+    std::vector<std::string> keys;
 
-    if (it != channels.end())
+    // 채널 이름과 키를 파싱하는 로직
+    std::istringstream iss(this->m_params[0]);
+    std::string token;
+
+    while (std::getline(iss, token, ','))
     {
-        Channel *channel = it->second;
+        // 채널 이름 유효성 검사 로직 추가
+        channelNames.push_back(token);
+    }
 
-        // 채널이 설정한 key와 사용자가 제공한 key가 일치하는지 확인
-        if (!key.empty() && !channel->checkKey(key))
+    if (this->m_params.size() > 1)
+    {
+        std::istringstream keyIss(this->m_params[1]);
+        while (std::getline(keyIss, token, ','))
         {
-            // key가 일치하지 않을 때
-            // client.setSendMsg(); // key가 일치하지 않는다는 에러 메시지 전송
-            return;
-        }
-        // 초대 모드 및 비밀번호 확인
-        if (channel->getModeInvite() && !channel->isInvited(client.getNick())
-        {
-            // client.setSendMsg(); // 초대되지 않았다는 에러 메시지 전송
-            return;
-        }
-        if (!password.empty() && !channel->checkPassword(password))
-        {
-            // password가 일치하지 않을 때
-            // client.setSendMsg(); // password가 일치하지 않는다는 에러 메시지 전송
-            return;
+            keys.push_back(token);
         }
     }
-    // 채널에 성공적으로 참여한 후 서버 응답 처리
-    // 1. JOIN 메시지 전송
-    // 채널에 JOIN 했다는 Response 전송
-    // 2. 채널에 주제(Topic) 전송
-    // 3. 현재 채널에 참여한 사용자 목록 전송
+
+    // 채널 처리 로직
+    for (size_t i = 0; i < channelNames.size(); ++i)
+    {
+        std::string channelName = channelNames[i];
+        std::string key = i < keys.size() ? keys[i] : "";
+
+        std::map<std::string, Channel *> &channelsMap = server.getChannels();
+        std::map<std::string, Channel *>::iterator channelIt = channelsMap.find(channelName);
+
+        if (channelIt == channelsMap.end())
+        {
+            // 채널이 존재하지 않는 경우, 새 채널 생성
+            // 예: Channel* newChannel = new Channel(channelName, client, key);
+            // channelsMap[channelName] = newChannel;
+            // 새 채널 설정 및 클라이언트 추가 로직
+        }
+        else
+        {
+            Channel *channel = channelIt->second;
+            // 채널에 대한 키 검증 로직
+            // if (channel->checkKey(key)) { /* 채널 접근 로직 */ }
+            // else { /* 키 불일치 에러 처리 */ }
+        }
+    }
+
+    // JOIN 성공 시 응답 메시지 전송 로직
 }
 
 void Message::commandExecute(Server &server, Client &client)

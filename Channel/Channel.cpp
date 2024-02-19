@@ -1,7 +1,6 @@
 #include "Channel.hpp"
 
-Channel::Channel(const std::string &name, const Client &cl, std::string password = "")
-    : m_name(name), m_user_count(1), m_password(password), m_cretaed(time(NULL))
+Channel::Channel(std::string name, Client cl) : m_name(name), m_cretaed(time(NULL)), m_password(""), m_user_count(1)
 {
     this->m_operators.push_back(cl);
 }
@@ -168,28 +167,27 @@ void Channel::setModeLimit(bool tf)
     this->m_is_mode_limit = tf;
 }
 
-void Channel::addInvitation(const std::string &user, const std::string &inviter)
+void Channel::addInvitation(const std::string &user)
 {
-    this->m_invitations[user].push_back(inviter);
+    this->m_invitations[user] = true;
 }
 
-bool Channel::isInvited(const std::string &user, const std::string &inviter) // 추후에 inviter는 필요 없을 수도 있음
+bool Channel::isInvited(const std::string &user) const
 {
-    if (this->m_invitations.find(user) == this->m_invitations.end())
-        return false;
-    std::vector<std::string> &inviteList = this->m_invitations[user];
-    return std::find(inviteList.begin(), inviteList.end(), inviter) != inviteList.end();
-    // return m_invitations.find(user) != m_invitations.end(); // 초대 리스트에 유저가 있는지 확인만 하기 inviter
-    // 필요없음
+    return m_invitations.find(user) != m_invitations.end();
 }
 
-void Channel::removeInvitation(const std::string &user, const std::string &inviter)
+void Channel::removeInvitation(const std::string &user)
 {
-    if (this->m_invitations.find(user) != this->m_invitations.end())
-    {
-        std::vector<std::string> &inviteList = this->m_invitations[user];
-        std::vector<std::string>::iterator it = std::find(inviteList.begin(), inviteList.end(), inviter);
-        if (it != inviteList.end())
-            inviteList.erase(it); // 초대 리스트에서 삭제
-    }
+    this->m_invitations.erase(user);
+}
+
+bool Channel::checkKey(const std::string &key)
+{
+    return this->m_key == key;
+}
+
+bool Channel::checkPassword(const std::string &password)
+{
+    return this->m_password == password;
 }

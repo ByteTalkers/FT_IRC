@@ -4,6 +4,7 @@
 #include "../Client/Client.hpp"
 #include <cstdlib>
 #include <ctime>
+#include <map>
 #include <string>
 #include <vector>
 
@@ -17,7 +18,7 @@ class Channel
     std::vector<Client> m_operators;
     std::vector<Client> m_normals;
     std::vector<std::string> m_bans;
-    std::map<std::string, std::vector<std::string>> m_invitations; // 초대 받은 유저 리스트 목록
+    std::map<std::string, bool> m_invitations; // 초대 받은 유저 리스트 목록
     std::string m_topic;
     std::string m_key;
     std::string m_password;
@@ -32,7 +33,6 @@ class Channel
   public:
     Channel(std::string name, Client cl);
     Channel(const Channel &src);
-    Channel(const std::string &name, const Client &cl, std::string password);
     ~Channel(void);
     Channel &operator=(Channel const &rhs);
 
@@ -40,9 +40,12 @@ class Channel
     void partChannel(Client cl);
 
     // 초대받은 유저 리스트 함수들
-    void addInvitation(const std::string &user, const std::string &inviter);
-    bool isInvited(const std::string &user, const std::string &inviter);
-    void removeInvitation(const std::string &user, const std::string &inviter);
+    void addInvitation(const std::string &user);
+    bool isInvited(const std::string &user) const;
+    void removeInvitation(const std::string &user);
+
+    bool checkKey(const std::string &key);
+    bool checkPassword(const std::string &password);
 
     // Getter
     std::string getName() const;
