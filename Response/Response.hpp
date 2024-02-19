@@ -29,7 +29,7 @@ class Response
     static std::string rplWelcome_001(const std::string &se_name, const std::string &nick, const std::string &user);
 
     // ERROR
-    static std::string errNeedMoreParams_461(const std::string &se_name, const std::string &nick, std::string &command);
+    static std::string errNeedMoreParams_461(const std::string &se_name, const std::string &nick, const std::string &command);
 
     // PASS, USER
     static std::string errAlreadyRegistered_462(const std::string &se_name, const std::string &nick);

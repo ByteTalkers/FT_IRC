@@ -1,28 +1,23 @@
 #include "Message.hpp"
-void Message::modeExecute(Server &server, Client &client, Command *cmd)
-{
-    client.addSendMsg(Response::rplUmodeIs_221(client.getUser(), client.getNick()));
-}
-static bool checkModeModifier(std::string &params, bool &is_plus);
 
-static void checkModeChar(std::vector<std::string> &params, std::map<char, std::pair<bool, std::string>> &mode,
+static bool checkModeModifier(const std::string &params, bool &is_plus);
+
+static void checkModeChar(const std::vector<std::string> &params, std::map<char, std::pair<bool, std::string>> &mode,
                           std::vector<char> &unknowns);
 
-void Message::modeExecute(Server &server, Client &client)
+void Message::modeExecute(Server &server, Client &client, Command *cmd)
 {
     // 파라미터 있는지
-    std::size_t params_count;
-    params_count = this->m_params.size();
-    if (params_count > 1)
+    if (cmd->getParamsCount() > 1)
     {
         std::string channel_name;
-        channel_name = this->m_params[0];
+        channel_name = cmd->getParams()[0];
         // 채널 체크
         if (server.channelExist(channel_name) == true)
         {
             bool is_plus;
             // +, - 체크
-            if (checkModeModifier(this->m_params[1], is_plus) == true)
+            if (checkModeModifier(cmd->getParams()[1], is_plus) == true)
             {
                 Channel *channel;
                 channel = server.getChannels().at(channel_name);
@@ -36,7 +31,7 @@ void Message::modeExecute(Server &server, Client &client)
                 mode['l'] = std::make_pair(false, "");
 
                 // 존재하는 모드인지 확인 modechar확인
-                checkModeChar(this->m_params, mode, unknowns);
+                checkModeChar(cmd->getParams(), mode, unknowns);
 
                 if (mode.at('i').first == true)
                 {
@@ -47,7 +42,7 @@ void Message::modeExecute(Server &server, Client &client)
                     }
                     else
                     {
-                        Response::errChanOPrivsNeeded_482(server.getName(), client.getNick(), channel_name);
+                        client.addSendMsg(Response::errChanOPrivsNeeded_482(server.getName(), client.getNick(), channel_name));
                     }
                 }
                 if (mode.at('t').first == true)
@@ -59,7 +54,7 @@ void Message::modeExecute(Server &server, Client &client)
                     }
                     else
                     {
-                        Response::errChanOPrivsNeeded_482(server.getName(), client.getNick(), channel_name);
+                        client.addSendMsg(Response::errChanOPrivsNeeded_482(server.getName(), client.getNick(), channel_name));
                     }
                 }
                 if (mode.at('k').first == true)
@@ -72,7 +67,7 @@ void Message::modeExecute(Server &server, Client &client)
                     }
                     else
                     {
-                        Response::errChanOPrivsNeeded_482(server.getName(), client.getNick(), channel_name);
+                        client.addSendMsg(Response::errChanOPrivsNeeded_482(server.getName(), client.getNick(), channel_name));
                     }
                 }
                 if (mode.at('o').first == true)
@@ -84,7 +79,7 @@ void Message::modeExecute(Server &server, Client &client)
                     }
                     else
                     {
-                        Response::errChanOPrivsNeeded_482(server.getName(), client.getNick(), channel_name);
+                        client.addSendMsg(Response::errChanOPrivsNeeded_482(server.getName(), client.getNick(), channel_name));
                     }
                 }
                 if (mode.at('l').first == true)
@@ -97,29 +92,36 @@ void Message::modeExecute(Server &server, Client &client)
                     }
                     else
                     {
-                        Response::errChanOPrivsNeeded_482(server.getName(), client.getNick(), channel_name);
+                        client.addSendMsg(Response::errChanOPrivsNeeded_482(server.getName(), client.getNick(), channel_name));
                     }
                 }
             }
             // +, - 없으면 unknown 에러? 에러 종류 정하기
             else
             {
-                Response::errUnknownMode_472(server.getName(), client.getNick(), this->m_params[0]);
+                client.addSendMsg(Response::errUnknownMode_472(server.getName(), client.getNick(), cmd->getParams()[0]));
             }
         }
         else
         {
-            Response::errNoSuchChannel_403(server.getName(), client.getNick(), channel_name);
+            if (cmd->getParams()[0] == client.getNick())
+            {
+                client.addSendMsg(Response::rplUmodeIs_221(client.getUser(), client.getNick()));
+            }
+            else
+            {
+                client.addSendMsg(Response::errNoSuchChannel_403(server.getName(), client.getNick(), channel_name));
+            }
         }
     }
     else
     {
         // 파라미터 없으면 needmore err
-        Response::errNeedMoreParams_461(server.getName(), client.getNick(), m_command);
+        client.addSendMsg(Response::errNeedMoreParams_461(server.getName(), client.getNick(), cmd->getCommand()));
     }
 }
 
-static bool checkModeModifier(std::string &params, bool &is_plus)
+static bool checkModeModifier(const std::string &params, bool &is_plus)
 {
     if (params[0] == '+' || params[0] == '-')
     {
@@ -147,7 +149,7 @@ static bool checkitkol(char c)
 }
 
 // check itkol
-static void checkModeChar(std::vector<std::string> &params, std::map<char, std::pair<bool, std::string>> &mode,
+static void checkModeChar(const std::vector<std::string> &params, std::map<char, std::pair<bool, std::string>> &mode,
                           std::vector<char> &unknowns)
 {
     int idx;
