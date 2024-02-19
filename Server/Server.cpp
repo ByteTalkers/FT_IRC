@@ -188,7 +188,7 @@ void Server::handleRecv(int fd)
     buffer[bytes_read] = '\0';
     clnt.setRecvData(buffer);
 
-    // 데이터 체크 및 파싱
+    // 데이터 파싱
     std::cout << "================ start ==========\n";
     std::cout << "clnt: " << buffer << std::endl;
     std::cout << "read success" << std::endl;
