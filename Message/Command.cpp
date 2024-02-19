@@ -4,20 +4,8 @@ Command::Command(void)
 {
 }
 
-Command::Command(const Command& src)
-{
-}
-
 Command::~Command(void)
 {
-}
-
-Command& Command::operator=(Command const& rhs)
-{
-    if (this != &rhs)
-    {
-    }
-    return *this;
 }
 
 // Getter

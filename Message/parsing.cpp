@@ -47,7 +47,6 @@ static void parsingSpace(std::string &split_input, Command *cmd)
     {
         std::string tmp;
         tmp = split_input.substr(start, pos - start);
-
         // 첫 번째 문자열이면서, :로 시작하면 prefix
         if (start == 0 && tmp[0] == ':')
         {
@@ -58,7 +57,6 @@ static void parsingSpace(std::string &split_input, Command *cmd)
         {
             setCmdInfo(tmp, cmd);
         }
-
         start = pos + 1;
     }
     
@@ -76,6 +74,10 @@ static void setCmdInfo(std::string &split, Command *cmd)
     // 커맨드가 비어있으면 커맨드 먼저 채우기
     if (cmd->getCommand() == "")
     {
+        for (std::size_t i = 0; i < split.length(); i++)
+        {
+            split[i] = std::toupper(split[i]);
+        }
         cmd->setCommand(split);
     }
     else

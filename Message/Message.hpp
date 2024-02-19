@@ -15,6 +15,23 @@
 class Client;
 class Server;
 
+enum eCmds
+{
+  CAP, 
+  PASS, 
+  NICK, 
+  USER, 
+  PING, 
+  QUIT, 
+  JOIN, 
+  PART, 
+  MODE, 
+  TOPIC, 
+  INVITE, 
+  PRIVMSG, 
+  WHO
+};
+
 class Message
 {
   private:
@@ -31,14 +48,14 @@ class Message
     bool crlfCheck();
     void parsingOrigin();
 
+    void execute(Server &server, Client &client);
     // Command
-    void registerExecute(Server &server, Client &client);
+    void registerExecute(Server &server, Client &client, Command *cmd);
+    void commandExecute(Server &server, Client &client, Command *cmd);
 
-    void commandExecute(Server &server, Client &client);
-
-    void passExecute(Server &server, Client &client);
-    void nickExecute(Server &server, Client &client);
-    void userExecute(Server &server, Client &client);
+    void passExecute(Server &server, Client &client, Command *cmd);
+    void nickExecute(Server &server, Client &client, Command *cmd);
+    void userExecute(Server &server, Client &client, Command *cmd);
 
     // Getter
     const std::string &getOrigin() const;

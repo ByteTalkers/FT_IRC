@@ -125,7 +125,7 @@ std::string Response::errChanOPrivsNeeded_482(const std::string &se_name, const 
 // TOPIC
 std::string Response::rplNoTopic_331(const std::string &se_name, const std::string &nick, const std::string &ch_name)
 {
-    return generateResponse(se_name, "331", nick + " " ch_name + " :No topic is set");
+    return generateResponse(se_name, "331", nick + " " + ch_name + " :No topic is set");
 }
 
 // LIST

@@ -1,9 +1,9 @@
 #include "Message.hpp"
 
-void Message::passExecute(Server &server, Client &client)
+void Message::passExecute(Server &server, Client &client, Command *cmd)
 {
     (void)client;
-    if (server.getPassword() != this->m_params[0])
+    if (server.getPassword() != cmd->getParams()[0])
     {
         //err
     }

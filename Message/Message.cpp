@@ -1,5 +1,4 @@
 #include "Message.hpp"
-#include "../Client/Client.hpp"
 
 Message::Message(std::string &origin) : m_origin(origin)
 {
@@ -73,58 +72,97 @@ bool Message::crlfCheck()
 
 // 커맨드 체크
 
-void Message::commandExecute(Server &server, Client &client)
+void Message::execute(Server &server, Client &client)
 {
-    for (std::size_t i = 0; i < this->m_command.length(); i++)
-    {
-        this->m_command[i] = std::toupper(this->m_command[i]);
-    }
+    std::vector<Command*>::const_iterator it;
 
-    if (this->m_command == "CAP")
+    for (it = this->m_cmds.begin(); it != this->m_cmds.end(); it++)
     {
+        std::cout << (*it)->getCommand() << std::endl;
+        // 등록 여부 확인
+        if (!client.getRegisterd())
+        {
+            registerExecute(server, client, *it);
+        }
+        else
+        {
+            commandExecute(server, client, *it);
+        }
     }
-    else if (this->m_command == "PASS")
+}
+
+int findCommands(const std::string &cmd)
+{
+    const std::string commands[13] = {"CAP", "PASS", "NICK", "USER", "PING", "QUIT", "JOIN", "PART", "MODE", "TOPIC", "INVITE", "PRIVMSG", "WHO"};
+    
+    for (int i = 0; i < 13; i++)
     {
-        passExecute(server, client);
+        if (cmd == commands[i])
+        {
+            return i;
+        }
     }
-    else if (this->m_command == "NICK")
+    return -1;
+}
+
+void Message::registerExecute(Server &server, Client &client, Command *cmd)
+{
+    int cmd_num = findCommands(cmd->getCommand());
+    switch (cmd_num)
     {
-        nickExecute(server, client);
+        case CAP:
+            break;
+        case PASS:
+            passExecute(server, client, cmd);
+            break;
+        case NICK:
+            nickExecute(server, client, cmd);
+            break;
+        case USER:
+            userExecute(server, client, cmd);
+            break;
     }
-    else if (this->m_command == "USER")
+    client.setRegistered(true);
+}
+
+void Message::commandExecute(Server &server, Client &client, Command *cmd)
+{
+    int cmd_num = findCommands(cmd->getCommand());
+
+    switch (cmd_num)
     {
-        userExecute(server, client);
-    }
-    else if (this->m_command == "PING")
-    {
-        client.setSendMsg(Response::pongResponse(server.getName(), this->m_params[0]));
-        // test 코드
-        // std::cout << Response::pongResponse(se->getName(), this->m_params[0]) << std::endl;
-    }
-    else if (this->m_command == "QUIT")
-    {
-    }
-    else if (this->m_command == "JOIN")
-    {
-        return;
-    }
-    else if (this->m_command == "PART")
-    {
-    }
-    else if (this->m_command == "TOPIC")
-    {
-    }
-    else if (this->m_command == "MODE")
-    {
-    }
-    else if (this->m_command == "INVITE")
-    {
-    }
-    else if (this->m_command == "PRIVMSG")
-    {
-    }
-    else if (this->m_command == "WHO")
-    {
+        case CAP:
+            break;
+        case PASS:
+            passExecute(server, client, cmd);
+            break;
+        case NICK:
+            nickExecute(server, client, cmd);
+            break;
+        case USER:
+            userExecute(server, client, cmd);
+            break;
+        case PING:
+            client.addSendMsg(Response::pongResponse(server.getName(), cmd->getParams()[0]));
+            break;
+        case QUIT:
+            break;
+        case JOIN:
+            break;
+        case PART:
+            break;
+        case MODE:
+            break;
+        case TOPIC:
+            break;
+        case INVITE:
+            break;
+        case PRIVMSG:
+            break;
+        case WHO:
+            break;
+        default:
+            break;
     }
 }
 
@@ -161,43 +199,7 @@ void Message::display()
         std::cout << std::endl << "Invalid" << std::endl;
         return;
     }
-    std::cout << "prefix: " << this->getPrefix() << std::endl;
-    std::cout << "command: " << this->getCommand() << std::endl;
-    std::cout << "params: ";
-    for (std::size_t i = 0; i < this->m_params.size(); i++)
-    {
-        std::cout << this->m_params[i];
-        if (i != this->m_params.size() - 1)
-        {
-            std::cout << " ";
-        }
-    }
     std::cout << std::endl;
 }
 
 
-void Message::registerExecute(Server &server, Client &client)
-{
-    for (std::size_t i = 0; i < this->m_command.length(); i++)
-    {
-        this->m_command[i] = std::toupper(this->m_command[i]);
-    }
-
-    if (this->m_command == "CAP")
-    {
-        return;
-    }
-    if (this->m_command == "PASS")
-    {
-        passExecute(server, client);
-    }
-    if (this->m_command == "NICK")
-    {
-        nickExecute(server, client);
-    }
-    if (this->m_command == "USER")
-    {
-        userExecute(server, client);
-    }
-    client.setRegistered(true);
-}
