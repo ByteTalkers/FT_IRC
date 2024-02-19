@@ -5,11 +5,12 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <map>
 
-#include <cctype>
-#include "../Response/Response.hpp"
 #include "../Client/Client.hpp"
+#include "../Response/Response.hpp"
 #include "../Server/Server.hpp"
+#include "Command.hpp"
 
 class Client;
 class Server;
@@ -22,6 +23,8 @@ class Message
     std::string m_command;
     std::vector<std::string> m_params;
 
+    std::vector<Command*> m_inputs;
+
   public:
     Message(std::string &origin);
     ~Message();
@@ -29,10 +32,16 @@ class Message
     Message &operator=(Message const &rhs);
 
     bool crlfCheck();
-    void seperateOrigin();
+    void parsingOrigin();
 
     // Command
+    void registerExecute(Server &server, Client &client);
+
     void commandExecute(Server &server, Client &client);
+
+    void passExecute(Server &server, Client &client);
+    void nickExecute(Server &server, Client &client);
+    void userExecute(Server &server, Client &client);
 
     // Getter
     const std::string &getOrigin() const;

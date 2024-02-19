@@ -22,48 +22,6 @@ bool Message::crlfCheck()
     return false;
 }
 
-// 스페이스 기준으로 파싱
-void Message::seperateOrigin()
-{
-    std::size_t start;
-    std::size_t pos;
-
-    pos = this->m_origin.find(' ');
-    start = 0;
-    while ((pos = this->m_origin.find(' ', start)) != std::string::npos)
-    {
-        std::string tmp;
-        tmp = this->m_origin.substr(start, pos - start);
-
-        // 첫 번째 문자열이면서, :로 시작하면 prefix
-        if (start == 0 && tmp[0] == ':')
-        {
-            this->m_prefix = tmp;
-        }
-        else
-        {
-            // 커맨드가 비어있으면 커맨드 먼저 채우기
-            if (this->m_command == "")
-            {
-                this->m_command = tmp;
-            }
-            else
-            {
-                this->m_params.push_back(tmp);
-            }
-        }
-
-        start = pos + 1;
-    }
-
-    // 남은 파라미터 추가
-    if (start < this->m_origin.length())
-    {
-        std::string last = this->m_origin.substr(start, pos - start);
-        this->m_params.push_back(last);
-    }
-}
-
 // cap 명령어 처리
 // void Message::handleCommandCap()
 // {
@@ -127,16 +85,15 @@ void Message::commandExecute(Server &server, Client &client)
     }
     else if (this->m_command == "PASS")
     {
-        client.setPassword(this->m_params[0]);
+        passExecute(server, client);
     }
     else if (this->m_command == "NICK")
     {
-        client.setNick(this->m_params[0]);
+        nickExecute(server, client);
     }
     else if (this->m_command == "USER")
     {
-        client.setUsername(this->m_params[0]);
-        client.setSendMsg(Response::rplWelcome_001(server.getName(), client.getNick(), client.getUser()));
+        userExecute(server, client);
     }
     else if (this->m_command == "PING")
     {
@@ -149,6 +106,7 @@ void Message::commandExecute(Server &server, Client &client)
     }
     else if (this->m_command == "JOIN")
     {
+        return;
     }
     else if (this->m_command == "PART")
     {
@@ -232,4 +190,31 @@ void Message::display()
         }
     }
     std::cout << std::endl;
+}
+
+
+void Message::registerExecute(Server &server, Client &client)
+{
+    for (std::size_t i = 0; i < this->m_command.length(); i++)
+    {
+        this->m_command[i] = std::toupper(this->m_command[i]);
+    }
+
+    if (this->m_command == "CAP")
+    {
+        return;
+    }
+    if (this->m_command == "PASS")
+    {
+        passExecute(server, client);
+    }
+    if (this->m_command == "NICK")
+    {
+        nickExecute(server, client);
+    }
+    if (this->m_command == "USER")
+    {
+        userExecute(server, client);
+    }
+    client.setRegistered(true);
 }
