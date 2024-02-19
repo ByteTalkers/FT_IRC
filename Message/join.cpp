@@ -2,11 +2,10 @@
 
 void Message::joinExecute(Server &server, Client &client, Command *cmd)
 {
-    const std::vector<std::string> &params = cmd->getParams();
-
     if (cmd->getParams().empty())
     {
-        // 채널 이름이 없는 경우 에러 메시지 전송
+        // 채널 이름이 없는 경우 에러 메시지 전송(Irssi: Not enough parameters given)
+        client.addSendMsg("Irssi: Not enough parameters given");
         return;
     }
 
@@ -14,7 +13,7 @@ void Message::joinExecute(Server &server, Client &client, Command *cmd)
     std::vector<std::string> keys;
 
     // 채널 이름과 키를 파싱하는 로직
-    std::istringstream iss(params[0]);
+    std::istringstream iss(cmd->getParams()[0]);
     std::string token;
     while (std::getline(iss, token, ','))
     {
@@ -25,10 +24,26 @@ void Message::joinExecute(Server &server, Client &client, Command *cmd)
     // 키 파싱
     if (cmd->getParams().size() > 1)
     {
-        std::istringstream keyIss(params[1]);
-        while (std::getline(keyIss, token, ','))
+        const std::string &keyParam = cmd->getParams()[1];
+        size_t pos = 0;
+        size_t keyStart = 0;
+
+        for (size_t i = 0; i < channelNames.size(); +i)
         {
-            keys.push_back(token);
+            if ((pos = keyParam.find(',', keyStart)) != std::string::npos)
+            {
+                keys.push_back(keyParam.substr(keyStart, pos - keyStart));
+                keyStart = pos + 1;
+            }
+            else if (i == 0)
+            {
+                keys.push_back(keyParam.substr(keyStart));
+                break;
+            }
+            else
+            {
+                keys.push_back("");
+            }
         }
     }
 
