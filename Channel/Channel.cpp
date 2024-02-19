@@ -1,9 +1,8 @@
 #include "Channel.hpp"
 
-Channel::Channel(std::string name, Client cl) : m_name(name), m_user_count(1)
+Channel::Channel(std::string name, Client cl) : m_name(name), m_cretaed(time(NULL)), m_password(""), m_user_count(1)
 {
     this->m_operators.push_back(cl);
-    this->m_cretaed = time(NULL);
 }
 
 Channel::~Channel()
@@ -168,4 +167,49 @@ void Channel::setModeTopic(bool tf)
 void Channel::setModeLimit(bool tf)
 {
     this->m_is_mode_limit = tf;
+}
+
+void Channel::addInvitation(const std::string &user)
+{
+    this->m_invitations[user] = true;
+}
+
+bool Channel::isInvited(const std::string &user) const
+{
+    return m_invitations.find(user) != m_invitations.end();
+}
+
+void Channel::removeInvitation(const std::string &user)
+{
+    this->m_invitations.erase(user);
+}
+
+bool Channel::checkKey(const std::string &key)
+{
+    return this->m_key == key;
+}
+
+bool Channel::checkPassword(const std::string &password)
+{
+    return this->m_password == password;
+}
+
+bool Channel::isMember(Client &client) const
+{
+    for (std::vector<Client>::const_iterator it = m_normals.begin(); it != m_normals.end(); ++it)
+    {
+        if (it->getNick() == client.getNick())
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
+void Channel::addMember(Client client)
+{
+    if (!isMember(client))
+    {
+        m_normals.push_back(client);
+    }
 }

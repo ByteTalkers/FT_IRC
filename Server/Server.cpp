@@ -239,6 +239,11 @@ time_t Server::getCreated()
     return m_created;
 }
 
+std::map<std::string, Channel *> &Server::getChannels()
+{
+    return m_channels;
+}
+
 void Server::setName(std::string name)
 {
     m_name = name;

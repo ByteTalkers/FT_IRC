@@ -4,6 +4,7 @@
 #include "../Client/Client.hpp"
 #include <cstdlib>
 #include <ctime>
+#include <map>
 #include <string>
 #include <vector>
 
@@ -12,13 +13,15 @@ class Client; // 전방 선언
 class Channel
 {
   private:
-    std::string m_name;				// 현재 채널의 이름
+    std::string m_name; // 현재 채널의 이름
     time_t m_cretaed;
     std::vector<Client> m_operators; // op인 유저들의 목록
     std::vector<Client> m_normals;   // 채팅방 속 모든 유저들의 목록
     std::vector<std::string> m_bans;
+    std::map<std::string, bool> m_invitations; // 초대 받은 유저 리스트 목록
     std::string m_topic;
     std::string m_key;
+    std::string m_password;
     int m_user_count;
     int m_limit_count;
 
@@ -35,6 +38,16 @@ class Channel
 
     void joinChannel(Client cl);
     void partChannel(Client cl);
+
+    // 초대받은 유저 리스트 함수들
+    void addInvitation(const std::string &user);
+    bool isInvited(const std::string &user) const;
+    void removeInvitation(const std::string &user);
+
+    bool checkKey(const std::string &key);
+    bool checkPassword(const std::string &password);
+    bool isMember(Client &cl) const;
+    void addMember(Client cl);
 
     // Getter
     std::string getName() const;

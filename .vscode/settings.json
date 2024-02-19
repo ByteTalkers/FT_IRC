@@ -62,6 +62,10 @@
 		"vector": "cpp",
 		"map": "cpp",
 		"__tree": "cpp",
-		"list": "cpp"
+		"list": "cpp",
+		"__verbose_abort": "cpp",
+		"charconv": "cpp",
+		"clocale": "cpp",
+		"variant": "cpp"
 	}
 }
