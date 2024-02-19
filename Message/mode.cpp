@@ -12,16 +12,15 @@ void Message::modeExecute(Server &server, Client &client, Command *cmd)
     {
         std::string channel_name;
         channel_name = cmd->getParams()[0];
+        
+        Channel *channel = server.findChannel(channel_name);
         // 채널 체크
-        if (server.channelExist(channel_name) == true)
+        if (channel != NULL)
         {
             bool is_plus;
             // +, - 체크
             if (checkModeModifier(cmd->getParams()[1], is_plus) == true)
             {
-                Channel *channel;
-                channel = server.getChannels().at(channel_name);
-
                 std::map<char, std::pair<bool, std::string>> mode;
                 std::vector<char> unknowns;
                 mode['i'] = std::make_pair(false, "");
@@ -35,7 +34,7 @@ void Message::modeExecute(Server &server, Client &client, Command *cmd)
 
                 if (mode.at('i').first == true)
                 {
-                    if (channel->checkOp(&client) == true)
+                    if (channel->checkOp(client) == true)
                     {
                         channel->setModeInvite(true);
                         // mode +i 응답
@@ -47,7 +46,7 @@ void Message::modeExecute(Server &server, Client &client, Command *cmd)
                 }
                 if (mode.at('t').first == true)
                 {
-                    if (channel->checkOp(&client) == true)
+                    if (channel->checkOp(client) == true)
                     {
                         channel->setModeTopic(true);
                         // mode +t 응답
@@ -59,7 +58,7 @@ void Message::modeExecute(Server &server, Client &client, Command *cmd)
                 }
                 if (mode.at('k').first == true)
                 {
-                    if (channel->checkOp(&client) == true)
+                    if (channel->checkOp(client) == true)
                     {
                         channel->setModeKey(true);
                         channel->setKey(mode.at('k').second);
@@ -72,7 +71,7 @@ void Message::modeExecute(Server &server, Client &client, Command *cmd)
                 }
                 if (mode.at('o').first == true)
                 {
-                    if (channel->checkOp(&client) == true)
+                    if (channel->checkOp(client) == true)
                     {
                         // 채널 오퍼레이터에 추가
                         // mode +o 응답
@@ -84,7 +83,7 @@ void Message::modeExecute(Server &server, Client &client, Command *cmd)
                 }
                 if (mode.at('l').first == true)
                 {
-                    if (channel->checkOp(&client) == true)
+                    if (channel->checkOp(client) == true)
                     {
                         channel->setModeLimit(true);
                         channel->setLimitCount(std::atoi(mode.at('l').second.c_str()));

@@ -1,6 +1,6 @@
 #include "Channel.hpp"
 
-Channel::Channel(std::string name, Client *cl) : m_name(name), m_user_count(1)
+Channel::Channel(std::string name, Client cl) : m_name(name), m_user_count(1)
 {
     this->m_operators.push_back(cl);
     this->m_cretaed = time(NULL);
@@ -13,7 +13,7 @@ Channel::~Channel()
 }
 
 // 채널에 들어옴
-void Channel::joinChannel(Client *cl)
+void Channel::joinChannel(Client cl)
 {
     if (this->m_is_mode_invite)
     {
@@ -32,16 +32,17 @@ void Channel::joinChannel(Client *cl)
     }
 
     this->m_user_count++;
-    this->m_normals.push_back(cl);
+    cl.setCurChannel(this->getName()); // 클라이언트의 현재 채널이름 설정
+    this->m_normals.push_back(cl);     // 목록에 넣기
 }
 
 // 채널 나가기
-void Channel::partChannel(Client *cl)
+void Channel::partChannel(Client cl)
 {
     this->m_user_count--;
     for (std::size_t i = 0; i < this->m_operators.size(); i++)
     {
-        if (this->m_operators[i]->getNick() == cl->getNick())
+        if (this->m_operators[i].getNick() == cl.getNick())
         {
             this->m_operators.erase(this->m_operators.begin() + i);
             return;
@@ -49,20 +50,21 @@ void Channel::partChannel(Client *cl)
     }
     for (std::size_t i = 0; i < this->m_normals.size(); i++)
     {
-        if (this->m_normals[i]->getNick() == cl->getNick())
+        if (this->m_normals[i].getNick() == cl.getNick())
         {
+            cl.setCurChannel(NULL); // 클라이언트의 현재 채널이름도 NULL로
             this->m_normals.erase(this->m_normals.begin() + i);
             return;
         }
     }
 }
 
-bool Channel::checkOp(Client *cl)
+bool Channel::checkOp(Client cl)
 {
-    std::vector<Client *>::iterator it;
+    std::vector<Client>::iterator it;
     for (it = this->m_operators.begin(); it < this->m_operators.end(); it++)
     {
-        if (*it == cl) 
+        if (&(*it) == &cl) 
         {
             return true;
         }
@@ -82,17 +84,17 @@ time_t Channel::getCreated() const
     return this->m_cretaed;
 }
 
-std::vector<Client *> Channel::getOperators() const
+std::vector<Client> Channel::getOperators() const
 {
     return this->m_operators;
 }
 
-std::vector<Client *> Channel::getNormals() const
+std::vector<Client> Channel::getNormals() const
 {
     return this->m_normals;
 }
 
-std::vector<Client *> Channel::getInvited() const
+std::vector<Client> Channel::getInvited() const
 {
     return this->m_invited;
 }
@@ -152,17 +154,17 @@ void Channel::setCreated(time_t created)
     this->m_cretaed = created;
 }
 
-void Channel::setOperators(std::vector<Client *> opers)
+void Channel::setOperators(std::vector<Client> opers)
 {
     this->m_operators = opers;
 }
 
-void Channel::setNormals(std::vector<Client *> normals)
+void Channel::setNormals(std::vector<Client> normals)
 {
     this->m_normals = normals;
 }
 
-void Channel::setInvited(std::vector<Client *> invited)
+void Channel::setInvited(std::vector<Client> invited)
 {
     this->m_invited = invited;
 }

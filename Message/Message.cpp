@@ -155,6 +155,7 @@ void Message::commandExecute(Server &server, Client &client, Command *cmd)
             modeExecute(server, client, cmd);
             break;
         case TOPIC:
+            topicExecute(server, client, cmd);
             break;
         case INVITE:
             break;
