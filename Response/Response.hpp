@@ -91,6 +91,14 @@ class Response
     // PING, PONG
     static std::string errNoOrigin_409(const std::string &se_name, const std::string &nick);
 
+
+    // MODE user +i
+    static std::string rplUmodeIs_221(const std::string &user, const std::string &nick);
+
+    // WHOIS
+    static std::string rplWhoIsUser_311(const std::string &se_name, const std::string &nick, const std::string &user);
+    static std::string rplWhoIsServer_312(const std::string &se_name, const std::string &nick);
+    static std::string rplEndofWhoIs_318(const std::string &se_name, const std::string &nick);
 };
 
 #endif
