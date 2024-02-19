@@ -87,6 +87,7 @@ void Message::joinExecute(Server &server, Client &client, Command *cmd)
                 // Irssi: #a: Total of 2 nicks [1 ops, 0 halfops, 0 voices, 1 normal]
                 // Channel #a created Mon Feb 19 12:05:15 2024
                 // Irssi: Join to #a was synced in 0 secs
+                std::string response;
                 int opsCount = 0;
                 int normalCount = 0;
                 for (std::vector<Client>::iterator it = members.begin(); it != members.end(); ++it)
@@ -97,9 +98,10 @@ void Message::joinExecute(Server &server, Client &client, Command *cmd)
                         normalCount++;
                 }
                 int totalNicks = opsCount + normalCount;
-                client.addSendMsg("Irssi: " + channelName + ": Total of " + totalNicks + " nicks [" + opsCount +
-                                  " ops, 0 halfops, 0 voices, " + normalCount + " normal]");
-                client.addSendMsg("Channel " + channelName + " created " + channel->getCreated());
+                client.addSendMsg("Irssi: " + channelName + ": Total of " + intToString(totalNicks) + " nicks [" +
+                                  intToString(opsCount) + " ops, 0 halfops, 0 voices, " + intToString(normalCount) +
+                                  " normal]");
+                client.addSendMsg("Channel " + channelName + " created " + timeToString(channel->getCreated()));
                 client.addSendMsg("Irssi: Join to " + channelName + " was synced in 0 secs");
             }
             else
