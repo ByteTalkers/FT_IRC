@@ -160,6 +160,7 @@ void Message::commandExecute(Server &server, Client &client, Command *cmd)
         case INVITE:
             break;
         case PRIVMSG:
+            privmsgExecute(server, client, cmd);
             break;
         case WHOIS:
             whoisExecute(server, client, cmd);
