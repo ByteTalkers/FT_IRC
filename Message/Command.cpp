@@ -8,6 +8,11 @@ Command::~Command(void)
 {
 }
 
+Command::Command(const std::string &command, const std::vector<std::string> &params) // test를 위해 잠시 추가
+    : m_command(command), m_params(params)
+{
+}
+
 // Getter
 const std::string &Command::getPrefix() const
 {
@@ -47,8 +52,8 @@ void Command::addParams(std::string &param)
 
 void Command::display()
 {
-    std::cout << "prefix: " << m_prefix <<std::endl;
-    std::cout << "command: " << m_command <<std::endl;
+    std::cout << "prefix: " << m_prefix << std::endl;
+    std::cout << "command: " << m_command << std::endl;
     for (std::size_t i = 0; i < m_params.size(); i++)
     {
         std::cout << "param " << i << ": " << m_params[i] << std::endl;

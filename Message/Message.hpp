@@ -41,7 +41,8 @@ class Message
     std::vector<Command *> m_cmds;
 
   public:
-    Message(std::string &origin);
+    Message();
+    Message(const std::string &origin);
     ~Message();
     Message(const Message &src);
     Message &operator=(Message const &rhs);
@@ -51,9 +52,10 @@ class Message
 
     void execute(Server &server, Client &client);
     // Command
-    void handleCommandJoin(Server &server, Client &client);
+    void registerExecute(Server &server, Client &client, Command *cmd);
     void commandExecute(Server &server, Client &client, Command *cmd);
 
+    void joinExecute(Server &server, Client &client, Command *cmd);
     void passExecute(Server &server, Client &client, Command *cmd);
     void nickExecute(Server &server, Client &client, Command *cmd);
     void userExecute(Server &server, Client &client, Command *cmd);

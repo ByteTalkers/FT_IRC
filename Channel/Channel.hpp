@@ -13,7 +13,7 @@ class Client; // 전방 선언
 class Channel
 {
   private:
-    std::string m_name;				// 현재 채널의 이름
+    std::string m_name; // 현재 채널의 이름
     time_t m_cretaed;
     std::vector<Client> m_operators; // op인 유저들의 목록
     std::vector<Client> m_normals;   // 채팅방 속 모든 유저들의 목록
@@ -46,8 +46,8 @@ class Channel
 
     bool checkKey(const std::string &key);
     bool checkPassword(const std::string &password);
-	bool isMember(Client cl);
-	void addMember(Client cl);
+    bool isMember(Client &cl) const;
+    void addMember(Client cl);
 
     // Getter
     std::string getName() const;

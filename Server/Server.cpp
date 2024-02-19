@@ -239,7 +239,7 @@ time_t Server::getCreated()
     return m_created;
 }
 
-std::map<std::string, Channel *> &Server::getChannels() // Channel 포인터로 처리하기
+std::map<std::string, Channel *> &Server::getChannels()
 {
     return m_channels;
 }

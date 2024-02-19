@@ -49,7 +49,7 @@ class Client
 
     // getter 함수들
     int getsockfd();
-    std::string getNick();
+    std::string getNick() const;
     std::string getRecvData();
     std::string getSendMsg();
     std::string getUser();

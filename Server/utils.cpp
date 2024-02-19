@@ -38,8 +38,8 @@ void Server::enableMultipleWrite(Client &clnt)
     std::string ch_name = clnt.getCurChannel();
 
     // 채널 찾기
-    Channel ch = m_channels.at(ch_name);
-    std::vector<Client> normal = ch.getNormals();
+    Channel *ch = m_channels.at(ch_name);
+    std::vector<Client> normal = ch->getNormals();
     std::vector<Client>::iterator iter;
 
     // 일단 해당채널 속 모든 클라이언트의 write 활성화
