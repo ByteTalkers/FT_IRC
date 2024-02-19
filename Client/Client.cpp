@@ -130,11 +130,12 @@ void Client::startListen(int serv_sock)
     fcntl(m_socket_fd, F_SETFL, O_NONBLOCK);
 }
 
-void Client::startParseMessage()
+void Client::startParseMessage(Server &serv)
 {
     // message 클래스의 객체 넣기
     Message msg(m_recv_data);
     // 테스트용 임시 서버객체
+
     Server a;
     a.setName("test");
     a.setCreated(time(NULL));

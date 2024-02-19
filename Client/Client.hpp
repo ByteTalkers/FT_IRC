@@ -70,7 +70,7 @@ class Client
     void setRegistered(bool tf);
 
     void startListen(int serv_sock);
-    void startParseMessage();
+    void startParseMessage(Server &serv);
     void startResponse(std::map<int, Channel> &channels);
     void startSend();
 };

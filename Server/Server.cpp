@@ -192,10 +192,7 @@ void Server::handleRecv(int fd)
     std::cout << "================ start ==========\n";
     std::cout << "clnt: " << buffer << std::endl;
     std::cout << "read success" << std::endl;
-    clnt.startParseMessage();
-
-    // 추후 추가 : 데이터에 대한 응답 생성
-    // clnt.startResponse(m_channels);
+    clnt.startParseMessage(*this);
 
     // 클라이언트 소켓의 write 이벤트 활성화
     if (clnt.getWriteTypes() == MYSELF)
