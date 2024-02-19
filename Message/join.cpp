@@ -28,7 +28,7 @@ void Message::joinExecute(Server &server, Client &client, Command *cmd)
         size_t pos = 0;
         size_t keyStart = 0;
 
-        for (size_t i = 0; i < channelNames.size(); +i)
+        for (size_t i = 0; i < channelNames.size(); ++i)
         {
             if ((pos = keyParam.find(',', keyStart)) != std::string::npos)
             {
@@ -57,46 +57,54 @@ void Message::joinExecute(Server &server, Client &client, Command *cmd)
             continue;
         }
 
-        std::map<std::string, Channel *> &channelsMap = server.getChannels();
-        std::map<std::string, Channel *>::iterator it = channelsMap.find(channelNames[i]);
-        std::string key;
+        std::string channelName = channelNames[i];
+        std::string key = i < keys.size() ? keys[i] : "";
 
-        if (i < keys.size())
-            key = keys[i];
-        else
-            key = "";
-
-        if (it == channelsMap.end())
+        Channel *channel = NULL;
+        if (server.getChannels().find(channelName) == server.getChannels().end())
         {
-            // 채널이 존재하지 않으면 새로 생성
-            Channel *newChannel = new Channel(channelNames[i], client); // 적절한 생성자 가정
+            channel = new Channel(channelName, client);
+            server.getChannels()[channelName] = channel;
             if (!key.empty())
-                newChannel->setKey(key); // 채널 키 설정
-            channelsMap[channelNames[i]] = newChannel;
-            // 클라이언트에게 채널 참여 메시지 전송 등의 추가 로직
+                channel->setKey(key);
         }
         else
         {
-            Channel *channel = it->second;
-            if (channel->isInvited(client.getNick()) || channel->checkKey(key))
+            channel = server.getChannels()[channelName];
+        }
+
+        if (channel->isInvited(client.getNick()) || channel->checkKey(key))
+        {
+            if (!channel->isMember(client))
             {
-                if (!channel->isMember(client))
+                channel->addMember(client);
+
+                // 기존 클라이언트들에게 새 클라이언트의 입장 알림
+                std::vector<Client> members = channel->getNormals();
+                for (std::vector<Client>::iterator it = members.begin(); it != members.end(); ++it)
                 {
-                    channel->addMember(client);
-                    // 클라이언트에게 채널 참여 메시지 전송 등의 추가 로직
-                    client.addSendMsg(":" + client.getNick() + " JOIN " + channelNames[i]);
+                    if (it->getNick() != client.getNick())
+                    {
+                        // nana_ [codespace@127.0.0.1] has joined #a -> 이런 형식으로 출력
+                        client.addSendMsg(client.getNick() + " has joined " + channelName);
+                    }
                 }
-                else
-                {
-                    client.addSendMsg("ERROR :You're already a member of " + channelNames[i]);
-                }
+
+                // 새 클라이언트에게 채널 정보 전송
+                // Irssi: #a: Total of 2 nicks [1 ops, 0 halfops, 0 voices, 1 normal]
+                // Channel #a created Mon Feb 19 12:05:15 2024
+                // Irssi: Join to #a was synced in 0 secs
             }
             else
             {
-                client.addSendMsg("ERROR :Invalid key or not invited to " + channelNames[i]);
+                // 이미 채널에 있는 경우 에러 메시지 전송
+                client.addSendMsg("ERROR :You are already in " + channelName);
             }
         }
+        else
+        {
+            client.addSendMsg("ERROR :Invalid key or not invited to " + channelName);
+        }
     }
-
     // JOIN 성공 시 응답 메시지 전송 로직
 }
