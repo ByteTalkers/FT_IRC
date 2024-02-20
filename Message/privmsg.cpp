@@ -30,7 +30,6 @@ void Message::privmsgExecute(Server &server, Client &client, Command *cmd)
         std::string channel_name;
         channel_name = cmd->getParams()[0];
         Channel *channel = NULL;
-        std::cout << "to enum: " << to << std::endl;
         switch (to)
         {
         // 채널 유저들에게 보내주기
@@ -73,7 +72,7 @@ static void sendPrivmsgToChannel(Server &server, Client &client, const std::vect
         msg += params[i];
     }
     receiver->addSendMsgAll(client.getNick(), "PRIVMSG", msg);
-    client.setWriteTypes(EVERYONE);
+    // client.setWriteTypes(EVERYONE);
 }
 
 static void sendPrivmsgToClient(Server &server, Client &client, const std::vector<std::string> &params)
@@ -84,8 +83,9 @@ static void sendPrivmsgToClient(Server &server, Client &client, const std::vecto
     {
         msg += params[i];
     }
-    receiver->addSendMsg(Response::rplChannelMsg(client.getNick(), "PRIVMSG", receiver->getNick(), msg));
-    receiver->setWriteTypes(MYSELF);
+    std::cout << Response::generateResponse(client.getNick(), "PRIVMSG", receiver->getNick() + " :"  + msg) << std::endl;
+    // receiver->addSendMsg(Response::generateResponse(client.getNick(), "PRIVMSG", receiver->getNick() + " :"  + msg).c_str());
+    // receiver->setWriteTypes(MYSELF);
 }
 
 static std::vector<std::string> splitComma(const std::string &command)
@@ -104,7 +104,6 @@ static std::vector<std::string> splitComma(const std::string &command)
 
 static ePrivmsg validCheck(Server &server, const std::string &to)
 {
-    std::cout << "to: " << to << std::endl;
     if (to[0] == '&' || to[0] == '#')
     {
         Channel *channel = server.findChannel(to);

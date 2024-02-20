@@ -240,7 +240,7 @@ void Channel::addSendMsgAll(const std::string &from, const std::string &cmd, con
     std::vector<Client>::iterator it;
     for (it = this->m_normals.begin(); it != this->m_normals.end(); it++)
     {
-        (*it).addSendMsg(Response::rplChannelMsg(from, cmd, this->m_name, msg));
+        (*it).setRecvData(Response::generateResponse(from, cmd, this->m_name + " :" + msg).c_str());
     }
 }
 

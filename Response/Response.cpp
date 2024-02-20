@@ -219,8 +219,3 @@ std::string Response::rplEndofWhoIs_318(const std::string &se_name, const std::s
     return generateResponse(se_name, "318", nick + " :End of /WHOIS list.");
 }
 
-// Channel
-std::string Response::rplChannelMsg(const std::string &from, const std::string &cmd, const std::string &to, const std::string &msg)
-{
-    return generateResponse(":" + from, cmd, to + " :" + msg);
-}

@@ -17,9 +17,10 @@ class Response
     Response &operator=(Response const &rhs);
 
     // 응답 기본 틀
-    static std::string generateResponse(const std::string &prefix, const std::string &command, const std::string &args);
 
   public:
+    
+    static std::string generateResponse(const std::string &prefix, const std::string &command, const std::string &args);
     // pong 응답
     static std::string pongResponse(const std::string &se_name, const std::string &token);
 
@@ -101,8 +102,6 @@ class Response
     static std::string rplEndofWhoIs_318(const std::string &se_name, const std::string &nick);
     
     
-    // Channel
-    static std::string rplChannelMsg(const std::string &from, const std::string &cmd, const std::string &to, const std::string &msg);
 };
 
 #endif
