@@ -1,9 +1,8 @@
 #include "Channel.hpp"
 
-Channel::Channel(std::string name, Client cl) : m_name(name), m_user_count(1)
+Channel::Channel(std::string name, Client cl) : m_name(name), m_cretaed(time(NULL)), m_password(""), m_user_count(1)
 {
     this->m_operators.push_back(cl);
-    this->m_cretaed = time(NULL);
 }
 
 Channel::Channel(const Channel &src)
@@ -13,7 +12,7 @@ Channel::Channel(const Channel &src)
     this->m_operators = src.m_operators;
     this->m_normals = src.  m_normals;
     this->m_bans = src.m_bans;
-    this->m_invited = src.m_invited;
+    this->m_invitations = src.m_invitations;
     this->m_topic = src.m_topic;
     this->m_key = src.m_key;
     this->m_user_count = src.m_user_count;
@@ -244,15 +243,47 @@ void Channel::addSendMsgAll(const std::string &from, const std::string &cmd, con
     }
 }
 
-bool Channel::checkClientIn(Client &cl)
+void Channel::addInvitation(const std::string &user)
 {
-    std::vector<Client>::iterator it;    
-    for (it = this->m_normals.begin(); it != this->m_normals.end(); it++)
+    this->m_invitations[user] = true;
+}
+
+bool Channel::isInvited(const std::string &user) const
+{
+    return m_invitations.find(user) != m_invitations.end();
+}
+
+void Channel::removeInvitation(const std::string &user)
+{
+    this->m_invitations.erase(user);
+}
+
+bool Channel::checkKey(const std::string &key)
+{
+    return this->m_key == key;
+}
+
+bool Channel::checkPassword(const std::string &password)
+{
+    return this->m_password == password;
+}
+
+bool Channel::isMember(Client &client) const
+{
+    for (std::vector<Client>::const_iterator it = m_normals.begin(); it != m_normals.end(); ++it)
     {
-        if ((*it).getNick() == cl.getNick())
+        if (it->getNick() == client.getNick())
         {
             return true;
         }
     }
     return false;
+}
+
+void Channel::addMember(Client client)
+{
+    if (!isMember(client))
+    {
+        m_normals.push_back(client);
+    }
 }

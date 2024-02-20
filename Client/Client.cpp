@@ -81,7 +81,7 @@ void Client::setCurChannel(const std::string channel)
 }
 
 // Getter 함수들
-std::string Client::getNick()
+std::string Client::getNick() const
 {
     return m_nick;
 }
@@ -114,6 +114,11 @@ writeEvent Client::getWriteTypes()
 bool Client::getRegisterd()
 {
     return m_is_registered;
+}
+
+bool Client::getIsOp()
+{
+    return m_is_op;
 }
 
 void Client::startListen(int serv_sock)

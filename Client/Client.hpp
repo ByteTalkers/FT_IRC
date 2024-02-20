@@ -49,13 +49,14 @@ class Client
 
     // getter 함수들
     int getsockfd();
-    std::string getNick();
+    std::string getNick() const;
     std::string getRecvData();
     std::string getSendMsg();
     std::string getUser();
     std::string getCurChannel();
     writeEvent getWriteTypes();
     bool getRegisterd();
+    bool getIsOp();
 
     // Setter 함수들
     void setPassword(const std::string &password);
