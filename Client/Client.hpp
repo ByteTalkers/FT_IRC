@@ -18,6 +18,7 @@ enum writeEvent
 {
     NONE,
     MYSELF,
+    OTHER,
     EVERYBUTME,
     EVERYONE
 };
@@ -29,7 +30,8 @@ class Server;
 class Client
 {
   private:
-    int m_socket_fd;           // 소켓 fd
+    int m_socket_fd;           // 자기 자신의 소켓 fd
+    int m_recv_fd;             // 송신할 클라이언트 fd
     std::string m_recv_data;   // 받은 데이터
     std::string m_send_msg;    // 보낼 메시지
     std::string m_nick;        // 닉네임
@@ -49,6 +51,7 @@ class Client
 
     // getter 함수들
     int getsockfd();
+    int getrecvfd();
     std::string getNick() const;
     std::string getRecvData();
     std::string getSendMsg();
@@ -59,6 +62,7 @@ class Client
     bool getIsOp();
 
     // Setter 함수들
+    void setRecvFd(const int number);
     void setPassword(const std::string &password);
     void setNick(const std::string &nick);
     void setUsername(const std::string &username);
