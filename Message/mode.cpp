@@ -1,12 +1,19 @@
 #include "Message.hpp"
 
-static bool checkModeChar(const std::vector<std::string> &params, std::map<char, std::pair<bool, std::string> > &mode,
+enum eCheck
+{
+    FALSE,
+    TRUE,
+    NONE
+};
+
+static bool checkModeChar(const std::vector<std::string> &params, std::map<char, std::pair<eCheck, std::string> > &mode,
                           std::vector<char> &unknowns);
-static void modeI(Server &server, Client &client, Channel *channel, std::map<char, std::pair<bool, std::string> > &mode);
-static void modeT(Server &server, Client &client, Channel *channel, std::map<char, std::pair<bool, std::string> > &mode);
-static void modeK(Server &server, Client &client, Channel *channel, std::map<char, std::pair<bool, std::string> > &mode);
-static void modeO(Server &server, Client &client, Channel *channel, std::map<char, std::pair<bool, std::string> > &mode);
-static void modeL(Server &server, Client &client, Channel *channel, std::map<char, std::pair<bool, std::string> > &mode);
+static void modeI(Server &server, Client &client, Channel *channel, std::map<char, std::pair<eCheck, std::string> > &mode);
+static void modeT(Server &server, Client &client, Channel *channel, std::map<char, std::pair<eCheck, std::string> > &mode);
+static void modeK(Server &server, Client &client, Channel *channel, std::map<char, std::pair<eCheck, std::string> > &mode);
+static void modeO(Server &server, Client &client, Channel *channel, std::map<char, std::pair<eCheck, std::string> > &mode);
+static void modeL(Server &server, Client &client, Channel *channel, std::map<char, std::pair<eCheck, std::string> > &mode);
 static void modeUnknowns(Server &server, Client &client, std::vector<char> &unknowns);
 
 void Message::modeExecute(Server &server, Client &client, Command *cmd)
@@ -37,14 +44,13 @@ void Message::modeExecute(Server &server, Client &client, Command *cmd)
         return;
     }
 
-
     // 모드와 내용 key 담는 map
-    std::map<char, std::pair<bool, std::string> > mode;
-    mode['i'] = std::make_pair(false, "");
-    mode['t'] = std::make_pair(false, "");
-    mode['k'] = std::make_pair(false, "");
-    mode['o'] = std::make_pair(false, "");
-    mode['l'] = std::make_pair(false, "");
+    std::map<char, std::pair<eCheck, std::string> > mode;
+    mode['i'] = std::make_pair(NONE, "");
+    mode['t'] = std::make_pair(NONE, "");
+    mode['k'] = std::make_pair(NONE, "");
+    mode['o'] = std::make_pair(NONE, "");
+    mode['l'] = std::make_pair(NONE, "");
 
     std::vector<char> unknowns;
     // 존재하는 모드인지 확인 modechar확인
@@ -54,14 +60,34 @@ void Message::modeExecute(Server &server, Client &client, Command *cmd)
     {
         // unknowns에 다 넣기
         modeUnknowns(server, client, unknowns);
+        client.setWriteTypes(MYSELF);
         return;
     }
+    
     modeUnknowns(server, client, unknowns);
-    modeI();
-    modeT();
-    modeK();
-    modeO();
-    modeL();
+    // 방장 아닌 경우
+    if (!channel->checkOp(client))
+    {
+        std::map<char, std::pair<eCheck, std::string> >::iterator it;
+        for (it = mode.begin(); it != mode.end(); it++)
+        {
+            if ((*it).first != NONE)
+            {
+            client.addSendMsg(
+                    Response::errChanOPrivsNeeded_482(server.getName(), client.getNick(), channel->getName()));
+            }
+            client.setWriteTypes(MYSELF);
+            return;
+        }
+    }
+    client.setWriteTypes(MYSELF);
+
+    modeI(server, client, channel, mode);
+    modeT(server, client, channel, mode);
+    modeK(server, client, channel, mode);
+    modeO(server, client, channel, mode);
+    modeL(server, client, channel, mode);
+    client.setWriteTypes(EVERYONE);
 }
 
 static bool checkitkol(char c)
@@ -78,7 +104,7 @@ static bool checkitkol(char c)
     return false;
 }
 
-static bool checkModeChar(const std::vector<std::string> &params, std::map<char, std::pair<bool, std::string> > &mode,
+static bool checkModeChar(const std::vector<std::string> &params, std::map<char, std::pair<eCheck, std::string> > &mode,
                           std::vector<char> &unknowns)
 {
     // +, -로 시작 체크
@@ -106,7 +132,16 @@ static bool checkModeChar(const std::vector<std::string> &params, std::map<char,
         // itkol일 때,
         if (checkitkol(params[1][i]) == true)
         {
-            mode[params[1][i]].first = add;
+            // +인지 -인지 확인 후 세팅
+            if (add == true) 
+            {
+                mode[params[1][i]].first = TRUE;
+            }
+            else
+            {
+                mode[params[1][i]].first = FALSE;
+            }
+
             if (params[1][i] == 'k' || params[1][i] == 'o' || params[1][i] == 'l')
             {
                 if (idx < params.size())
@@ -143,96 +178,107 @@ static void modeUnknowns(Server &server, Client &client, std::vector<char> &unkn
         client.addSendMsg(
             Response::errUnknownMode_472(server.getName(), client.getNick(), std::string(1, *it)));
     }
-    client.setWriteTypes(MYSELF);
 }
 
 
-static void modeI(Server &server, Client &client, Channel *channel, std::map<char, std::pair<bool, std::string> > &mode)
+static void modeI(Server &server, Client &client, Channel *channel, std::map<char, std::pair<eCheck, std::string> > &mode)
 {
-    if (mode.at('i').first == true)
+    if (mode.at('i').first == NONE)
     {
-        if (channel->checkOp(client) == true)
-        {
-            channel->setModeInvite(true);
-            // mode +i 응답
-        }
-        else
-        {
-            client.addSendMsg(
-                Response::errChanOPrivsNeeded_482(server.getName(), client.getNick(), channel->getName()));
-        }
+        return;
+    }
+
+    // 인자는 +i, 해당 채널 i 세팅 아님
+    if (mode.at('i').first == TRUE && !channel->getModeInvite())
+    {
+        channel->setModeInvite(true);
+        channel->addSendMsgAll(client.getNick(), "MODE", "-i");
+    }
+    // 인자는 -i, 해당 채널 i 세팅인
+    if (mode.at('i').first == FALSE && channel->getModeInvite())
+    {
+        channel->setModeInvite(false);
+        channel->addSendMsgAll(client.getNick(), "MODE", "+i");
     }    
 }
 
-static void modeT(Server &server, Client &client, Channel *channel, std::map<char, std::pair<bool, std::string> > &mode)
+static void modeT(Server &server, Client &client, Channel *channel, std::map<char, std::pair<eCheck, std::string> > &mode)
 {
-    if (mode.at('t').first == true)
+    if (mode.at('t').first == NONE)
     {
-        if (channel->checkOp(client) == true)
-        {
-            channel->setModeTopic(true);
-            // mode +t 응답
-        }
-        else
-        {
-            client.addSendMsg(
-                Response::errChanOPrivsNeeded_482(server.getName(), client.getNick(), channel_name));
-        }
+        return;
     }
 
+    if (mode.at('t').first == TRUE && !channel->getModeTopic())
+    {
+        channel->setModeTopic(true);
+        channel->addSendMsgAll(client.getNick(), "MODE", "-t");
+    }
+    if (mode.at('t').first == FALSE && channel->getModeTopic())
+    {
+        channel->setModeTopic(false);
+        channel->addSendMsgAll(client.getNick(), "MODE", "+t");
+    }    
 }
 
-static void modeK(Server &server, Client &client, Channel *channel, std::map<char, std::pair<bool, std::string> > &mode)
+static void modeK(Server &server, Client &client, Channel *channel, std::map<char, std::pair<eCheck, std::string> > &mode)
 {
-    if (mode.at('k').first == true)
+    if (mode.at('k').first == NONE)
     {
-        if (channel->checkOp(client) == true)
-        {
-            channel->setModeKey(true);
-            channel->setKey(mode.at('k').second);
-            // mode +k 응답
-        }
-        else
-        {
-            client.addSendMsg(
-                Response::errChanOPrivsNeeded_482(server.getName(), client.getNick(), channel_name));
-        }
+        return;
     }
 
+    if (mode.at('k').first == TRUE && !channel->getModeKey())
+    {
+        channel->setModeKey(true);
+        channel->setKey(mode.at('k').second);
+        channel->addSendMsgAll(client.getNick(), "MODE", "-k");
+    }
+    if (mode.at('k').first == FALSE && channel->getModeKey())
+    {
+        channel->setModeKey(false);
+        channel->setKey("");
+        channel->addSendMsgAll(client.getNick(), "MODE", "+k");
+    }
 }
 
-static void modeO(Server &server, Client &client, Channel *channel, std::map<char, std::pair<bool, std::string> > &mode)
+static void modeO(Server &server, Client &client, Channel *channel, std::map<char, std::pair<eCheck, std::string> > &mode)
 {
-    if (mode.at('o').first == true)
+    if (mode.at('o').first == NONE)
     {
-        if (channel->checkOp(client) == true)
-        {
-            // 채널 오퍼레이터에 추가
-            // mode +o 응답
-        }
-        else
-        {
-            client.addSendMsg(
-                Response::errChanOPrivsNeeded_482(server.getName(), client.getNick(), channel_name));
-        }
+        return;
     }
 
+    // 클라이언트 이름으로 채널에 있는지 확인하는 함수 추가
+    if (mode.at('o').first == TRUE)
+    {
+        channel->setModeTopic(true);
+        channel->addSendMsgAll(client.getNick(), "MODE", "-o");
+    }
+    if (mode.at('t').first == FALSE)
+    {
+        channel->setModeTopic(false);
+        channel->addSendMsgAll(client.getNick(), "MODE", "+o");
+    }
 }
 
-static void modeL(Server &server, Client &client, Channel *channel, std::map<char, std::pair<bool, std::string> > &mode)
+static void modeL(Server &server, Client &client, Channel *channel, std::map<char, std::pair<eCheck, std::string> > &mode)
 {
-    if (mode.at('l').first == true)
+    if (mode.at('l').first == NONE)
     {
-        if (channel->checkOp(client) == true)
-        {
-            channel->setModeLimit(true);
-            channel->setLimitCount(std::atoi(mode.at('l').second.c_str()));
-            // mode +l 응답
-        }
-        else
-        {
-            client.addSendMsg(
-                Response::errChanOPrivsNeeded_482(server.getName(), client.getNick(), channel_name));
-        }
+        return;
+    }
+
+    if (mode.at('l').first == TRUE && !channel->getModeLimit())
+    {
+        channel->setModeLimit(true);
+        channel->setLimitCount(std::atoi(mode.at('l').second.c_str()));
+        channel->addSendMsgAll(client.getNick(), "MODE", "-l");
+    }
+    if (mode.at('l').first == FALSE && channel->getModeLimit())
+    {
+        channel->setModeLimit(false);
+        channel->setLimitCount(0);
+        channel->addSendMsgAll(client.getNick(), "MODE", "+l");
     }
 }
