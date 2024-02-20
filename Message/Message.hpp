@@ -66,7 +66,6 @@ class Message
     void privmsgExecute(Server &server, Client &client, Command *cmd);
 
     void topicExecute(Server &server, Client &client, Command *cmd);
-    void modeExecute(Server &server, Client &client, Command *cmd);
 
     // Getter
     const std::string &getOrigin() const;

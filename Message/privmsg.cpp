@@ -8,7 +8,7 @@ enum ePrivmsg
     NOCLIENT,
 };
 
-static std::vector<std::string> &splitComma(const std::string &command);
+static std::vector<std::string> splitComma(const std::string &command);
 static ePrivmsg validCheck(Server &server, const std::string &to);
 static void sendPrivmsgToChannel(Server &server, Client &client, const std::vector<std::string> &params);
 static void sendPrivmsgToClient(Server &server, Client &client, const std::vector<std::string> &params);
@@ -28,13 +28,14 @@ void Message::privmsgExecute(Server &server, Client &client, Command *cmd)
     {
         ePrivmsg to = validCheck(server, cmd->getParams()[0]);
         std::string channel_name;
+        channel_name = cmd->getParams()[0];
+        Channel *channel = NULL;
 
         switch (to)
         {
         // 채널 유저들에게 보내주기
         case CHANNEL:
-            channel_name = cmd->getParams()[0];
-            Channel *channel = server.findChannel(channel_name);
+            channel = server.findChannel(channel_name);
             // 채널에 포함됐는지 확인 필요
             if (channel->checkClientIn(client))
             {
@@ -84,13 +85,13 @@ static void sendPrivmsgToClient(Server &server, Client &client, const std::vecto
     receiver->setWriteTypes(MYSELF);
 }
 
-static std::vector<std::string> &splitComma(const std::string &command)
+static std::vector<std::string> splitComma(const std::string &command)
 {
     std::vector<std::string> ret;
     std::istringstream iss(command);
     std::string buffer;
 
-    while (getline, buffer, ' ')
+    while (getline(iss, buffer, ' '))
     {
         ret.push_back(buffer);
     }
@@ -102,6 +103,7 @@ static ePrivmsg validCheck(Server &server, const std::string &to)
 {
     if (to[0] == '&' || to[0] == '#')
     {
+        std::cout << "channel name: " << to << std::endl;
         Channel *channel = server.findChannel(to);
         if (channel != NULL)
         {

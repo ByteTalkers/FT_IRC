@@ -134,15 +134,10 @@ void Client::startParseMessage(Server &serv)
 {
     // message 클래스의 객체 넣기
     Message msg(m_recv_data);
-    // 테스트용 임시 서버객체
-
-    Server a;
-    a.setName("test");
-    a.setCreated(time(NULL));
 
     msg.parsingOrigin();
     m_recv_data.clear();
-    msg.execute(a, *this);
+    msg.execute(serv, *this);
 }
 
 void Client::startResponse(std::map<int, Channel> &channels)

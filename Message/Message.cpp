@@ -129,6 +129,7 @@ void Message::commandExecute(Server &server, Client &client, Command *cmd)
 {
     int cmd_num = findCommands(cmd->getCommand());
 
+    std::cout << "find end: " << cmd_num << std::endl;
     switch (cmd_num)
     {
         case CAP:
