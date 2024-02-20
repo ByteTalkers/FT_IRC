@@ -43,6 +43,13 @@ void Message::joinExecute(Server &server, Client &client, Command *cmd)
     // 채널 처리 로직
     for (size_t i = 0; i < channelNames.size(); ++i)
     {
+        // 채널 이름 유효성 검사
+        if (channelNames[i][0] != '#' && channelNames[i][0] != '&')
+        {
+            client.addSendMsg("ERROR :Invalid channel name " + channelNames[i]);
+            continue;
+        }
+
         std::string channelName = channelNames[i];
         std::string key = i < keys.size() ? keys[i] : "";
 

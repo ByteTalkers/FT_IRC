@@ -107,7 +107,6 @@ void Message::commandExecute(Server &server, Client &client, Command *cmd)
         joinExecute(server, client, cmd);
         break;
     case PART:
-        partExecute(server, client, cmd);
         break;
     case MODE:
         modeExecute(server, client, cmd);
