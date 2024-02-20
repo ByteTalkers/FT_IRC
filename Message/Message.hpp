@@ -62,6 +62,7 @@ class Message
     void modeExecute(Server &server, Client &client, Command *cmd);
     void whoisExecute(Server &server, Client &client, Command *cmd);
     void pingExecute(Server &server, Client &client, Command *cmd);
+    void partExecute(Server &server, Client &client, Command *cmd);
 
     // Getter
     const std::string &getOrigin() const;
