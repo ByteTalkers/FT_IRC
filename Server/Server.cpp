@@ -197,8 +197,6 @@ void Server::handleRecv(int fd)
     // write 이벤트 활성화
     if (clnt.getWriteTypes() == MYSELF) // 서버 -> 클라이언트 자기 자신
         enableWriteEvent(clnt_sock);
-    else if (clnt.getWriteTypes() == OTHER) // 서버 -> 다른 클라이언트 1개
-        enableWriteEvent(clnt.getrecvfd());
     else if (clnt.getWriteTypes() == EVERYBUTME || clnt.getWriteTypes() == EVERYONE) // 서버 -> 모든 클라이언트
         enableMultipleWrite(clnt);
 }

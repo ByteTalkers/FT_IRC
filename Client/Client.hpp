@@ -18,7 +18,6 @@ enum writeEvent
 {
     NONE,
     MYSELF,
-    OTHER,
     EVERYBUTME,
     EVERYONE
 };
