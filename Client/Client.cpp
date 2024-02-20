@@ -116,6 +116,11 @@ bool Client::getRegisterd()
     return m_is_registered;
 }
 
+bool Client::getIsOp()
+{
+    return m_is_op;
+}
+
 void Client::startListen(int serv_sock)
 {
     struct sockaddr_in clnt_adr;

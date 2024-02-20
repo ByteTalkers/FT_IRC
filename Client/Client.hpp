@@ -56,6 +56,7 @@ class Client
     std::string getCurChannel();
     writeEvent getWriteTypes();
     bool getRegisterd();
+    bool getIsOp();
 
     // Setter 함수들
     void setPassword(const std::string &password);
