@@ -78,7 +78,7 @@ class Channel
 
     void setSetTopic(bool tf);
 
-    void addSendMsgAll(const std::string &from, const std::string &msg);
+    void addSendMsgAll(const std::string &from, const std::string &cmd, const std::string &msg);
 
     bool checkClientIn(Client &cl);
 };
