@@ -56,7 +56,7 @@ void Message::joinExecute(Server &server, Client &client, Command *cmd)
         Channel *channel = NULL;
         if (server.getChannels().find(channelName) == server.getChannels().end())
         {
-            channel = new Channel(channelName, client);
+            channel = new Channel(channelName, &client);
             server.getChannels()[channelName] = channel;
             if (!key.empty())
                 channel->setKey(key);
@@ -70,13 +70,13 @@ void Message::joinExecute(Server &server, Client &client, Command *cmd)
         {
             if (!channel->isMember(client))
             {
-                channel->addMember(client);
+                channel->addMember(&client);
 
                 // 기존 클라이언트들에게 새 클라이언트의 입장 알림
-                std::vector<Client> members = channel->getNormals();
-                for (std::vector<Client>::iterator it = members.begin(); it != members.end(); ++it)
+                std::vector<Client *> members = channel->getNormals();
+                for (std::vector<Client *>::iterator it = members.begin(); it != members.end(); ++it)
                 {
-                    if (it->getNick() != client.getNick())
+                    if ((*it)->getNick() != client.getNick())
                     {
                         // nana_ [codespace@127.0.0.1] has joined #a -> 이런 형식으로 출력
                         client.addSendMsg(client.getNick() + " has joined " + channelName);
@@ -90,9 +90,9 @@ void Message::joinExecute(Server &server, Client &client, Command *cmd)
                 std::string response;
                 int opsCount = 0;
                 int normalCount = 0;
-                for (std::vector<Client>::iterator it = members.begin(); it != members.end(); ++it)
+                for (std::vector<Client *>::iterator it = members.begin(); it != members.end(); ++it)
                 {
-                    if (it->getIsOp() == true)
+                    if ((*it)->getIsOp() == true)
                         opsCount++;
                     else
                         normalCount++;

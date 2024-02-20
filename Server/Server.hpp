@@ -73,4 +73,7 @@ class Server
 
     void setName(std::string name);
     void setCreated(time_t time);
+
+    Channel *findChannel(const std::string &ch_name);
+    Client *findClient(const std::string &client_name);
 };

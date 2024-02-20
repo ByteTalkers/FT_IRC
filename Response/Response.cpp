@@ -18,7 +18,7 @@ std::string Response::rplWelcome_001(const std::string &se_name, const std::stri
 }
 
 // ERROR
-std::string Response::errNeedMoreParams_461(const std::string &se_name, const std::string &nick, std::string &command)
+std::string Response::errNeedMoreParams_461(const std::string &se_name, const std::string &nick, const std::string &command)
 {
     return generateResponse(se_name, "461", nick + " " + command + " :Not enough parameters");
 }
@@ -218,3 +218,4 @@ std::string Response::rplEndofWhoIs_318(const std::string &se_name, const std::s
 	// <nick> :<info>
     return generateResponse(se_name, "318", nick + " :End of /WHOIS list.");
 }
+

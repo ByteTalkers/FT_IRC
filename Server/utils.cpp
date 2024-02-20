@@ -39,12 +39,12 @@ void Server::enableMultipleWrite(Client &clnt)
 
     // 채널 찾기
     Channel *ch = m_channels.at(ch_name);
-    std::vector<Client> normal = ch->getNormals();
-    std::vector<Client>::iterator iter;
+    std::vector<Client *> normal = ch->getNormals();
+    std::vector<Client *>::iterator iter;
 
     // 일단 해당채널 속 모든 클라이언트의 write 활성화
     for (iter = normal.begin(); iter != normal.end(); iter++)
-        enableWriteEvent(iter->getsockfd());
+        enableWriteEvent((*iter)->getsockfd());
 
     // 필요 시, 파라미터 clnt의 write만 해제
     if (event_type == EVERYBUTME)

@@ -208,7 +208,8 @@ void Server::handleSend(int fd)
 
     // 추후 추가 : 데이터 재전송
     clnt.startSend();
-    std::cout << "write success" << std::endl;
+    // std::cout << "handle send : " << clnt.getSendMsg() << std::endl;
+    std::cout << "write success :  fd => " << clnt.getsockfd() << std::endl;
     std::cout << "================ end ==========\n";
 
     // 클라이언트 소켓의 write 이벤트 비활성화
@@ -256,4 +257,30 @@ void Server::setCreated(time_t time)
 
 void Server::handleTimeout()
 {
+}
+
+Channel *Server::findChannel(const std::string &ch_name)
+{
+    try
+    {
+        this->m_channels.find(ch_name);
+        return this->m_channels.at(ch_name);
+    }
+    catch (const std::exception &e)
+    {
+        return NULL;
+    }
+}
+
+Client *Server::findClient(const std::string &client_name)
+{
+    std::map<int, Client>::iterator it;
+    for (it = this->m_clients.begin(); it != this->m_clients.end(); it++)
+    {
+        if ((*it).second.getNick() == client_name)
+        {
+            return &(*it).second;
+        }
+    }
+    return NULL;
 }

@@ -17,9 +17,10 @@ class Response
     Response &operator=(Response const &rhs);
 
     // 응답 기본 틀
-    static std::string generateResponse(const std::string &prefix, const std::string &command, const std::string &args);
 
   public:
+    
+    static std::string generateResponse(const std::string &prefix, const std::string &command, const std::string &args);
     // pong 응답
     static std::string pongResponse(const std::string &se_name, const std::string &token);
 
@@ -29,7 +30,7 @@ class Response
     static std::string rplWelcome_001(const std::string &se_name, const std::string &nick, const std::string &user);
 
     // ERROR
-    static std::string errNeedMoreParams_461(const std::string &se_name, const std::string &nick, std::string &command);
+    static std::string errNeedMoreParams_461(const std::string &se_name, const std::string &nick, const std::string &command);
 
     // PASS, USER
     static std::string errAlreadyRegistered_462(const std::string &se_name, const std::string &nick);
@@ -99,6 +100,8 @@ class Response
     static std::string rplWhoIsUser_311(const std::string &se_name, const std::string &nick, const std::string &user);
     static std::string rplWhoIsServer_312(const std::string &se_name, const std::string &nick);
     static std::string rplEndofWhoIs_318(const std::string &se_name, const std::string &nick);
+    
+    
 };
 
 #endif

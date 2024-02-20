@@ -13,6 +13,7 @@ class Command
     std::string m_prefix;
     std::string m_command;
     std::vector<std::string> m_params;
+    std::size_t m_params_count;
 
   public:
     Command(void);
@@ -24,10 +25,12 @@ class Command
     const std::string &getPrefix() const;
     const std::string &getCommand() const;
     const std::vector<std::string> &getParams() const;
+    const std::size_t &getParamsCount() const;
 
     void setPrefix(std::string &pre);
     void setCommand(std::string &cmd);
     void setParams(std::vector<std::string> &params);
+    void setParamsCount(std::size_t &count);
 
     void addParams(std::string &param);
 
