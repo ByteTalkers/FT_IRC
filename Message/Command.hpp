@@ -23,7 +23,7 @@ class Command
 
     const std::string &getPrefix() const;
     const std::string &getCommand() const;
-    const std::vector<std::string> &getParams() const;
+    const std::vector<std::string> &getParams();
 
     void setPrefix(std::string &pre);
     void setCommand(std::string &cmd);
