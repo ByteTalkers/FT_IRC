@@ -6,6 +6,27 @@ Channel::Channel(std::string name, Client cl) : m_name(name), m_user_count(1)
     this->m_cretaed = time(NULL);
 }
 
+Channel::Channel(const Channel &src)
+{
+    this->m_name = src.m_name;				
+    this->m_cretaed = src.m_cretaed;
+    this->m_operators = src.m_operators;
+    this->m_normals = src.  m_normals;
+    this->m_bans = src.m_bans;
+    this->m_invited = src.m_invited;
+    this->m_topic = src.m_topic;
+    this->m_key = src.m_key;
+    this->m_user_count = src.m_user_count;
+    this->m_limit_count = src.m_limit_count;
+
+    this->m_is_mode_invite = src.m_is_mode_invite;
+    this->m_is_mode_key = src.m_is_mode_key;
+    this->m_is_mode_topic = src.m_is_mode_topic;
+    this->m_is_mode_limit = src.m_is_mode_limit;
+
+    this->m_is_set_topic = src.m_is_set_topic;
+}
+
 Channel::~Channel()
 {
     this->m_operators.clear();
@@ -226,10 +247,12 @@ void Channel::addSendMsgAll(const std::string &from, const std::string &msg)
 bool Channel::checkClientIn(Client &cl)
 {
     std::vector<Client>::iterator it;    
-    it = std::find(this->m_normals.begin(), this->m_normals.end(), cl);
-    if (it == this->m_normals.end())
+    for (it = this->m_normals.begin(); it != this->m_normals.end(); it++)
     {
-        return false;
+        if ((*it).getNick() == cl.getNick())
+        {
+            return true;
+        }
     }
-    return true;
+    return false;
 }
