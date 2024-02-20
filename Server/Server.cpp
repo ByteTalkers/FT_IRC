@@ -194,10 +194,10 @@ void Server::handleRecv(int fd)
     std::cout << "read success" << std::endl;
     clnt.startParseMessage(*this);
 
-    // 클라이언트 소켓의 write 이벤트 활성화
-    if (clnt.getWriteTypes() == MYSELF)
+    // write 이벤트 활성화
+    if (clnt.getWriteTypes() == MYSELF) // 서버 -> 클라이언트 자기 자신
         enableWriteEvent(clnt_sock);
-    else if (clnt.getWriteTypes() == EVERYBUTME || clnt.getWriteTypes() == EVERYONE)
+    else if (clnt.getWriteTypes() == EVERYBUTME || clnt.getWriteTypes() == EVERYONE) // 서버 -> 모든 클라이언트
         enableMultipleWrite(clnt);
 }
 

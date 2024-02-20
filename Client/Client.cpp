@@ -39,6 +39,11 @@ int Client::getsockfd()
 }
 
 // Setter 함수들
+void Client::setRecvFd(const int number)
+{
+    m_recv_fd = number;
+}
+
 void Client::setPassword(const std::string &password)
 {
     m_password = password;
@@ -81,6 +86,11 @@ void Client::setCurChannel(const std::string channel)
 }
 
 // Getter 함수들
+int Client::getrecvfd()
+{
+    return m_recv_fd;
+}
+
 std::string Client::getNick() const
 {
     return m_nick;
@@ -155,7 +165,7 @@ void Client::startSend()
 {
     int clnt_sock = getsockfd();
     std::cout << "m_send_msg : " << m_send_msg << std::endl;
-    send(clnt_sock, m_send_msg.c_str(), m_send_msg.length(), 0);
+	send(clnt_sock, m_send_msg.c_str(), m_send_msg.length(), 0);
 
     // m_send_msg 비워주기
     m_send_msg.clear();
