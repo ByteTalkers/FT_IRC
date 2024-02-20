@@ -197,8 +197,8 @@ void Server::handleRecv(int fd)
     // write 이벤트 활성화
     if (clnt.getWriteTypes() == MYSELF) // 서버 -> 클라이언트 자기 자신
         enableWriteEvent(clnt_sock);
-    else if (clnt.getWriteTypes() == OTHER) // 서버 -> 다른 클라이언트 1개
-        enableWriteEvent(clnt.getrecvfd());
+    // else if (clnt.getWriteTypes() == OTHER) // 서버 -> 다른 클라이언트 1개
+    //     enableWriteEvent(clnt.getrecvfd());
     else if (clnt.getWriteTypes() == EVERYBUTME || clnt.getWriteTypes() == EVERYONE) // 서버 -> 모든 클라이언트
         enableMultipleWrite(clnt);
 }
@@ -210,7 +210,8 @@ void Server::handleSend(int fd)
 
     // 추후 추가 : 데이터 재전송
     clnt.startSend();
-    std::cout << "write success" << std::endl;
+    // std::cout << "handle send : " << clnt.getSendMsg() << std::endl;
+    std::cout << "write success :  fd => " << clnt.getsockfd() << std::endl;
     std::cout << "================ end ==========\n";
 
     // 클라이언트 소켓의 write 이벤트 비활성화
@@ -265,9 +266,9 @@ Channel *Server::findChannel(const std::string &ch_name)
     try
     {
         this->m_channels.find(ch_name);
-        return &this->m_channels.at(ch_name);
+        return this->m_channels.at(ch_name);
     }
-    catch(const std::exception& e)
+    catch (const std::exception &e)
     {
         return NULL;
     }
@@ -284,9 +285,4 @@ Client *Server::findClient(const std::string &client_name)
         }
     }
     return NULL;
-}
-
-const std::map<std::string, Channel> &Server::getChannels() const
-{
-    return this->m_channels;
 }

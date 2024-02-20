@@ -5,7 +5,7 @@ FILE = Server/Server.cpp Server/utils.cpp \
 	Client/Client.cpp main.cpp Channel/Channel.cpp \
 	Message/Message.cpp Response/Response.cpp utils/utils.cpp \
 	Message/nick.cpp Message/pass.cpp Message/user.cpp Message/parsing.cpp Message/whois.cpp Message/mode.cpp Message/ping.cpp\
-	Message/Command.cpp Message/privmsg.cpp Message/topic.cpp
+	Message/Command.cpp Message/privmsg.cpp Message/topic.cpp Message/join.cpp
 
 all : make
 	rm -rf *.dSYM

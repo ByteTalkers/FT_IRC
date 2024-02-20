@@ -36,7 +36,7 @@ void Message::privmsgExecute(Server &server, Client &client, Command *cmd)
         case CHANNEL:
             channel = server.findChannel(channel_name);
             // 채널에 포함됐는지 확인 필요
-            if (channel->checkClientIn(client))
+            if (channel->isMember(client))
             {
                 sendPrivmsgToChannel(server, client, cmd->getParams());
             }
@@ -71,7 +71,7 @@ static void sendPrivmsgToChannel(Server &server, Client &client, const std::vect
     {
         msg += params[i];
     }
-    receiver->addSendMsgAll(client.getNick(), "PRIVMSG", msg);
+    receiver->addSendMsgAll(server, client.getNick(), "PRIVMSG", msg);
     // client.setWriteTypes(EVERYONE);
 }
 
@@ -83,8 +83,12 @@ static void sendPrivmsgToClient(Server &server, Client &client, const std::vecto
     {
         msg += params[i];
     }
+    client.setRecvFd(receiver->getsockfd());
     std::cout << Response::generateResponse(client.getNick(), "PRIVMSG", receiver->getNick() + " :"  + msg) << std::endl;
-    // receiver->addSendMsg(Response::generateResponse(client.getNick(), "PRIVMSG", receiver->getNick() + " :"  + msg).c_str());
+    receiver->addSendMsg(Response::generateResponse(client.getNick(), "PRIVMSG", receiver->getNick() + " :"  + msg).c_str());
+    std::cout << "rec fd: " << receiver->getsockfd() << std::endl;
+    // 일단 직접 writevent 건들기
+    server.enableWriteEvent(receiver->getsockfd());
     // receiver->setWriteTypes(MYSELF);
 }
 

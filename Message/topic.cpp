@@ -47,7 +47,7 @@ void Message::topicExecute(Server &server, Client &client, Command *cmd)
             if (channel->checkOp(client))
             {
                 channel->setTopic(cmd->getParams()[1]);
-                channel->addSendMsgAll(client.getNick(), "TOPIC", cmd->getParams()[1]);
+                channel->addSendMsgAll(server, client.getNick(), "TOPIC", cmd->getParams()[1]);
                 client.setWriteTypes(EVERYONE);
             }
             else
@@ -60,7 +60,7 @@ void Message::topicExecute(Server &server, Client &client, Command *cmd)
         else
         {
             channel->setTopic(cmd->getParams()[1]);
-            channel->addSendMsgAll(client.getNick(), "TOPIC", cmd->getParams()[1]);
+            channel->addSendMsgAll(server, client.getNick(), "TOPIC", cmd->getParams()[1]);
             client.setWriteTypes(EVERYONE);
         }
     }

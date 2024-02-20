@@ -9,11 +9,11 @@ enum eCheck
 
 static bool checkModeChar(const std::vector<std::string> &params, std::map<char, std::pair<eCheck, std::string> > &mode,
                           std::vector<char> &unknowns);
-static void modeI(Client &client, Channel *channel, std::map<char, std::pair<eCheck, std::string> > &mode);
-static void modeT(Client &client, Channel *channel, std::map<char, std::pair<eCheck, std::string> > &mode);
-static void modeK(Client &client, Channel *channel, std::map<char, std::pair<eCheck, std::string> > &mode);
-static void modeO(Client &client, Channel *channel, std::map<char, std::pair<eCheck, std::string> > &mode);
-static void modeL(Client &client, Channel *channel, std::map<char, std::pair<eCheck, std::string> > &mode);
+static void modeI(Server &server, Client &client, Channel *channel, std::map<char, std::pair<eCheck, std::string> > &mode);
+static void modeT(Server &server, Client &client, Channel *channel, std::map<char, std::pair<eCheck, std::string> > &mode);
+static void modeK(Server &server, Client &client, Channel *channel, std::map<char, std::pair<eCheck, std::string> > &mode);
+static void modeO(Server &server, Client &client, Channel *channel, std::map<char, std::pair<eCheck, std::string> > &mode);
+static void modeL(Server &server, Client &client, Channel *channel, std::map<char, std::pair<eCheck, std::string> > &mode);
 static void modeUnknowns(Server &server, Client &client, std::vector<char> &unknowns);
 
 void Message::modeExecute(Server &server, Client &client, Command *cmd)
@@ -82,12 +82,12 @@ void Message::modeExecute(Server &server, Client &client, Command *cmd)
     }
     client.setWriteTypes(MYSELF);
 
-    modeI(client, channel, mode);
-    modeT(client, channel, mode);
-    modeK(client, channel, mode);
-    modeO(client, channel, mode);
-    modeL(client, channel, mode);
-    client.setWriteTypes(EVERYONE);
+    modeI(server, client, channel, mode);
+    modeT(server, client, channel, mode);
+    modeK(server, client, channel, mode);
+    modeO(server, client, channel, mode);
+    modeL(server, client, channel, mode);
+    // client.setWriteTypes(EVERYONE);
 }
 
 static bool checkitkol(char c)
@@ -181,7 +181,7 @@ static void modeUnknowns(Server &server, Client &client, std::vector<char> &unkn
 }
 
 
-static void modeI(Client &client, Channel *channel, std::map<char, std::pair<eCheck, std::string> > &mode)
+static void modeI(Server &server, Client &client, Channel *channel, std::map<char, std::pair<eCheck, std::string> > &mode)
 {
     if (mode.at('i').first == NOTEXIST)
     {
@@ -192,17 +192,17 @@ static void modeI(Client &client, Channel *channel, std::map<char, std::pair<eCh
     if (mode.at('i').first == TRUE && !channel->getModeInvite())
     {
         channel->setModeInvite(true);
-        channel->addSendMsgAll(client.getNick(), "MODE", "-i");
+        channel->addSendMsgAll(server, client.getNick(), "MODE", "-i");
     }
     // 인자는 -i, 해당 채널 i 세팅인
     if (mode.at('i').first == FALSE && channel->getModeInvite())
     {
         channel->setModeInvite(false);
-        channel->addSendMsgAll(client.getNick(), "MODE", "+i");
+        channel->addSendMsgAll(server, client.getNick(), "MODE", "+i");
     }    
 }
 
-static void modeT(Client &client, Channel *channel, std::map<char, std::pair<eCheck, std::string> > &mode)
+static void modeT(Server &server, Client &client, Channel *channel, std::map<char, std::pair<eCheck, std::string> > &mode)
 {
     if (mode.at('t').first == NOTEXIST)
     {
@@ -212,16 +212,16 @@ static void modeT(Client &client, Channel *channel, std::map<char, std::pair<eCh
     if (mode.at('t').first == TRUE && !channel->getModeTopic())
     {
         channel->setModeTopic(true);
-        channel->addSendMsgAll(client.getNick(), "MODE", "-t");
+        channel->addSendMsgAll(server, client.getNick(), "MODE", "-t");
     }
     if (mode.at('t').first == FALSE && channel->getModeTopic())
     {
         channel->setModeTopic(false);
-        channel->addSendMsgAll(client.getNick(), "MODE", "+t");
+        channel->addSendMsgAll(server, client.getNick(), "MODE", "+t");
     }    
 }
 
-static void modeK(Client &client, Channel *channel, std::map<char, std::pair<eCheck, std::string> > &mode)
+static void modeK(Server &server, Client &client, Channel *channel, std::map<char, std::pair<eCheck, std::string> > &mode)
 {
     if (mode.at('k').first == NOTEXIST)
     {
@@ -232,17 +232,17 @@ static void modeK(Client &client, Channel *channel, std::map<char, std::pair<eCh
     {
         channel->setModeKey(true);
         channel->setKey(mode.at('k').second);
-        channel->addSendMsgAll(client.getNick(), "MODE", "-k");
+        channel->addSendMsgAll(server, client.getNick(), "MODE", "-k");
     }
     if (mode.at('k').first == FALSE && channel->getModeKey())
     {
         channel->setModeKey(false);
         channel->setKey("");
-        channel->addSendMsgAll(client.getNick(), "MODE", "+k");
+        channel->addSendMsgAll(server, client.getNick(), "MODE", "+k");
     }
 }
 
-static void modeO(Client &client, Channel *channel, std::map<char, std::pair<eCheck, std::string> > &mode)
+static void modeO(Server &server, Client &client, Channel *channel, std::map<char, std::pair<eCheck, std::string> > &mode)
 {
     if (mode.at('o').first == NOTEXIST)
     {
@@ -253,16 +253,16 @@ static void modeO(Client &client, Channel *channel, std::map<char, std::pair<eCh
     if (mode.at('o').first == TRUE)
     {
         channel->setModeTopic(true);
-        channel->addSendMsgAll(client.getNick(), "MODE", "-o");
+        channel->addSendMsgAll(server, client.getNick(), "MODE", "-o");
     }
     if (mode.at('t').first == FALSE)
     {
         channel->setModeTopic(false);
-        channel->addSendMsgAll(client.getNick(), "MODE", "+o");
+        channel->addSendMsgAll(server, client.getNick(), "MODE", "+o");
     }
 }
 
-static void modeL(Client &client, Channel *channel, std::map<char, std::pair<eCheck, std::string> > &mode)
+static void modeL(Server &server, Client &client, Channel *channel, std::map<char, std::pair<eCheck, std::string> > &mode)
 {
     if (mode.at('l').first == NOTEXIST)
     {
@@ -273,12 +273,12 @@ static void modeL(Client &client, Channel *channel, std::map<char, std::pair<eCh
     {
         channel->setModeLimit(true);
         channel->setLimitCount(std::atoi(mode.at('l').second.c_str()));
-        channel->addSendMsgAll(client.getNick(), "MODE", "-l");
+        channel->addSendMsgAll(server, client.getNick(), "MODE", "-l");
     }
     if (mode.at('l').first == FALSE && channel->getModeLimit())
     {
         channel->setModeLimit(false);
         channel->setLimitCount(0);
-        channel->addSendMsgAll(client.getNick(), "MODE", "+l");
+        channel->addSendMsgAll(server, client.getNick(), "MODE", "+l");
     }
 }

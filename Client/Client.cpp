@@ -167,6 +167,8 @@ void Client::startSend()
     std::cout << "m_send_msg : " << m_send_msg << std::endl;
 	send(clnt_sock, m_send_msg.c_str(), m_send_msg.length(), 0);
 
+    std::cout << "handle send : " << getSendMsg() << std::endl;
+
     // m_send_msg 비워주기
     m_send_msg.clear();
 }
