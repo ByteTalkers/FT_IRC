@@ -69,7 +69,7 @@ static void sendPrivmsgToChannel(Server &server, Client &client, const std::vect
     {
         msg += params[i];
     }
-    receiver->addSendMsgAll(client.getNick(), msg);
+    receiver->addSendMsgAll(client.getNick(), "PRIVMSG", msg);
     client.setWriteTypes(EVERYONE);
 }
 
@@ -81,7 +81,7 @@ static void sendPrivmsgToClient(Server &server, Client &client, const std::vecto
     {
         msg += params[i];
     }
-    receiver->addSendMsg(Response::rplPrivmsg(client.getNick(), params[0], msg));
+    receiver->addSendMsg(Response::rplChannelMsg(client.getNick(), "PRIVMSG", receiver->getNick(), msg));
     receiver->setWriteTypes(MYSELF);
 }
 

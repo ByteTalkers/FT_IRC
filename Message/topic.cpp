@@ -1,7 +1,5 @@
 #include "Message.hpp"
 
-static void sendPrivmsgToChannel(Server &server, Client &client, const std::vector<std::string> &params);
-
 void Message::topicExecute(Server &server, Client &client, Command *cmd)
 {
     // 파라미터 없음
