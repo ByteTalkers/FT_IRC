@@ -24,8 +24,12 @@ const std::string &Command::getCommand() const
     return this->m_command;
 }
 
-const std::vector<std::string> &Command::getParams() const
+const std::vector<std::string> &Command::getParams()
 {
+    if (this->m_params.empty())
+    {
+        this->m_params.push_back("");
+    }
     return this->m_params;
 }
 
