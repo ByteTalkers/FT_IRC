@@ -83,7 +83,6 @@ class Response
     static std::string errNoTextToSend_412(const std::string &se_name, const std::string &nick);
     static std::string errCanNotSendToChan_404(const std::string &se_name, const std::string &nick, const std::string &ch_name);
     static std::string errTooManyTargets_407(const std::string &se_name, const std::string &nick);
-    static std::string rplPrivmsg(const std::string &from, const std::string &to, const std::string &msg);
 
     // WHO
     static std::string rplWhoReply_352(const std::string &se_name, const std::string &nick, const std::string &ch_name, const std::string &user);
@@ -100,6 +99,10 @@ class Response
     static std::string rplWhoIsUser_311(const std::string &se_name, const std::string &nick, const std::string &user);
     static std::string rplWhoIsServer_312(const std::string &se_name, const std::string &nick);
     static std::string rplEndofWhoIs_318(const std::string &se_name, const std::string &nick);
+    
+    
+    // Channel
+    static std::string rplChannelMsg(const std::string &from, const std::string &cmd, const std::string &to, const std::string &msg);
 };
 
 #endif

@@ -176,11 +176,6 @@ std::string Response::errTooManyTargets_407(const std::string &se_name, const st
     return generateResponse(se_name, "407", nick + " :Too many targets");
 }
 
-std::string Response::rplPrivmsg(const std::string &from, const std::string &to, const std::string &msg)
-{
-    return generateResponse(":" + from, "PRIVMSG", to + " :" + msg);
-}
-
 // WHO
 std::string Response::rplWhoReply_352(const std::string &se_name, const std::string &nick, const std::string &ch_name, const std::string &user)
 {
@@ -222,4 +217,10 @@ std::string Response::rplEndofWhoIs_318(const std::string &se_name, const std::s
 {
 	// <nick> :<info>
     return generateResponse(se_name, "318", nick + " :End of /WHOIS list.");
+}
+
+// Channel
+std::string Response::rplChannelMsg(const std::string &from, const std::string &cmd, const std::string &to, const std::string &msg)
+{
+    return generateResponse(":" + from, cmd, to + " :" + msg);
 }
