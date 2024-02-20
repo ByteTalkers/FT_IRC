@@ -30,7 +30,7 @@ void Message::privmsgExecute(Server &server, Client &client, Command *cmd)
         std::string channel_name;
         channel_name = cmd->getParams()[0];
         Channel *channel = NULL;
-
+        std::cout << "to enum: " << to << std::endl;
         switch (to)
         {
         // 채널 유저들에게 보내주기
@@ -44,6 +44,7 @@ void Message::privmsgExecute(Server &server, Client &client, Command *cmd)
             else
             {
                 client.addSendMsg(Response::errCanNotSendToChan_404(server.getName(), client.getNick(), cmd->getParams()[0]));
+                client.setWriteTypes(MYSELF);
             }
             break;
         // 해당 클라이언트에게만
@@ -53,9 +54,11 @@ void Message::privmsgExecute(Server &server, Client &client, Command *cmd)
         case NOCHANNEL:
             client.addSendMsg(
                 Response::errNoSuchChannel_403(server.getName(), client.getNick(), cmd->getParams()[0]));
+            client.setWriteTypes(MYSELF);
             break;
         case NOCLIENT:
             client.addSendMsg(Response::errNoSuchNick_401(server.getName(), client.getNick(), cmd->getParams()[0]));
+            client.setWriteTypes(MYSELF);
             break;
         }
     }
@@ -101,9 +104,9 @@ static std::vector<std::string> splitComma(const std::string &command)
 
 static ePrivmsg validCheck(Server &server, const std::string &to)
 {
+    std::cout << "to: " << to << std::endl;
     if (to[0] == '&' || to[0] == '#')
     {
-        std::cout << "channel name: " << to << std::endl;
         Channel *channel = server.findChannel(to);
         if (channel != NULL)
         {
