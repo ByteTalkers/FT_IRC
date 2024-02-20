@@ -60,6 +60,7 @@ class Server
     void handleSend(int fd);
     void handleRecv(int fd);
 
+    bool checkBuffer(std::string str);
     void addReadEvent(int sockfd);
     void addWriteEvent(int sockfd);
     void disableWriteEvent(int sockfd);

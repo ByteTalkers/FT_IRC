@@ -1,5 +1,13 @@
 #include "Server.hpp"
 
+bool Server::checkBuffer(std::string str)
+{
+    if (str.find_last_of("\r\n") == str.length() - 1 && str.find_last_of("\r\n") != std::string::npos)
+        return (true);
+    else
+        return (false);
+}
+
 void Server::addReadEvent(int sockfd)
 {
     struct kevent read_event;
