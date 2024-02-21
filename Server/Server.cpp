@@ -185,20 +185,25 @@ void Server::handleRecv(int fd)
     ssize_t bytes_read = recv(clnt_sock, buffer, sizeof(buffer) - 1, 0);
     if (bytes_read == -1)
         std::runtime_error("something is wrong on clnt_sock or recv()");
-    buffer[bytes_read] = '\0';
-    clnt.setRecvData(buffer);
+    if (checkBuffer(buffer) == true)
+    {
+        buffer[bytes_read] = '\0';
+        clnt.setRecvData(buffer);
 
-    // 데이터 파싱
-    std::cout << "================ start ==========\n";
-    std::cout << "clnt: " << buffer << std::endl;
-    std::cout << "read success" << std::endl;
-    clnt.startParseMessage(*this);
+        // 데이터 파싱
+        std::cout << "================ start ==========\n";
+        std::cout << "clnt: " << clnt.getRecvData() << std::endl;
+        std::cout << "read success" << std::endl;
+        clnt.startParseMessage(*this);
 
-    // write 이벤트 활성화
-    if (clnt.getWriteTypes() == MYSELF) // 서버 -> 클라이언트 자기 자신
-        enableWriteEvent(clnt_sock);
-    else if (clnt.getWriteTypes() == EVERYBUTME || clnt.getWriteTypes() == EVERYONE) // 서버 -> 모든 클라이언트
-        enableMultipleWrite(clnt);
+        // write 이벤트 활성화
+        if (clnt.getWriteTypes() == MYSELF) // 서버 -> 클라이언트 자기 자신
+            enableWriteEvent(clnt_sock);
+        else if (clnt.getWriteTypes() == EVERYBUTME || clnt.getWriteTypes() == EVERYONE) // 서버 -> 모든 클라이언트
+            enableMultipleWrite(clnt);
+    }
+    else
+        clnt.setRecvData(buffer);
 }
 
 void Server::handleSend(int fd)
