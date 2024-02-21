@@ -137,7 +137,7 @@ bool Client::getIsOp()
     return m_is_op;
 }
 
-bool Client::getIsRegisterFlags()
+bool *Client::getIsRegisterFlags()
 {
     return m_is_register_flags;
 }

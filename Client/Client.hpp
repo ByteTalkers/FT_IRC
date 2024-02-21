@@ -24,9 +24,9 @@ enum writeEvent
 
 enum eRegister
 {
-  PASS,
-  NICK,
-  USER
+  PASS_REG,
+  NICK_REG,
+  USER_REG
 };
 
 class Channel; // 전방 선언
@@ -68,7 +68,7 @@ class Client
     writeEvent getWriteTypes();
     bool getRegisterd();
     bool getIsOp();
-    bool getIsRegisterFlags();
+    bool *getIsRegisterFlags();
 
     // Setter 함수들
     void setRecvFd(const int number);
