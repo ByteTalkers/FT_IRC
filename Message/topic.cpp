@@ -25,17 +25,16 @@ void Message::topicExecute(Server &server, Client &client, Command *cmd)
     if (cmd->getParamsCount() == 1)
     {
         // 토픽 존재여부 확인
-        if (channel->getSetTopic())
+        if (channel->getTopicExist())
         {
             client.addSendMsg(
                 Response::rplTopic_332(server.getName(), client.getNick(), channel_name, channel->getTopic()));
-            client.setWriteTypes(MYSELF);
         }
         else
         {
             client.addSendMsg(Response::rplNoTopic_331(server.getName(), client.getNick(), channel_name));
-            client.setWriteTypes(MYSELF);
         }
+        client.setWriteTypes(MYSELF);
     }
     // 채널명 + 인자인 경우 => 토픽 세팅
     else
@@ -46,9 +45,9 @@ void Message::topicExecute(Server &server, Client &client, Command *cmd)
             // 채널 op인지 확인
             if (channel->checkOp(client))
             {
+                channel->setTopicExist(true);
                 channel->setTopic(cmd->getParams()[1]);
                 channel->addSendMsgAll(server, client.getNick(), "TOPIC", cmd->getParams()[1]);
-                client.setWriteTypes(EVERYONE);
             }
             else
             {
@@ -59,9 +58,9 @@ void Message::topicExecute(Server &server, Client &client, Command *cmd)
         }
         else
         {
+            channel->setTopicExist(true);
             channel->setTopic(cmd->getParams()[1]);
             channel->addSendMsgAll(server, client.getNick(), "TOPIC", cmd->getParams()[1]);
-            client.setWriteTypes(EVERYONE);
         }
     }
 }

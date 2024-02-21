@@ -72,7 +72,6 @@ static void sendPrivmsgToChannel(Server &server, Client &client, const std::vect
         msg += params[i];
     }
     receiver->addSendMsgAll(server, client.getNick(), "PRIVMSG", msg);
-    // client.setWriteTypes(EVERYONE);
 }
 
 static void sendPrivmsgToClient(Server &server, Client &client, const std::vector<std::string> &params)
@@ -84,12 +83,8 @@ static void sendPrivmsgToClient(Server &server, Client &client, const std::vecto
         msg += params[i];
     }
     client.setRecvFd(receiver->getsockfd());
-    std::cout << Response::generateResponse(client.getNick(), "PRIVMSG", receiver->getNick() + " :"  + msg) << std::endl;
     receiver->addSendMsg(Response::generateResponse(client.getNick(), "PRIVMSG", receiver->getNick() + " :"  + msg).c_str());
-    std::cout << "rec fd: " << receiver->getsockfd() << std::endl;
-    // 일단 직접 writevent 건들기
     server.enableWriteEvent(receiver->getsockfd());
-    // receiver->setWriteTypes(MYSELF);
 }
 
 static std::vector<std::string> splitComma(const std::string &command)
