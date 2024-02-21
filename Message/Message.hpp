@@ -3,10 +3,9 @@
 
 #include <cctype>
 #include <iostream>
+#include <map>
 #include <string>
 #include <vector>
-
-#include <map>
 
 #include "../Client/Client.hpp"
 #include "../Response/Response.hpp"
@@ -63,6 +62,7 @@ class Message
     void whoisExecute(Server &server, Client &client, Command *cmd);
     void pingExecute(Server &server, Client &client, Command *cmd);
     void partExecute(Server &server, Client &client, Command *cmd);
+    void quitExecute(Server &server, Client &client, Command *cmd);
 
     // Getter
     const std::string &getOrigin() const;
