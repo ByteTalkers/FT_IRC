@@ -23,7 +23,7 @@ Channel::Channel(const Channel &src)
     this->m_is_mode_topic = src.m_is_mode_topic;
     this->m_is_mode_limit = src.m_is_mode_limit;
 
-    this->m_is_set_topic = src.m_is_set_topic;
+    this->m_is_topic_exist = src.m_is_topic_exist;
 }
 
 Channel::~Channel()
@@ -153,9 +153,9 @@ bool Channel::getModeLimit() const
     return this->m_is_mode_limit;
 }
 
-bool Channel::getSetTopic() const
+bool Channel::getTopicExist() const
 {
-    return this->m_is_set_topic;
+    return this->m_is_topic_exist;
 }
 
 // Setter
@@ -218,9 +218,9 @@ void Channel::setModeLimit(bool tf)
     this->m_is_mode_limit = tf;
 }
 
-void Channel::setSetTopic(bool tf)
+void Channel::setTopicExist(bool tf)
 {
-    this->m_is_set_topic = tf;
+    this->m_is_topic_exist = tf;
 }
 
 void Channel::addSendMsgAll(Server &server, const std::string &from, const std::string &cmd, const std::string &msg)

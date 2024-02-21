@@ -33,7 +33,7 @@ class Channel
     bool m_is_mode_topic;
     bool m_is_mode_limit;
 
-    bool m_is_set_topic; // 토픽 세팅 여부
+    bool m_is_topic_exist; // 토픽 세팅 여부
 
   public:
     Channel(std::string name, Client *cl);
@@ -71,7 +71,7 @@ class Channel
     bool getModeTopic() const;
     bool getModeLimit() const;
 
-    bool getSetTopic() const;
+    bool getTopicExist() const;
 
     // Setter
     void setName(std::string name);
@@ -88,7 +88,7 @@ class Channel
     void setModeTopic(bool tf);
     void setModeLimit(bool tf);
 
-    void setSetTopic(bool tf);
+    void setTopicExist(bool tf);
 
     void addSendMsgAll(Server &server, const std::string &from, const std::string &cmd, const std::string &msg);
 
