@@ -70,7 +70,6 @@ class Channel
     bool getModeKey() const;
     bool getModeTopic() const;
     bool getModeLimit() const;
-
     bool getTopicExist() const;
 
     // Setter
@@ -82,16 +81,14 @@ class Channel
     void setKey(std::string key);
     void setUserCount(int count);
     void setLimitCount(int count);
-
     void setModeInvite(bool tf);
     void setModeKey(bool tf);
     void setModeTopic(bool tf);
     void setModeLimit(bool tf);
-
     void setTopicExist(bool tf);
 
+	// 기타 함수
     void addSendMsgAll(Server &server, const std::string &from, const std::string &cmd, const std::string &msg);
-
 };
 
 #endif
