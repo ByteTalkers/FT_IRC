@@ -59,10 +59,10 @@ void Channel::joinChannel(Client *cl)
 // 채널 나가기
 void Channel::partChannel(Client &cl)
 {
-    std::vector<Client>::iterator it;
+    std::vector<Client *>::iterator it;
     for (it = this->m_operators.begin(); it != this->m_operators.end(); ++it)
     {
-        if (it->getNick() == cl.getNick())
+        if ((*it)->getNick() == cl.getNick())
         {
             this->m_operators.erase(it);
             break;
@@ -71,7 +71,7 @@ void Channel::partChannel(Client &cl)
 
     for (it = this->m_normals.begin(); it != this->m_normals.end(); ++it)
     {
-        if (it->getNick() == cl.getNick())
+        if ((*it)->getNick() == cl.getNick())
         {
             this->m_normals.erase(it);
             break;
