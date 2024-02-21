@@ -30,6 +30,13 @@ enum writeEvent
     EVERYONE
 };
 
+enum eRegister
+{
+  PASS_REG,
+  NICK_REG,
+  USER_REG
+};
+
 class Channel; // 전방 선언
 class Message;
 class Server;

@@ -9,8 +9,6 @@
 #include <utility>
 #include <vector>
 
-#include <map>
-
 #include "../Channel/Channel.hpp"
 #include "../Client/Client.hpp"
 #include "../Response/Response.hpp"
@@ -59,6 +57,7 @@ class Message
 
     // register
     void registerPassExecute(Server &server, Client &client, Command *cmd);
+    void registerNickExecute(Server &server, Client &client, Command *cmd);
     void registerUserExecute(Server &server, Client &client, Command *cmd);
 
     // Command
