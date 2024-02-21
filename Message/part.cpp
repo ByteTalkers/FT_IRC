@@ -64,10 +64,7 @@ void Message::partExecute(Server &server, Client &client, Command *cmd)
         if (!reason.empty())
             message += " [" + reason + "]";
 
-        std::vector<Client> allMembers = channel->getOperators();
-        std::vector<Client> normalMembers = channel->getNormals();
-        allMembers.insert(allMembers.end(), normalMembers.begin(), normalMembers.end());
-
+        std::vector<Client> allMembers = channel->getNormals();
         std::vector<Client>::iterator it_member;
         for (it_member = allMembers.begin(); it_member != allMembers.end(); ++it_member)
         {
