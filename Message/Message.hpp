@@ -2,11 +2,14 @@
 #define MESSAGE_HPP
 
 #include <cctype>
+#include <cstdlib>
 #include <iostream>
 #include <map>
 #include <string>
+#include <utility>
 #include <vector>
 
+#include "../Channel/Channel.hpp"
 #include "../Client/Client.hpp"
 #include "../Response/Response.hpp"
 #include "../Server/Server.hpp"
@@ -14,6 +17,7 @@
 
 class Client;
 class Server;
+class Channel;
 
 enum eCmds
 {
@@ -63,6 +67,9 @@ class Message
     void pingExecute(Server &server, Client &client, Command *cmd);
     void partExecute(Server &server, Client &client, Command *cmd);
     void quitExecute(Server &server, Client &client, Command *cmd);
+    void privmsgExecute(Server &server, Client &client, Command *cmd);
+
+    void topicExecute(Server &server, Client &client, Command *cmd);
 
     // Getter
     const std::string &getOrigin() const;

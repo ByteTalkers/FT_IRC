@@ -18,6 +18,7 @@ Client &Client::operator=(const Client &other)
         m_send_msg = other.m_send_msg;
         m_nick = other.m_nick;
         m_username = other.m_username;
+        m_hostname = other.m_hostname;
         m_password = other.m_password;
         m_cur_channel = other.m_cur_channel;
         m_flag_connect = other.m_flag_connect;
@@ -39,6 +40,11 @@ int Client::getsockfd()
 }
 
 // Setter 함수들
+void Client::setRecvFd(const int number)
+{
+    m_recv_fd = number;
+}
+
 void Client::setPassword(const std::string &password)
 {
     m_password = password;
@@ -52,6 +58,15 @@ void Client::setNick(const std::string &nick)
 void Client::setUsername(const std::string &username)
 {
     m_username = username;
+}
+
+void Client::setHostname(struct sockaddr_in &clnt_adr)
+{
+    char hostname[NI_MAXHOST];
+    char service[NI_MAXSERV];
+
+    getnameinfo((struct sockaddr *)&clnt_adr, sizeof(clnt_adr), hostname, NI_MAXHOST, service, NI_MAXSERV, 0);
+    this->m_hostname = hostname;
 }
 
 void Client::setRecvData(const char *data)
@@ -81,6 +96,11 @@ void Client::setCurChannel(const std::string channel)
 }
 
 // Getter 함수들
+int Client::getrecvfd()
+{
+    return m_recv_fd;
+}
+
 std::string Client::getNick() const
 {
     return m_nick;
@@ -89,6 +109,11 @@ std::string Client::getNick() const
 std::string Client::getUser()
 {
     return m_username;
+}
+
+std::string Client::getHostname()
+{
+    return m_hostname;
 }
 
 std::string Client::getRecvData()
@@ -133,6 +158,9 @@ void Client::startListen(int serv_sock)
 
     // nonblock 처리
     fcntl(m_socket_fd, F_SETFL, O_NONBLOCK);
+
+    // setHostname()
+    setHostname(clnt_adr);
 }
 
 void Client::startParseMessage(Server &serv)
@@ -156,6 +184,8 @@ void Client::startSend()
     int clnt_sock = getsockfd();
     std::cout << "m_send_msg : " << m_send_msg << std::endl;
     send(clnt_sock, m_send_msg.c_str(), m_send_msg.length(), 0);
+
+    std::cout << "handle send : " << getSendMsg() << std::endl;
 
     // m_send_msg 비워주기
     m_send_msg.clear();

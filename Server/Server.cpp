@@ -1,6 +1,6 @@
 #include "Server.hpp"
 
-Server::Server() : m_password("password"), m_portnum(9000)
+Server::Server() : m_password("password"), m_portnum(9000), m_error(false)
 {
 }
 
@@ -50,7 +50,12 @@ void Server::setPassword(std::string pw)
     m_password = pw;
 }
 
-Server::Server(std::string password) : m_password(password)
+void Server::setErrorCode()
+{
+    m_error = true;
+}
+
+Server::Server(std::string password) : m_password(password), m_error(false)
 {
 }
 
@@ -144,8 +149,8 @@ void Server::handleKqueue()
                     Server::handleConnect();
                 continue;
             }
-            if (event_arr[i].flags & EV_EOF) // 연결이 끊어진 경우
-                Server::handleDisconnect();
+            if (event_arr[i].flags & EV_EOF) // 연결을 끊으려고 하는 경우
+                Server::handleDisconnect(fd);
             else if (event_arr[i].filter == EVFILT_READ) // 읽기 이벤트 -> 읽고 파싱
                 Server::handleRecv(fd);
             else if (event_arr[i].filter == EVFILT_WRITE) // 쓰기 이벤트 -> 데이터 전송
@@ -185,20 +190,25 @@ void Server::handleRecv(int fd)
     ssize_t bytes_read = recv(clnt_sock, buffer, sizeof(buffer) - 1, 0);
     if (bytes_read == -1)
         std::runtime_error("something is wrong on clnt_sock or recv()");
-    buffer[bytes_read] = '\0';
-    clnt.setRecvData(buffer);
+    if (checkBuffer(buffer) == true)
+    {
+        buffer[bytes_read] = '\0';
+        clnt.setRecvData(buffer);
 
-    // 데이터 파싱
-    std::cout << "================ start ==========\n";
-    std::cout << "clnt: " << buffer << std::endl;
-    std::cout << "read success" << std::endl;
-    clnt.startParseMessage(*this);
+        // 데이터 파싱
+        std::cout << "================ start ==========\n";
+        std::cout << "clnt: " << clnt.getRecvData() << std::endl;
+        std::cout << "read success" << std::endl;
+        clnt.startParseMessage(*this);
 
-    // 클라이언트 소켓의 write 이벤트 활성화
-    if (clnt.getWriteTypes() == MYSELF)
-        enableWriteEvent(clnt_sock);
-    else if (clnt.getWriteTypes() == EVERYBUTME || clnt.getWriteTypes() == EVERYONE)
-        enableMultipleWrite(clnt);
+        // write 이벤트 활성화
+        if (clnt.getWriteTypes() == MYSELF) // 서버 -> 클라이언트 자기 자신
+            enableWriteEvent(clnt_sock);
+        else if (clnt.getWriteTypes() == EVERYBUTME || clnt.getWriteTypes() == EVERYONE) // 서버 -> 모든 클라이언트
+            enableMultipleWrite(clnt);
+    }
+    else
+        clnt.setRecvData(buffer);
 }
 
 void Server::handleSend(int fd)
@@ -208,7 +218,8 @@ void Server::handleSend(int fd)
 
     // 추후 추가 : 데이터 재전송
     clnt.startSend();
-    std::cout << "write success" << std::endl;
+    // std::cout << "handle send : " << clnt.getSendMsg() << std::endl;
+    std::cout << "write success :  fd => " << clnt.getsockfd() << std::endl;
     std::cout << "================ end ==========\n";
 
     // 클라이언트 소켓의 write 이벤트 비활성화
@@ -216,9 +227,19 @@ void Server::handleSend(int fd)
     clnt.setWriteTypes(NONE);
 }
 
-void Server::handleDisconnect()
+void Server::handleDisconnect(int fd)
 {
-    exit(EXIT_SUCCESS);
+    // 클라이언트 목록에서 해당하는 클라이언트를 fd로 찾는다.
+    std::map<int, Client>::iterator it_clnt = m_clients.find(fd);
+	Client clnt = it_clnt->second;
+
+	// 클라이언트의 소켓을 닫는다.
+	if (close(fd) == -1)
+		throw std::runtime_error("close() error");
+
+	// 전체 유저 목록에서 지운다.
+	m_clients.erase(it_clnt);
+	std::cout << "success : erase" << std::endl;
 }
 
 std::string Server::getClientCount()
@@ -256,4 +277,42 @@ void Server::setCreated(time_t time)
 
 void Server::handleTimeout()
 {
+}
+
+Channel *Server::findChannel(const std::string &ch_name)
+{
+    try
+    {
+        this->m_channels.find(ch_name);
+        return this->m_channels.at(ch_name);
+    }
+    catch (const std::exception &e)
+    {
+        return NULL;
+    }
+}
+
+Client *Server::findClient(const std::string &client_name)
+{
+    std::map<int, Client>::iterator it;
+    for (it = this->m_clients.begin(); it != this->m_clients.end(); it++)
+    {
+        if ((*it).second.getNick() == client_name)
+        {
+            return &(*it).second;
+        }
+    }
+    return NULL;
+}
+
+int Server::endServ()
+{
+    std::map<std::string, Channel *>::iterator it_map;
+    for (it_map = m_channels.begin(); it_map != m_channels.end(); it_map++)
+    {
+        if (it_map->second)
+            delete it_map->second;
+    }
+
+    return static_cast<int>(m_error);
 }

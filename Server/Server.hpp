@@ -37,6 +37,7 @@ class Server
 
     std::string m_name; // 서버 이름
     time_t m_created;   // 생성시간
+    bool m_error;       // 에러 발생 여부
 
   public:
     Server();
@@ -48,18 +49,21 @@ class Server
     void setPassword(std::string pw);
     int getPortnum();
     void setPortnum(int number);
+    void setErrorCode();
 
     Server(std::string password);
     void checkPortnum(std::string str);
     void initServSock();
     void initKqueue();
     void handleKqueue();
-    void handleConnect();
-    void handleDisconnect();
     void handleTimeout();
+    void handleConnect();
+    void handleDisconnect(int fd);
     void handleSend(int fd);
     void handleRecv(int fd);
+    int endServ();
 
+    bool checkBuffer(std::string str);
     void addReadEvent(int sockfd);
     void addWriteEvent(int sockfd);
     void disableWriteEvent(int sockfd);
@@ -73,4 +77,7 @@ class Server
 
     void setName(std::string name);
     void setCreated(time_t time);
+
+    Channel *findChannel(const std::string &ch_name);
+    Client *findClient(const std::string &client_name);
 };

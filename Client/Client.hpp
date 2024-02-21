@@ -8,6 +8,7 @@
 #include <fcntl.h>
 #include <iostream>
 #include <map>
+#include <netdb.h>
 #include <netinet/in.h>
 #include <stdexcept>
 #include <sys/event.h>
@@ -29,11 +30,13 @@ class Server;
 class Client
 {
   private:
-    int m_socket_fd;           // 소켓 fd
+    int m_socket_fd;           // 자기 자신의 소켓 fd
+    int m_recv_fd;             // 송신할 클라이언트 fd
     std::string m_recv_data;   // 받은 데이터
     std::string m_send_msg;    // 보낼 메시지
     std::string m_nick;        // 닉네임
     std::string m_username;    // 유저네임
+    std::string m_hostname;    // 호스트네임
     std::string m_password;    // 패스워드
     std::string m_cur_channel; // 현재 채널
     int m_flag_connect;        // 연결 여부
@@ -49,19 +52,23 @@ class Client
 
     // getter 함수들
     int getsockfd();
+    int getrecvfd();
     std::string getNick() const;
     std::string getRecvData();
     std::string getSendMsg();
     std::string getUser();
     std::string getCurChannel();
     writeEvent getWriteTypes();
+    std::string getHostname();
     bool getRegisterd();
     bool getIsOp();
 
     // Setter 함수들
+    void setRecvFd(const int number);
     void setPassword(const std::string &password);
     void setNick(const std::string &nick);
     void setUsername(const std::string &username);
+    void setHostname(struct sockaddr_in &clnt_adr);
     void setRecvData(const char *data);
     void setWriteTypes(const writeEvent type);
     void setCurChannel(const std::string channel);
