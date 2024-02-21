@@ -10,7 +10,7 @@ static bool checkChar(char c);
  * - 닉네임 중복이면 => ERR_NICKNAMEINUSE_433
  * - 클라이언트에 닉네임 세팅
  * - 클라이언트 등록 닉네임 플래그 켜기
-*/
+ */
 void Message::registerNickExecute(Server &server, Client &client, Command *cmd)
 {
     if (cmd->getParamsCount() < 1)
@@ -42,7 +42,7 @@ void Message::registerNickExecute(Server &server, Client &client, Command *cmd)
  * - 닉네임 유효하지 않으면 => ERR_ERRONEUSNICKNAME_432
  * - 닉네임 중복이면 => ERR_NICKNAMEINUSE_433
  * - 클라이언트에 닉네임 세팅
-*/
+ */
 void Message::nickExecute(Server &server, Client &client, Command *cmd)
 {
     if (cmd->getParamsCount() < 1)
@@ -60,12 +60,12 @@ void Message::nickExecute(Server &server, Client &client, Command *cmd)
     client.setNick(cmd->getParams()[0]);
 }
 
-/** 
+/**
  * 닉네임 유효성 검사
  * - 길이 9자 제한
  * - 채널명 prefix '#', '&' 첫글자에 금지
  * - 알파벳, 숫자, 중괄호 {}, 대괄호 [], 파이프 | 기호만 가능
-*/
+ */
 static bool validCheck(const std::string &nick)
 {
     if (nick.length() > 9)
