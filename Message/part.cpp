@@ -64,13 +64,13 @@ void Message::partExecute(Server &server, Client &client, Command *cmd)
         if (!reason.empty())
             message += " [" + reason + "]";
 
-        std::vector<Client> allMembers = channel->getNormals();
-        std::vector<Client>::iterator it_member;
+        std::vector<Client *> allMembers = channel->getNormals();
+        std::vector<Client *>::iterator it_member;
         for (it_member = allMembers.begin(); it_member != allMembers.end(); ++it_member)
         {
-            Client &member = *it_member;
-            if (member.getNick() != client.getNick())
-                member.addSendMsg(message);
+            Client *member = *it_member;
+            if (member->getNick() != client.getNick())
+                member->addSendMsg(message);
         }
     }
 }
