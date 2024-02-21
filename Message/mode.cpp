@@ -7,7 +7,7 @@ enum eCheck
     NOTEXIST
 };
 
-static bool checkModeChar(const std::vector<std::string> &params, std::map<char, std::pair<eCheck, std::string> > &mode,
+static bool checkModeChar(const std::vector<std::string> &params, std::map<char, std::pair<eCheck, std::string>> &mode,
                           std::vector<char> &unknowns);
 static void modeI(Server &server, Client &client, Channel *channel, std::pair<eCheck, std::string> &mode);
 static void modeT(Server &server, Client &client, Channel *channel, std::pair<eCheck, std::string> &mode);
@@ -45,7 +45,7 @@ void Message::modeExecute(Server &server, Client &client, Command *cmd)
     }
 
     // 모드와 내용 key 담는 map
-    std::map<char, std::pair<eCheck, std::string> > mode;
+    std::map<char, std::pair<eCheck, std::string>> mode;
     mode['i'] = std::make_pair(NOTEXIST, "");
     mode['t'] = std::make_pair(NOTEXIST, "");
     mode['k'] = std::make_pair(NOTEXIST, "");
@@ -67,13 +67,12 @@ void Message::modeExecute(Server &server, Client &client, Command *cmd)
     // 방장 아닌 경우
     if (!channel->checkOp(client))
     {
-        std::map<char, std::pair<eCheck, std::string> >::iterator it;
+        std::map<char, std::pair<eCheck, std::string>>::iterator it;
         for (it = mode.begin(); it != mode.end(); it++)
         {
             if ((*it).first != NOTEXIST)
             {
-            client.addSendMsg(
-                    Response::ERR_CHANOPRIVSNEEDED_482(server, client, *channel));
+                client.addSendMsg(Response::ERR_CHANOPRIVSNEEDED_482(server, client, *channel));
             }
             client.setWriteTypes(MYSELF);
             return;
@@ -102,7 +101,7 @@ static bool checkitkol(char c)
     return false;
 }
 
-static bool checkModeChar(const std::vector<std::string> &params, std::map<char, std::pair<eCheck, std::string> > &mode,
+static bool checkModeChar(const std::vector<std::string> &params, std::map<char, std::pair<eCheck, std::string>> &mode,
                           std::vector<char> &unknowns)
 {
     // +, -로 시작 체크
@@ -177,8 +176,7 @@ static void modeUnknowns(Server &server, Client &client, std::vector<char> &unkn
     std::vector<char>::iterator it;
     for (it = unknowns.begin(); it < unknowns.end(); it++)
     {
-        client.addSendMsg(
-            Response::ERR_UNKNOWNMODE_472(server, client, std::string(1, *it)));
+        client.addSendMsg(Response::ERR_UNKNOWNMODE_472(server, client, std::string(1, *it)));
     }
 }
 

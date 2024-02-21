@@ -54,6 +54,10 @@ class Message
     void parsingOrigin();
 
     void execute(Server &server, Client &client);
+
+    // registerExecute
+    void registerNickExecute(Server &server, Client &client, Command *cmd);
+
     // Command
     void registerExecute(Server &server, Client &client, Command *cmd);
     void commandExecute(Server &server, Client &client, Command *cmd);

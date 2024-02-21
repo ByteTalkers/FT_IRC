@@ -23,6 +23,13 @@ enum writeEvent
     EVERYONE
 };
 
+enum eRegister
+{
+  PASS_REG,
+  NICK_REG,
+  USER_REG
+};
+
 class Channel; // 전방 선언
 class Message;
 class Server;
@@ -44,6 +51,8 @@ class Client
     bool m_is_registered;      // 서버 등록 여부
     writeEvent m_write_types;  // write 이벤트의 종류
 
+    bool m_is_register_flags[3];
+
   public:
     Client();
     Client(const Client &other);
@@ -62,6 +71,7 @@ class Client
     std::string getHostname();
     bool getRegisterd();
     bool getIsOp();
+    bool *getIsRegisterFlags();
 
     // Setter 함수들
     void setRecvFd(const int number);
@@ -76,6 +86,7 @@ class Client
     void setSendMsg(std::string msg);
     void addSendMsg(std::string msg);
     void setRegistered(bool tf);
+    void setRegisterFlags(int i, bool tf);
 
     void startListen(int serv_sock);
     void startParseMessage(Server &serv);

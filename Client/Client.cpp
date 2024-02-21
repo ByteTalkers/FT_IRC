@@ -95,6 +95,12 @@ void Client::setCurChannel(const std::string channel)
     m_cur_channel = channel;
 }
 
+void Client::setRegisterFlags(int i, bool tf)
+{
+    m_is_register_flags[i] = tf;
+}
+
+
 // Getter 함수들
 int Client::getrecvfd()
 {
@@ -144,6 +150,11 @@ bool Client::getRegisterd()
 bool Client::getIsOp()
 {
     return m_is_op;
+}
+
+bool *Client::getIsRegisterFlags()
+{
+    return m_is_register_flags;
 }
 
 void Client::startListen(int serv_sock)
