@@ -83,7 +83,10 @@ static void sendPrivmsgToClient(Server &server, Client &client, const std::vecto
         msg += params[i];
     }
     client.setRecvFd(receiver->getsockfd());
-    receiver->addSendMsg(Response::GENERATE(client.getNick(), "PRIVMSG", receiver->getNick() + " :"  + msg).c_str());
+    std::cout << Response::GENERATE(client.getNick(), "PRIVMSG", receiver->getNick() + " :" + msg) << std::endl;
+    receiver->addSendMsg(Response::GENERATE(client.getNick(), "PRIVMSG", receiver->getNick() + " :" + msg).c_str());
+    std::cout << "rec fd: " << receiver->getsockfd() << std::endl;
+    // 일단 직접 writevent 건들기
     server.enableWriteEvent(receiver->getsockfd());
 }
 

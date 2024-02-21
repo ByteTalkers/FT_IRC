@@ -8,6 +8,7 @@
 #include <fcntl.h>
 #include <iostream>
 #include <map>
+#include <netdb.h>
 #include <netinet/in.h>
 #include <stdexcept>
 #include <sys/event.h>
@@ -35,6 +36,7 @@ class Client
     std::string m_send_msg;    // 보낼 메시지
     std::string m_nick;        // 닉네임
     std::string m_username;    // 유저네임
+    std::string m_hostname;    // 호스트네임
     std::string m_password;    // 패스워드
     std::string m_cur_channel; // 현재 채널
     int m_flag_connect;        // 연결 여부
@@ -57,6 +59,7 @@ class Client
     std::string getUser();
     std::string getCurChannel();
     writeEvent getWriteTypes();
+    std::string getHostname();
     bool getRegisterd();
     bool getIsOp();
 
@@ -65,6 +68,7 @@ class Client
     void setPassword(const std::string &password);
     void setNick(const std::string &nick);
     void setUsername(const std::string &username);
+    void setHostname(struct sockaddr_in &clnt_adr);
     void setRecvData(const char *data);
     void setWriteTypes(const writeEvent type);
     void setCurChannel(const std::string channel);
