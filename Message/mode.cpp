@@ -54,7 +54,6 @@ void Message::modeExecute(Server &server, Client &client, Command *cmd)
 
     std::vector<char> unknowns;
     // 존재하는 모드인지 확인 modechar확인
-    checkModeChar(cmd->getParams(), mode, unknowns);
 
     if (!checkModeChar(cmd->getParams(), mode, unknowns))
     {
@@ -112,7 +111,7 @@ static bool checkModeChar(const std::vector<std::string> &params, std::map<char,
         return false;
     }
 
-    std::size_t idx = 1;
+    std::size_t idx = 2;
     bool add = false;
     for (std::size_t i = 0; i < params[1].length(); i++)
     {
@@ -131,6 +130,7 @@ static bool checkModeChar(const std::vector<std::string> &params, std::map<char,
         // itkol일 때,
         if (checkitkol(params[1][i]) == true)
         {
+            std::cout << "this is " << params[1][i] << std::endl;
             // +인지 -인지 확인 후 세팅
             if (add == true)
             {
@@ -152,7 +152,10 @@ static bool checkModeChar(const std::vector<std::string> &params, std::map<char,
         }
         else
         {
-            unknowns.push_back(params[1][i]);
+            if (params[1][i] != '+' || params[1][i] != '-')
+            {
+                unknowns.push_back(params[1][i]);
+            }
         }
     }
 
