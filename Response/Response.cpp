@@ -68,9 +68,9 @@ std::string Response::ERR_BADCHANNELKEY_475(Server &server, Client &client, Chan
                     client.getNick() + " " + channel.getName() + " :Cannot join channel (incorrect channel key)");
 }
 
-std::string Response::ERR_NOSUCHCHANNEL_403(Server &server, Client &client, Channel &channel)
+std::string Response::ERR_NOSUCHCHANNEL_403(Server &server, Client &client, const std::string &ch_name)
 {
-    return GENERATE(server.getName(), "403", client.getNick() + " " + channel.getName() + " :No such channel");
+    return GENERATE(server.getName(), "403", client.getNick() + " " + ch_name + " :No such channel");
 }
 
 std::string Response::ERR_TOOMANYCHANNELS_405(Server &server, Client &client, Channel &channel)

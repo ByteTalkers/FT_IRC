@@ -16,7 +16,7 @@ void Message::topicExecute(Server &server, Client &client, Command *cmd)
     // 해당 채널 없음
     if (channel == NULL)
     {
-        client.addSendMsg(Response::ERR_NOSUCHCHANNEL_403(server, client, *channel));
+        client.addSendMsg(Response::ERR_NOSUCHCHANNEL_403(server, client, cmd->getParams()[0]));
         client.setWriteTypes(MYSELF);
         return;
     }

@@ -54,7 +54,7 @@ class Response
 
     static std::string ERR_INVITEONLYCHAN_473(Server &server, Client &client, Channel &channel);
     static std::string ERR_BADCHANNELKEY_475(Server &server, Client &client, Channel &channel);
-    static std::string ERR_NOSUCHCHANNEL_403(Server &server, Client &client, Channel &channel);
+    static std::string ERR_NOSUCHCHANNEL_403(Server &server, Client &client, const std::string &ch_name);
     static std::string ERR_TOOMANYCHANNELS_405(Server &server, Client &client, Channel &channel);
 
     static std::string RPL_NAMREPLY_353(Server &server, Client &client, Channel &channel);

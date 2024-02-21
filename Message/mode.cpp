@@ -38,7 +38,7 @@ void Message::modeExecute(Server &server, Client &client, Command *cmd)
         }
         else
         {
-            client.addSendMsg(Response::ERR_NOSUCHCHANNEL_403(server, client, *channel));
+            client.addSendMsg(Response::ERR_NOSUCHCHANNEL_403(server, client, cmd->getParams()[0]));
         }
         client.setWriteTypes(MYSELF);
         return;

@@ -52,7 +52,7 @@ void Message::privmsgExecute(Server &server, Client &client, Command *cmd)
             break;
         case NOCHANNEL:
             client.addSendMsg(
-                Response::ERR_NOSUCHCHANNEL_403(server, client, *channel));
+                Response::ERR_NOSUCHCHANNEL_403(server, client, cmd->getParams()[0]));
             client.setWriteTypes(MYSELF);
             break;
         case NOCLIENT:
