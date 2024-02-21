@@ -112,10 +112,12 @@ void Message::commandExecute(Server &server, Client &client, Command *cmd)
         modeExecute(server, client, cmd);
         break;
     case TOPIC:
+        topicExecute(server, client, cmd);
         break;
     case INVITE:
         break;
     case PRIVMSG:
+        privmsgExecute(server,client, cmd);
         break;
     case WHOIS:
         whoisExecute(server, client, cmd);

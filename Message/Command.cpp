@@ -29,6 +29,11 @@ const std::vector<std::string> &Command::getParams() const
     return this->m_params;
 }
 
+const std::size_t &Command::getParamsCount() const
+{
+    return this->m_params_count;
+}
+
 // Setter
 void Command::setPrefix(std::string &pre)
 {
@@ -45,9 +50,15 @@ void Command::setParams(std::vector<std::string> &params)
     this->m_params = params;
 }
 
+void Command::setParamsCount(std::size_t &count)
+{
+    this->m_params_count = count;
+}
+
 void Command::addParams(std::string &param)
 {
     this->m_params.push_back(param);
+    this->m_params_count++;
 }
 
 void Command::display()

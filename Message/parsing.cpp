@@ -1,84 +1,57 @@
 #include "Message.hpp"
 
-static void parsingSpace(std::string &split_input, Command *cmd);
-static void setCmdInfo(std::string &split, Command *cmd);
+static void parsingSpace(std::string &split, Command *cmd);
+static void setCmd(std::string &split, Command *cmd);
 
 // \n 기준으로 파싱
 void Message::parsingOrigin()
 {
-    std::size_t start;
-    std::size_t pos;
+    std::istringstream iss(this->m_origin);
+    std::string buffer;
 
-    start = 0;
-    while ((pos = this->m_origin.find('\n', start)) != std::string::npos)
+    while (std::getline(iss, buffer, '\n'))
     {
-        std::string splitInput;
-        if (this->m_origin[pos - 1] == '\r')
+        std::string split = buffer;
+        if (split[split.length() - 1] == '\r')
         {
-            splitInput = this->m_origin.substr(start, pos - start - 1);
-        }
-        else
-        {
-            splitInput = this->m_origin.substr(start, pos - start);
+            split.pop_back();
         }
 
         Command *cmd = new Command();
 
-        // space 기준으로 스플릿해서 넣어주기
-        parsingSpace(splitInput, cmd);
-
-        // 세팅된 Command 클래스 넣어주기
-        this->m_cmds.push_back(cmd);
-        start = pos + 1;
-    }
-
-    // 남은 파라미터 추가
-    if (start < this->m_origin.length())
-    {
-        std::string last = this->m_origin.substr(start, pos - start);
-        Command *cmd = new Command();
-        parsingSpace(last, cmd);
-
+        // space 기준으로 스플릿
+        parsingSpace(split, cmd);
         this->m_cmds.push_back(cmd);
     }
 }
 
-static void parsingSpace(std::string &split_input, Command *cmd)
+static void parsingSpace(std::string &split, Command *cmd)
 {
-    std::size_t start;
-    std::size_t pos;
+    std::istringstream iss(split);
+    std::string buffer;
+    bool is_first = true;
 
-    start = 0;
-    while ((pos = split_input.find(' ', start)) != std::string::npos)
+    while (std::getline(iss, buffer, ' '))
     {
-        std::string tmp;
-        tmp = split_input.substr(start, pos - start);
-        // 첫 번째 문자열이면서, :로 시작하면 prefix
-        if (start == 0 && tmp[0] == ':')
+        std::string split = buffer;
+        if (is_first && split[0] == ':')
         {
-            std::string subTmp = tmp.substr(1, tmp.length());
-            cmd->setPrefix(subTmp);
+            split.substr(1);
+            cmd->addParams(split);
+            is_first = false;
         }
         else
         {
-            setCmdInfo(tmp, cmd);
+            setCmd(split, cmd);
+            is_first = false;
         }
-        start = pos + 1;
-    }
-
-    // 마지막 남은 부분
-    if (start < split_input.length())
-    {
-        std::string last;
-        last = split_input.substr(start, pos - start);
-        setCmdInfo(last, cmd);
     }
 }
 
-static void setCmdInfo(std::string &split, Command *cmd)
+static void setCmd(std::string &split, Command *cmd)
 {
     // 커맨드가 비어있으면 커맨드 먼저 채우기
-    if (cmd->getCommand() == "")
+    if (cmd->getCommand().empty())
     {
         for (std::size_t i = 0; i < split.length(); i++)
         {
@@ -91,7 +64,7 @@ static void setCmdInfo(std::string &split, Command *cmd)
         // 파라미터 : 붙어있는 경우 떼어주고 넣어줌
         if (split[0] == ':')
         {
-            std::string subTmp = split.substr(1, split.length());
+            std::string subTmp = split.substr(1);
             cmd->addParams(subTmp);
         }
         else

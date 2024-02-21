@@ -60,6 +60,7 @@ class Server
     void handleSend(int fd);
     void handleRecv(int fd);
 
+    bool checkBuffer(std::string str);
     void addReadEvent(int sockfd);
     void addWriteEvent(int sockfd);
     void disableWriteEvent(int sockfd);
@@ -73,4 +74,7 @@ class Server
 
     void setName(std::string name);
     void setCreated(time_t time);
+
+    Channel *findChannel(const std::string &ch_name);
+    Client *findClient(const std::string &client_name);
 };
