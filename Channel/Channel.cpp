@@ -58,7 +58,6 @@ void Channel::joinChannel(Client *cl)
 
 // 채널 나가기
 void Channel::partChannel(Client &cl)
-
 {
     std::vector<Client>::iterator it;
     for (it = this->m_operators.begin(); it != this->m_operators.end(); ++it)
