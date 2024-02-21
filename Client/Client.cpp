@@ -2,6 +2,7 @@
 
 Client::Client()
 {
+    setHostname();
 }
 
 Client::Client(const Client &other)
@@ -18,6 +19,7 @@ Client &Client::operator=(const Client &other)
         m_send_msg = other.m_send_msg;
         m_nick = other.m_nick;
         m_username = other.m_username;
+        m_hostname = other.m_hostname;
         m_password = other.m_password;
         m_cur_channel = other.m_cur_channel;
         m_flag_connect = other.m_flag_connect;
@@ -57,6 +59,14 @@ void Client::setNick(const std::string &nick)
 void Client::setUsername(const std::string &username)
 {
     m_username = username;
+}
+
+void Client::setHostname()
+{
+    char txt[1024];
+
+    gethostname(txt, strlen(txt));
+    m_hostname = std::string(txt);
 }
 
 void Client::setRecvData(const char *data)
@@ -99,6 +109,11 @@ std::string Client::getNick() const
 std::string Client::getUser()
 {
     return m_username;
+}
+
+std::string Client::getHostname()
+{
+    return m_hostname;
 }
 
 std::string Client::getRecvData()
@@ -165,7 +180,7 @@ void Client::startSend()
 {
     int clnt_sock = getsockfd();
     std::cout << "m_send_msg : " << m_send_msg << std::endl;
-	send(clnt_sock, m_send_msg.c_str(), m_send_msg.length(), 0);
+    send(clnt_sock, m_send_msg.c_str(), m_send_msg.length(), 0);
 
     std::cout << "handle send : " << getSendMsg() << std::endl;
 
