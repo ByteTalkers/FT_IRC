@@ -28,50 +28,52 @@ void Message::partExecute(Server &server, Client &client, Command *cmd)
     std::vector<std::string> channels;
     std::string reason;
 
-    // 1. 파라미터가 없을 경우
     if (cmd->getParams().empty())
     {
-        // 채널에 속해 있지 않을 경우
         if (client.getCurChannel().empty())
         {
             client.addSendMsg("You're not on that channel");
             return;
         }
-        else // 채널에 속해 있는 경우
+        else
             channels.push_back(client.getCurChannel());
     }
     else
         parseChannelAndReason(cmd->getParams(), channels, reason);
 
-    for (size_t i = 0; i < channels.size(); ++i)
+    std::vector<std::string>::iterator it_channel;
+    for (it_channel = channels.begin(); it_channel != channels.end(); ++it_channel)
     {
-        std::string channelName = channels[i];
+        std::string channelName = *it_channel;
         std::map<std::string, Channel *>::iterator it = server.getChannels().find(channelName);
-        if (it == server.getChannels().end()) // 채널이 존재하지 않는 경우
+        if (it == server.getChannels().end())
         {
-            client.addSendMsg(channelName + " :No such channel");
+            // 403: No such channel
             continue;
         }
 
         Channel *channel = it->second;
-        if (!channel) // 존재하지 않는 채널
+        if (!channel->isMember(client))
         {
-            client.addSendMsg(channelName + " :No such channel");
+            // 442: You're not on that channel
             continue;
         }
 
-        if (!channel->isMember(client)) // 채널에 속해 있지 않은 경우
-        {
-            client.addSendMsg(channelName + " You're not on that channel");
-            continue;
-        }
-
-        channel->partChannel(client); // 채널 나가기
+        channel->partChannel(client);
         std::string message = client.getNick() + " has left " + channelName;
         if (!reason.empty())
             message += " [" + reason + "]";
 
-        for (std::vector<Client>::iterator it = channel->getNormals().begin(); it != channel->getNormals().end(); ++it)
-            it->addSendMsg(message);
+        std::vector<Client> allMembers = channel->getOperators();
+        std::vector<Client> normalMembers = channel->getNormals();
+        allMembers.insert(allMembers.end(), normalMembers.begin(), normalMembers.end());
+
+        std::vector<Client>::iterator it_member;
+        for (it_member = allMembers.begin(); it_member != allMembers.end(); ++it_member)
+        {
+            Client &member = *it_member;
+            if (member.getNick() != client.getNick())
+                member.addSendMsg(message);
+        }
     }
 }
