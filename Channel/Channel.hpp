@@ -3,12 +3,12 @@
 
 #include "../Client/Client.hpp"
 #include "../Server/Server.hpp"
+#include <algorithm>
 #include <cstdlib>
 #include <ctime>
 #include <map>
 #include <string>
 #include <vector>
-#include <algorithm>
 
 class Client; // 전방 선언
 class Server;
@@ -41,7 +41,7 @@ class Channel
     ~Channel(void);
     Channel &operator=(Channel const &rhs);
 
-    void joinChannel(Client cl);
+    void joinChannel(Client *cl);
     void partChannel(Client &cl);
 
     bool checkOp(Client cl);
@@ -87,7 +87,7 @@ class Channel
     void setModeLimit(bool tf);
     void setTopicExist(bool tf);
 
-	// 기타 함수
+    // 기타 함수
     void addSendMsgAll(Server &server, const std::string &from, const std::string &cmd, const std::string &msg);
 };
 
