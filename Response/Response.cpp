@@ -17,7 +17,8 @@ std::string Response::RPL_WELCOME_001(const std::string &se_name, const std::str
 }
 
 // ERROR
-std::string Response::ERR_NEEDMOREPARAMS_461(const std::string &se_name, const std::string &nick, std::string &command)
+std::string Response::ERR_NEEDMOREPARAMS_461(const std::string &se_name, const std::string &nick,
+                                             const std::string &command)
 {
     return GENERATE(se_name, "461", nick + " " + command + " :Not enough parameters");
 }

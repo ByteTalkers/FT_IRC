@@ -5,7 +5,7 @@ void Message::topicExecute(Server &server, Client &client, Command *cmd)
     // 파라미터 없음
     if (cmd->getParamsCount() < 1)
     {
-        client.addSendMsg(Response::errNeedMoreParams_461(server.getName(), client.getNick(), cmd->getCommand()));
+        client.addSendMsg(Response::ERR_NEEDMOREPARAMS_461(server.getName(), client.getNick(), cmd->getCommand()));
         client.setWriteTypes(MYSELF);
         return;
     }
@@ -16,7 +16,7 @@ void Message::topicExecute(Server &server, Client &client, Command *cmd)
     // 해당 채널 없음
     if (channel == NULL)
     {
-        client.addSendMsg(Response::errNoSuchChannel_403(server.getName(), client.getNick(), channel_name));
+        client.addSendMsg(Response::ERR_NOSUCHCHANNEL_403(server.getName(), client.getNick(), channel_name));
         client.setWriteTypes(MYSELF);
         return;
     }
@@ -28,11 +28,13 @@ void Message::topicExecute(Server &server, Client &client, Command *cmd)
         if (channel->getTopicExist())
         {
             client.addSendMsg(
-                Response::rplTopic_332(server.getName(), client.getNick(), channel_name, channel->getTopic()));
+                Response::RPL_TOPIC_332(server.getName(), client.getNick(), channel_name, channel->getTopic()));
+            client.setWriteTypes(MYSELF);
         }
         else
         {
-            client.addSendMsg(Response::rplNoTopic_331(server.getName(), client.getNick(), channel_name));
+            client.addSendMsg(Response::RPL_NOTOPIC_331(server.getName(), client.getNick(), channel_name));
+            client.setWriteTypes(MYSELF);
         }
         client.setWriteTypes(MYSELF);
     }
@@ -51,8 +53,7 @@ void Message::topicExecute(Server &server, Client &client, Command *cmd)
             }
             else
             {
-                client.addSendMsg(
-                    Response::errChanOPrivsNeeded_482(server.getName(), client.getNick(), channel_name));
+                client.addSendMsg(Response::ERR_CHANOPRIVSNEEDED_482(server.getName(), client.getNick(), channel_name));
                 client.setWriteTypes(MYSELF);
             }
         }

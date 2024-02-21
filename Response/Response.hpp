@@ -28,7 +28,7 @@ class Response
 
     // ERROR
     static std::string ERR_NEEDMOREPARAMS_461(const std::string &se_name, const std::string &nick,
-                                              std::string &command);
+                                              const std::string &command);
 
     // PASS, USER
     static std::string ERR_ALREADYREGISTERED_462(const std::string &se_name, const std::string &nick);

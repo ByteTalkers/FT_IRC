@@ -19,8 +19,7 @@ int main(int ac, char **av)
     catch (const std::runtime_error &e)
     {
         std::cout << e.what() << std::endl;
-        return 1;
+        server.setErrorCode();
     }
-
-    return 0;
+    return server.endServ();
 }
