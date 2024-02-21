@@ -88,7 +88,6 @@ class Channel
 
 	// 기타 함수
     void addSendMsgAll(Server &server, const std::string &from, const std::string &cmd, const std::string &msg);
-	void eraseClient(Client *clnt);
 };
 
 #endif
