@@ -231,10 +231,8 @@ void Channel::addSendMsgAll(Server &server, const std::string &from, const std::
     std::vector<Client *>::iterator it;
     for (it = this->m_normals.begin(); it != this->m_normals.end(); it++)
     {
-        (*it)->addSendMsg(Response::generateResponse(from, cmd, this->m_name + " :" + msg).c_str());
-        std::cout << Response::generateResponse(from, cmd, this->m_name + " :" + msg) << std::endl;
+        (*it)->addSendMsg(Response::GENERATE(from, cmd, this->m_name + " :" + msg).c_str());
         server.enableWriteEvent((*it)->getsockfd());
-        std::cout << (*it)->getsockfd() << std::endl;
     }
 }
 
