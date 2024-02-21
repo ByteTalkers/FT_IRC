@@ -41,8 +41,8 @@ class Channel
     ~Channel(void);
     Channel &operator=(Channel const &rhs);
 
-    void joinChannel(Client *cl);
-    void partChannel(Client *cl);
+    void joinChannel(Client cl);
+    void partChannel(Client &cl);
 
     bool checkOp(Client cl);
     // 초대받은 유저 리스트 함수들

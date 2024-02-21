@@ -102,11 +102,13 @@ void Message::commandExecute(Server &server, Client &client, Command *cmd)
         pingExecute(server, client, cmd);
         break;
     case QUIT:
+        quitExecute(server, client, cmd);
         break;
     case JOIN:
         joinExecute(server, client, cmd);
         break;
     case PART:
+        partExecute(server, client, cmd);
         break;
     case MODE:
         modeExecute(server, client, cmd);

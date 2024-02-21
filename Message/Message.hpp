@@ -9,8 +9,6 @@
 #include <utility>
 #include <vector>
 
-#include <map>
-
 #include "../Channel/Channel.hpp"
 #include "../Client/Client.hpp"
 #include "../Response/Response.hpp"
@@ -67,6 +65,8 @@ class Message
     void modeExecute(Server &server, Client &client, Command *cmd);
     void whoisExecute(Server &server, Client &client, Command *cmd);
     void pingExecute(Server &server, Client &client, Command *cmd);
+    void partExecute(Server &server, Client &client, Command *cmd);
+    void quitExecute(Server &server, Client &client, Command *cmd);
     void privmsgExecute(Server &server, Client &client, Command *cmd);
 
     void topicExecute(Server &server, Client &client, Command *cmd);
