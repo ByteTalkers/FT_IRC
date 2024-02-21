@@ -232,7 +232,7 @@ void Channel::addSendMsgAll(Server &server, const std::string &from, const std::
         {
             continue;
         }
-        (*it)->addSendMsg(Response::generateResponse(from, cmd, this->m_name + " :" + msg).c_str());
+        (*it)->addSendMsg(Response::GENERATE(from, cmd, this->m_name + " :" + msg).c_str());
         server.enableWriteEvent((*it)->getsockfd());
     }
 }

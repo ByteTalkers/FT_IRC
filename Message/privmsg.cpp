@@ -18,7 +18,7 @@ void Message::privmsgExecute(Server &server, Client &client, Command *cmd)
     // 파라미터 없음
     if (cmd->getParamsCount() < 2)
     {
-        client.addSendMsg(Response::errNeedMoreParams_461(server.getName(), client.getNick(), cmd->getCommand()));
+        client.addSendMsg(Response::ERR_NEEDMOREPARAMS_461(server, client, cmd->getCommand()));
         return;
     }
 
@@ -42,7 +42,7 @@ void Message::privmsgExecute(Server &server, Client &client, Command *cmd)
             }
             else
             {
-                client.addSendMsg(Response::errCanNotSendToChan_404(server.getName(), client.getNick(), cmd->getParams()[0]));
+                client.addSendMsg(Response::ERR_CANNOTSENDTOCHAN_404(server, client, *channel));
                 client.setWriteTypes(MYSELF);
             }
             break;
@@ -52,11 +52,11 @@ void Message::privmsgExecute(Server &server, Client &client, Command *cmd)
             break;
         case NOCHANNEL:
             client.addSendMsg(
-                Response::errNoSuchChannel_403(server.getName(), client.getNick(), cmd->getParams()[0]));
+                Response::ERR_NOSUCHCHANNEL_403(server, client, cmd->getParams()[0]));
             client.setWriteTypes(MYSELF);
             break;
         case NOCLIENT:
-            client.addSendMsg(Response::errNoSuchNick_401(server.getName(), client.getNick(), cmd->getParams()[0]));
+            client.addSendMsg(Response::ERR_NOSUCHNICK_401(server, client, cmd->getParams()[0]));
             client.setWriteTypes(MYSELF);
             break;
         }
@@ -83,7 +83,7 @@ static void sendPrivmsgToClient(Server &server, Client &client, const std::vecto
         msg += params[i];
     }
     client.setRecvFd(receiver->getsockfd());
-    receiver->addSendMsg(Response::generateResponse(client.getNick(), "PRIVMSG", receiver->getNick() + " :"  + msg).c_str());
+    receiver->addSendMsg(Response::GENERATE(client.getNick(), "PRIVMSG", receiver->getNick() + " :"  + msg).c_str());
     server.enableWriteEvent(receiver->getsockfd());
 }
 
