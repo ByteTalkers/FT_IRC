@@ -234,7 +234,7 @@ static void modeO(Server &server, Client &client, Channel *channel, std::pair<eC
 
     if (!channel->isMemberNick(mode.second))
     {
-        client.addSendMsg(Response::errNoSuchNick_401(server.getName(), client.getNick(), mode.second));
+        client.addSendMsg(Response::ERR_NOSUCHNICK_401(server, client, mode.second));
         client.setWriteTypes(MYSELF);
     }
     if (mode.first == TRUE)
