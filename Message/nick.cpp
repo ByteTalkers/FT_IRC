@@ -5,8 +5,9 @@ static bool checkChar(char c);
 
 /**
  * 유저 등록 전 NICK 실행부
- * - 파라미터 없으면 ERR_NEEDMOREPARAMS_461
- * - 닉네임 유효하지 않으면 ERR_ERRONEUSNICKNAME_432
+ * - 파라미터 없으면 => ERR_NEEDMOREPARAMS_461
+ * - 닉네임 유효하지 않으면 => ERR_ERRONEUSNICKNAME_432
+ * - 닉네임 중복이면 => ERR_NICKNAMEINUSE_433
  * - 클라이언트에 닉네임 세팅
  * - 클라이언트 등록 닉네임 플래그 켜기
 */
@@ -24,6 +25,12 @@ void Message::registerNickExecute(Server &server, Client &client, Command *cmd)
         client.setWriteTypes(MYSELF);
         return;
     }
+    if (server.findClient(cmd->getParams()[0]) != NULL)
+    {
+        client.addSendMsg(Response::ERR_NICKNAMEINUSE_433(server, client, cmd->getParams()[0]));
+        client.setWriteTypes(MYSELF);
+        return;
+    }
 
     client.setNick(cmd->getParams()[0]);
     client.setRegisterFlags(NICK_REG, true);
@@ -31,8 +38,9 @@ void Message::registerNickExecute(Server &server, Client &client, Command *cmd)
 
 /**
  * 유저 등록 후 NICK 실행부
- * - 파라미터 없으면 ERR_NEEDMOREPARAMS_461
- * - 닉네임 유효하지 않으면 ERR_ERRONEUSNICKNAME_432
+ * - 파라미터 없으면 => ERR_NEEDMOREPARAMS_461
+ * - 닉네임 유효하지 않으면 => ERR_ERRONEUSNICKNAME_432
+ * - 닉네임 중복이면 => ERR_NICKNAMEINUSE_433
  * - 클라이언트에 닉네임 세팅
 */
 void Message::nickExecute(Server &server, Client &client, Command *cmd)
