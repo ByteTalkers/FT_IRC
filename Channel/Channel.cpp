@@ -23,7 +23,7 @@ Channel::Channel(const Channel &src)
     this->m_is_mode_topic = src.m_is_mode_topic;
     this->m_is_mode_limit = src.m_is_mode_limit;
 
-    this->m_is_set_topic = src.m_is_set_topic;
+    this->m_is_topic_exist = src.m_is_topic_exist;
 }
 
 Channel::~Channel()
@@ -153,9 +153,9 @@ bool Channel::getModeLimit() const
     return this->m_is_mode_limit;
 }
 
-bool Channel::getSetTopic() const
+bool Channel::getTopicExist() const
 {
-    return this->m_is_set_topic;
+    return this->m_is_topic_exist;
 }
 
 // Setter
@@ -218,9 +218,9 @@ void Channel::setModeLimit(bool tf)
     this->m_is_mode_limit = tf;
 }
 
-void Channel::setSetTopic(bool tf)
+void Channel::setTopicExist(bool tf)
 {
-    this->m_is_set_topic = tf;
+    this->m_is_topic_exist = tf;
 }
 
 void Channel::addSendMsgAll(Server &server, const std::string &from, const std::string &cmd, const std::string &msg)
@@ -231,7 +231,6 @@ void Channel::addSendMsgAll(Server &server, const std::string &from, const std::
         (*it)->addSendMsg(Response::GENERATE(from, cmd, this->m_name + " :" + msg).c_str());
         std::cout << Response::GENERATE(from, cmd, this->m_name + " :" + msg) << std::endl;
         server.enableWriteEvent((*it)->getsockfd());
-        std::cout << (*it)->getsockfd() << std::endl;
     }
 }
 
@@ -278,4 +277,16 @@ void Channel::addMember(Client *client)
     {
         m_normals.push_back(client);
     }
+}
+
+bool Channel::isMemberNick(std::string &nick) const
+{
+    for (std::vector<Client *>::const_iterator it = m_normals.begin(); it != m_normals.end(); ++it)
+    {
+        if ((*it)->getNick() == nick)
+        {
+            return true;
+        }
+    }
+    return false;
 }
