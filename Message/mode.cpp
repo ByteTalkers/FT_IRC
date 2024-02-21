@@ -204,6 +204,7 @@ static void modeT(Server &server, Client &client, Channel *channel, std::pair<eC
     if (mode.first == FALSE && channel->getModeTopic())
     {
         channel->setModeTopic(false);
+        channel->setTopicExist(false);
         channel->addSendMsgAll(server, client.getNick(), "MODE", "+t");
     }
 }
