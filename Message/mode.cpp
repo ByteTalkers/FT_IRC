@@ -21,7 +21,7 @@ void Message::modeExecute(Server &server, Client &client, Command *cmd)
     // 파라미터 없음
     if (cmd->getParamsCount() < 2)
     {
-        client.addSendMsg(Response::ERR_NEEDMOREPARAMS_461(server.getName(), client.getNick(), cmd->getCommand()));
+        client.addSendMsg(Response::ERR_NEEDMOREPARAMS_461(server, client, cmd->getCommand()));
         client.setWriteTypes(MYSELF);
         return;
     }
@@ -34,11 +34,11 @@ void Message::modeExecute(Server &server, Client &client, Command *cmd)
     {
         if (cmd->getParams()[0] == client.getNick())
         {
-            client.addSendMsg(Response::RPL_UMODEIS_221(client.getUser(), client.getNick()));
+            client.addSendMsg(Response::RPL_UMODEIS_221(client));
         }
         else
         {
-            client.addSendMsg(Response::ERR_NOSUCHCHANNEL_403(server.getName(), client.getNick(), channel_name));
+            client.addSendMsg(Response::ERR_NOSUCHCHANNEL_403(server, client, cmd->getParams()[0]));
         }
         client.setWriteTypes(MYSELF);
         return;
@@ -72,8 +72,8 @@ void Message::modeExecute(Server &server, Client &client, Command *cmd)
         {
             if ((*it).first != NOTEXIST)
             {
-                client.addSendMsg(
-                    Response::ERR_CHANOPRIVSNEEDED_482(server.getName(), client.getNick(), channel->getName()));
+            client.addSendMsg(
+                    Response::ERR_CHANOPRIVSNEEDED_482(server, client, *channel));
             }
             client.setWriteTypes(MYSELF);
             return;
@@ -177,7 +177,8 @@ static void modeUnknowns(Server &server, Client &client, std::vector<char> &unkn
     std::vector<char>::iterator it;
     for (it = unknowns.begin(); it < unknowns.end(); it++)
     {
-        client.addSendMsg(Response::ERR_UNKNOWNMODE_472(server.getName(), client.getNick(), std::string(1, *it)));
+        client.addSendMsg(
+            Response::ERR_UNKNOWNMODE_472(server, client, std::string(1, *it)));
     }
 }
 

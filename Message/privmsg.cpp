@@ -18,7 +18,7 @@ void Message::privmsgExecute(Server &server, Client &client, Command *cmd)
     // 파라미터 없음
     if (cmd->getParamsCount() < 2)
     {
-        client.addSendMsg(Response::ERR_NEEDMOREPARAMS_461(server.getName(), client.getNick(), cmd->getCommand()));
+        client.addSendMsg(Response::ERR_NEEDMOREPARAMS_461(server, client, cmd->getCommand()));
         return;
     }
 
@@ -42,8 +42,7 @@ void Message::privmsgExecute(Server &server, Client &client, Command *cmd)
             }
             else
             {
-                client.addSendMsg(
-                    Response::ERR_CANNOTSENDTOCHAN_404(server.getName(), client.getNick(), cmd->getParams()[0]));
+                client.addSendMsg(Response::ERR_CANNOTSENDTOCHAN_404(server, client, *channel));
                 client.setWriteTypes(MYSELF);
             }
             break;
@@ -52,11 +51,12 @@ void Message::privmsgExecute(Server &server, Client &client, Command *cmd)
             sendPrivmsgToClient(server, client, cmd->getParams());
             break;
         case NOCHANNEL:
-            client.addSendMsg(Response::ERR_NOSUCHCHANNEL_403(server.getName(), client.getNick(), cmd->getParams()[0]));
+            client.addSendMsg(
+                Response::ERR_NOSUCHCHANNEL_403(server, client, cmd->getParams()[0]));
             client.setWriteTypes(MYSELF);
             break;
         case NOCLIENT:
-            client.addSendMsg(Response::ERR_NOSUCHNICK_401(server.getName(), client.getNick(), cmd->getParams()[0]));
+            client.addSendMsg(Response::ERR_NOSUCHNICK_401(server, client, cmd->getParams()[0]));
             client.setWriteTypes(MYSELF);
             break;
         }

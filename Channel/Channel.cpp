@@ -228,8 +228,11 @@ void Channel::addSendMsgAll(Server &server, const std::string &from, const std::
     std::vector<Client *>::iterator it;
     for (it = this->m_normals.begin(); it != this->m_normals.end(); it++)
     {
+        if ((*it)->getNick() == from)
+        {
+            continue;
+        }
         (*it)->addSendMsg(Response::GENERATE(from, cmd, this->m_name + " :" + msg).c_str());
-        std::cout << Response::GENERATE(from, cmd, this->m_name + " :" + msg) << std::endl;
         server.enableWriteEvent((*it)->getsockfd());
     }
 }
