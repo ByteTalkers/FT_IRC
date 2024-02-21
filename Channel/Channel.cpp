@@ -7,10 +7,10 @@ Channel::Channel(std::string name, Client *cl) : m_name(name), m_cretaed(time(NU
 
 Channel::Channel(const Channel &src)
 {
-    this->m_name = src.m_name;				
+    this->m_name = src.m_name;
     this->m_cretaed = src.m_cretaed;
     this->m_operators = src.m_operators;
-    this->m_normals = src.  m_normals;
+    this->m_normals = src.m_normals;
     this->m_bans = src.m_bans;
     this->m_invitations = src.m_invitations;
     this->m_topic = src.m_topic;
@@ -53,7 +53,7 @@ void Channel::joinChannel(Client *cl)
 
     this->m_user_count++;
     cl->setCurChannel(this->getName()); // 클라이언트의 현재 채널이름 설정
-    this->m_normals.push_back(cl);     // 목록에 넣기
+    this->m_normals.push_back(cl);      // 목록에 넣기
 }
 
 // 채널 나가기
@@ -84,14 +84,13 @@ bool Channel::checkOp(Client cl)
     std::vector<Client *>::iterator it;
     for (it = this->m_operators.begin(); it < this->m_operators.end(); it++)
     {
-        if ((*it) == &cl) 
+        if ((*it) == &cl)
         {
             return true;
         }
     }
     return false;
 }
-
 
 // Getter
 std::string Channel::getName() const
@@ -113,7 +112,6 @@ std::vector<Client *> Channel::getNormals() const
 {
     return this->m_normals;
 }
-
 
 std::string Channel::getTopic() const
 {
@@ -179,7 +177,6 @@ void Channel::setNormals(std::vector<Client *> normals)
 {
     this->m_normals = normals;
 }
-
 
 void Channel::setTopic(std::string topic)
 {

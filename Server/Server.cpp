@@ -229,21 +229,17 @@ void Server::handleSend(int fd)
 
 void Server::handleDisconnect(int fd)
 {
-    // 클라이언트 목록에서 fd를 찾는다.
-    std::map<int, Client>::iterator it = m_clients.find(fd);
+    // 클라이언트 목록에서 해당하는 클라이언트를 fd로 찾는다.
+    std::map<int, Client>::iterator it_clnt = m_clients.find(fd);
+	Client clnt = it_clnt->second;
 
-    if (it == m_clients.end())
-        return;
-    else
-    {
-        // 해당 소켓을 닫는다.
-        if (close(it->first) == -1)
-            throw std::runtime_error("close() error");
+	// 클라이언트의 소켓을 닫는다.
+	if (close(fd) == -1)
+		throw std::runtime_error("close() error");
 
-        // 전체 유저 목록에서 지운다.
-        m_clients.erase(it);
-        std::cout << "success : erase" << std::endl;
-    }
+	// 전체 유저 목록에서 지운다.
+	m_clients.erase(it_clnt);
+	std::cout << "success : erase" << std::endl;
 }
 
 std::string Server::getClientCount()

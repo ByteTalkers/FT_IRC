@@ -8,6 +8,7 @@
 #include <fcntl.h>
 #include <iostream>
 #include <map>
+#include <netdb.h>
 #include <netinet/in.h>
 #include <stdexcept>
 #include <sys/event.h>
@@ -67,7 +68,7 @@ class Client
     void setPassword(const std::string &password);
     void setNick(const std::string &nick);
     void setUsername(const std::string &username);
-    void setHostname();
+    void setHostname(struct sockaddr_in &clnt_adr);
     void setRecvData(const char *data);
     void setWriteTypes(const writeEvent type);
     void setCurChannel(const std::string channel);

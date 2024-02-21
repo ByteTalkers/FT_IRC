@@ -2,7 +2,6 @@
 
 Client::Client()
 {
-    setHostname();
 }
 
 Client::Client(const Client &other)
@@ -61,12 +60,13 @@ void Client::setUsername(const std::string &username)
     m_username = username;
 }
 
-void Client::setHostname()
+void Client::setHostname(struct sockaddr_in &clnt_adr)
 {
-    char txt[1024];
+    char hostname[NI_MAXHOST];
+    char service[NI_MAXSERV];
 
-    gethostname(txt, strlen(txt));
-    m_hostname = std::string(txt);
+    getnameinfo((struct sockaddr *)&clnt_adr, sizeof(clnt_adr), hostname, NI_MAXHOST, service, NI_MAXSERV, 0);
+    this->m_hostname = hostname;
 }
 
 void Client::setRecvData(const char *data)
@@ -158,6 +158,9 @@ void Client::startListen(int serv_sock)
 
     // nonblock 처리
     fcntl(m_socket_fd, F_SETFL, O_NONBLOCK);
+
+    // setHostname()
+    setHostname(clnt_adr);
 }
 
 void Client::startParseMessage(Server &serv)
