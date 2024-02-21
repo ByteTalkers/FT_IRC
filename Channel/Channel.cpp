@@ -281,3 +281,15 @@ void Channel::addMember(Client *client)
         m_normals.push_back(client);
     }
 }
+
+bool Channel::isMemberNick(std::string &nick) const
+{
+    for (std::vector<Client *>::const_iterator it = m_normals.begin(); it != m_normals.end(); ++it)
+    {
+        if ((*it)->getNick() == nick)
+        {
+            return true;
+        }
+    }
+    return false;
+}
