@@ -9,8 +9,6 @@
 #include <utility>
 #include <vector>
 
-#include <map>
-
 #include "../Channel/Channel.hpp"
 #include "../Client/Client.hpp"
 #include "../Response/Response.hpp"
@@ -56,6 +54,10 @@ class Message
     void parsingOrigin();
 
     void execute(Server &server, Client &client);
+
+    // registerExecute
+    void registerNickExecute(Server &server, Client &client, Command *cmd);
+
     // Command
     void registerExecute(Server &server, Client &client, Command *cmd);
     void commandExecute(Server &server, Client &client, Command *cmd);

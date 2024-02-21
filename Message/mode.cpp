@@ -73,7 +73,7 @@ void Message::modeExecute(Server &server, Client &client, Command *cmd)
             if ((*it).first != NOTEXIST)
             {
             client.addSendMsg(
-                    Response::errChanOPrivsNeeded_482(server.getName(), client.getNick(), channel->getName()));
+                    Response::ERR_CHANOPRIVSNEEDED_482(server, client, *channel));
             }
             client.setWriteTypes(MYSELF);
             return;
@@ -178,7 +178,7 @@ static void modeUnknowns(Server &server, Client &client, std::vector<char> &unkn
     for (it = unknowns.begin(); it < unknowns.end(); it++)
     {
         client.addSendMsg(
-            Response::errUnknownMode_472(server.getName(), client.getNick(), std::string(1, *it)));
+            Response::ERR_UNKNOWNMODE_472(server, client, std::string(1, *it)));
     }
 }
 
@@ -234,7 +234,7 @@ static void modeO(Server &server, Client &client, Channel *channel, std::pair<eC
 
     if (!channel->isMemberNick(mode.second))
     {
-        client.addSendMsg(Response::errNoSuchNick_401(server.getName(), client.getNick(), mode.second));
+        client.addSendMsg(Response::ERR_NOSUCHNICK_401(server, client, mode.second));
         client.setWriteTypes(MYSELF);
     }
     if (mode.first == TRUE)
