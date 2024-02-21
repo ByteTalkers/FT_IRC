@@ -37,7 +37,7 @@ class Channel
     Channel &operator=(Channel const &rhs);
 
     void joinChannel(Client cl);
-    void partChannel(Client cl);
+    void partChannel(Client &cl);
 
     // 초대받은 유저 리스트 함수들
     void addInvitation(const std::string &user);

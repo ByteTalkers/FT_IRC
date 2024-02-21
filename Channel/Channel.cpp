@@ -37,24 +37,24 @@ void Channel::joinChannel(Client cl)
 }
 
 // 채널 나가기
-void Channel::partChannel(Client cl)
+void Channel::partChannel(Client &cl)
 {
-    this->m_user_count--;
-    for (std::size_t i = 0; i < this->m_operators.size(); i++)
+    std::vector<Client>::iterator it;
+    for (it = this->m_operators.begin(); it != this->m_operators.end(); ++it)
     {
-        if (this->m_operators[i].getNick() == cl.getNick())
+        if (it->getNick() == cl.getNick())
         {
-            this->m_operators.erase(this->m_operators.begin() + i);
-            return;
+            this->m_operators.erase(it);
+            break;
         }
     }
-    for (std::size_t i = 0; i < this->m_normals.size(); i++)
+
+    for (it = this->m_normals.begin(); it != this->m_normals.end(); ++it)
     {
-        if (this->m_normals[i].getNick() == cl.getNick())
+        if (it->getNick() == cl.getNick())
         {
-            cl.setCurChannel(NULL); // 클라이언트의 현재 채널이름도 NULL로
-            this->m_normals.erase(this->m_normals.begin() + i);
-            return;
+            this->m_normals.erase(it);
+            break;
         }
     }
 }
