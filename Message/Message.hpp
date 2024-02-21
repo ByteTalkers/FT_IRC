@@ -33,7 +33,8 @@ enum eCmds
     TOPIC,
     INVITE,
     PRIVMSG,
-    WHOIS
+    WHOIS,
+    KICK
 };
 
 class Message
@@ -72,6 +73,7 @@ class Message
     void partExecute(Server &server, Client &client, Command *cmd);
     void quitExecute(Server &server, Client &client, Command *cmd);
     void privmsgExecute(Server &server, Client &client, Command *cmd);
+	void kickExecute(Server &server, Client &client, Command *cmd);
 
     void topicExecute(Server &server, Client &client, Command *cmd);
 
