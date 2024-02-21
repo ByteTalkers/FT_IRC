@@ -1,5 +1,5 @@
-CC = g++
-CFLAGS = -Wall -Wextra -Werror -g 
+CXX = c++
+CXXFLAGS = -Wall -Wextra -Werror -g 
 NAME = ircserv
 FILE = Server/Server.cpp Server/utils.cpp \
 	Client/Client.cpp main.cpp Channel/Channel.cpp \
@@ -13,7 +13,7 @@ all : make
 re : fclean all
 
 make : 
-	$(CC) $(CFLAGS) $(FILE) -o $(NAME)
+	$(CXX) $(CXXFLAGS) $(FILE) -o $(NAME)
 
 clean:
 	rm -rf $(NAME)

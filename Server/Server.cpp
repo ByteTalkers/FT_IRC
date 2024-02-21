@@ -1,6 +1,6 @@
 #include "Server.hpp"
 
-Server::Server() : m_password("password"), m_portnum(9000)
+Server::Server() : m_password("password"), m_portnum(9000), m_error(false)
 {
 }
 
@@ -50,7 +50,12 @@ void Server::setPassword(std::string pw)
     m_password = pw;
 }
 
-Server::Server(std::string password) : m_password(password)
+void Server::setErrorCode()
+{
+    m_error = true;
+}
+
+Server::Server(std::string password) : m_password(password), m_error(false)
 {
 }
 
@@ -144,8 +149,8 @@ void Server::handleKqueue()
                     Server::handleConnect();
                 continue;
             }
-            if (event_arr[i].flags & EV_EOF) // 연결이 끊어진 경우
-                Server::handleDisconnect();
+            if (event_arr[i].flags & EV_EOF) // 연결을 끊으려고 하는 경우
+                Server::handleDisconnect(fd);
             else if (event_arr[i].filter == EVFILT_READ) // 읽기 이벤트 -> 읽고 파싱
                 Server::handleRecv(fd);
             else if (event_arr[i].filter == EVFILT_WRITE) // 쓰기 이벤트 -> 데이터 전송
@@ -222,9 +227,19 @@ void Server::handleSend(int fd)
     clnt.setWriteTypes(NONE);
 }
 
-void Server::handleDisconnect()
+void Server::handleDisconnect(int fd)
 {
-    exit(EXIT_SUCCESS);
+    // 클라이언트 목록에서 해당하는 클라이언트를 fd로 찾는다.
+    std::map<int, Client>::iterator it_clnt = m_clients.find(fd);
+	Client clnt = it_clnt->second;
+
+	// 클라이언트의 소켓을 닫는다.
+	if (close(fd) == -1)
+		throw std::runtime_error("close() error");
+
+	// 전체 유저 목록에서 지운다.
+	m_clients.erase(it_clnt);
+	std::cout << "success : erase" << std::endl;
 }
 
 std::string Server::getClientCount()
@@ -288,4 +303,16 @@ Client *Server::findClient(const std::string &client_name)
         }
     }
     return NULL;
+}
+
+int Server::endServ()
+{
+    std::map<std::string, Channel *>::iterator it_map;
+    for (it_map = m_channels.begin(); it_map != m_channels.end(); it_map++)
+    {
+        if (it_map->second)
+            delete it_map->second;
+    }
+
+    return static_cast<int>(m_error);
 }
