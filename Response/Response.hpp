@@ -103,10 +103,6 @@ class Response
     // MODE user +i
     static std::string RPL_UMODEIS_221(Client &client);
 
-    // WHOIS
-    static std::string RPL_WHOISUSER_311(Server &server, Client &client);
-    static std::string RPL_WHOISSERVER_312(Server &server, Client &client);
-    static std::string RPL_ENDOFWHOIS_318(Server &server, Client &client);
 };
 
 #endif
