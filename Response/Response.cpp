@@ -176,6 +176,11 @@ std::string Response::ERR_CHANOPRIVSNEEDED_482(Server &server, Client &client, C
                     client.getNick() + " " + channel.getName() + " :You're not channel operator");
 }
 
+std::string Response::ERR_SPECIFYPARAMETER_696(Server &server, Client &client, Channel &channel, const std::string &mode)
+{
+    return GENERATE(server.getName(), "696", client.getNick() + " " + channel.getName() + " " + mode[0] + " * :You must specify a parameter for the " + mode + " mode.");
+}
+
 // TOPIC
 std::string Response::RPL_NOTOPIC_331(Server &server, Client &client, Channel &channel)
 {

@@ -228,7 +228,7 @@ void Channel::addSendMsgAll(Server &server, const std::string &from, const std::
     std::vector<Client *>::iterator it;
     for (it = this->m_normals.begin(); it != this->m_normals.end(); it++)
     {
-        if ((*it)->getNick() == from)
+        if (cmd == "PRIVMSG" && (*it)->getNick() == from)
         {
             continue;
         }
@@ -287,6 +287,54 @@ bool Channel::isMemberNick(std::string &nick) const
     for (std::vector<Client *>::const_iterator it = m_normals.begin(); it != m_normals.end(); ++it)
     {
         if ((*it)->getNick() == nick)
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool Channel::isMemberNick(const std::string &nick) const
+{
+    for (std::vector<Client *>::const_iterator it = m_normals.begin(); it != m_normals.end(); ++it)
+    {
+        if ((*it)->getNick() == nick)
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
+void Channel::addOperator(const std::string &nick)
+{
+    for (std::vector<Client *>::const_iterator it = m_normals.begin(); it != m_normals.end(); ++it)
+    {
+        if ((*it)->getNick() == nick)
+        {
+            m_operators.push_back((*it));
+            break;
+        }
+    }
+}
+    
+void Channel::popOperator(const std::string &nick)
+{
+    for (std::vector<Client *>::const_iterator it = m_operators.begin(); it != m_operators.end(); ++it)
+    {
+        if ((*it)->getNick() == nick)
+        {
+            m_operators.erase(it);
+            break;
+        }
+    }
+}
+
+bool Channel::checkOpNick(const std::string &nick) const
+{
+    for (std::vector<Client *>::const_iterator it = m_operators.begin(); it != m_operators.end(); ++it)
+    {
+        if (((*it)->getNick() == nick))
         {
             return true;
         }
