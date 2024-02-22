@@ -305,6 +305,19 @@ Client *Server::findClient(const std::string &client_name)
     return NULL;
 }
 
+bool Server::searchNick(int fd, const std::string &nick)
+{
+    std::map<int, Client>::iterator it;
+    for (it = this->m_clients.begin(); it != this->m_clients.end(); it++)
+    {
+        if ((*it).first != fd && (*it).second.getNick() == nick)
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
 int Server::endServ()
 {
     std::map<std::string, Channel *>::iterator it_map;
