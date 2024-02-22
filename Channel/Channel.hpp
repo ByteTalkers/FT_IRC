@@ -9,6 +9,7 @@
 #include <map>
 #include <string>
 #include <vector>
+#include <deque>
 
 class Client; // 전방 선언
 class Server;
@@ -21,7 +22,7 @@ class Channel
     std::vector<Client *> m_operators; // op인 유저들의 목록
     std::vector<Client *> m_normals;   // 채팅방 속 모든 유저들의 목록
     std::vector<std::string> m_bans;
-    std::map<std::string, bool> m_invitations; // 초대 받은 유저 리스트 목록
+    std::deque <std::string> m_invitations; // 초대 받은 유저 리스트 목록
     std::string m_topic;
     std::string m_key;
     std::string m_password;

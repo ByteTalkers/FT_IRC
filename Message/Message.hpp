@@ -76,7 +76,7 @@ class Message
     void quitExecute(Server &server, Client &client, Command *cmd);
     void privmsgExecute(Server &server, Client &client, Command *cmd);
     void kickExecute(Server &server, Client &client, Command *cmd);
-
+    void inviteExecute(Server &server, Client &client, Command *cmd);
     void topicExecute(Server &server, Client &client, Command *cmd);
 
     // Getter
