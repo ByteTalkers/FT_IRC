@@ -22,6 +22,7 @@ void Message::registerUserExecute(Server &server, Client &client, Command *cmd)
         return;
     }
     client.setUsername(cmd->getParams()[0]);
+    client.setRealname(cmd->getParams()[3]);
     client.setRegisterFlags(USER_REG, true);
 }
 
