@@ -74,13 +74,13 @@ void Message::registerExecute(Server &server, Client &client, Command *cmd)
     case CAP:
         break;
     case PASS:
-        passExecute(server, client, cmd);
+        registerPassExecute(server, client, cmd);
         break;
     case NICK:
-        nickExecute(server, client, cmd);
+        registerNickExecute(server, client, cmd);
         break;
     case USER:
-        userExecute(server, client, cmd);
+        registerUserExecute(server, client, cmd);
         break;
     }
 
@@ -88,6 +88,8 @@ void Message::registerExecute(Server &server, Client &client, Command *cmd)
         client.getIsRegisterFlags()[NICK_REG])
     {
         client.setRegistered(true);
+        client.addSendMsg(Response::RPL_WELCOME_001(server, client));
+        client.setWriteTypes(MYSELF);
     }
     else
     {
