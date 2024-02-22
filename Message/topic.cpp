@@ -6,7 +6,6 @@ void Message::topicExecute(Server &server, Client &client, Command *cmd)
     if (cmd->getParamsCount() < 1)
     {
         client.addSendMsg(Response::ERR_NEEDMOREPARAMS_461(server, client, cmd->getCommand()));
-        client.setWriteTypes(MYSELF);
         return;
     }
 
@@ -17,7 +16,6 @@ void Message::topicExecute(Server &server, Client &client, Command *cmd)
     if (channel == NULL)
     {
         client.addSendMsg(Response::ERR_NOSUCHCHANNEL_403(server, client, cmd->getParams()[0]));
-        client.setWriteTypes(MYSELF);
         return;
     }
 
@@ -29,14 +27,12 @@ void Message::topicExecute(Server &server, Client &client, Command *cmd)
         {
             client.addSendMsg(
                 Response::RPL_TOPIC_332(server, client, *channel));
-            client.setWriteTypes(MYSELF);
         }
         else
         {
             client.addSendMsg(Response::RPL_NOTOPIC_331(server, client, *channel));
-            client.setWriteTypes(MYSELF);
         }
-        client.setWriteTypes(MYSELF);
+        
     }
     // 채널명 + 인자인 경우 => 토픽 세팅
     else
@@ -55,7 +51,6 @@ void Message::topicExecute(Server &server, Client &client, Command *cmd)
             {
                 client.addSendMsg(
                     Response::ERR_CHANOPRIVSNEEDED_482(server, client, *channel));
-                client.setWriteTypes(MYSELF);
             }
         }
         else

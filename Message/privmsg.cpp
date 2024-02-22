@@ -43,7 +43,6 @@ void Message::privmsgExecute(Server &server, Client &client, Command *cmd)
             else
             {
                 client.addSendMsg(Response::ERR_CANNOTSENDTOCHAN_404(server, client, *channel));
-                client.setWriteTypes(MYSELF);
             }
             break;
         // 해당 클라이언트에게만
@@ -53,11 +52,9 @@ void Message::privmsgExecute(Server &server, Client &client, Command *cmd)
         case NOCHANNEL:
             client.addSendMsg(
                 Response::ERR_NOSUCHCHANNEL_403(server, client, cmd->getParams()[0]));
-            client.setWriteTypes(MYSELF);
             break;
         case NOCLIENT:
             client.addSendMsg(Response::ERR_NOSUCHNICK_401(server, client, cmd->getParams()[0]));
-            client.setWriteTypes(MYSELF);
             break;
         }
     }
@@ -100,7 +97,6 @@ static std::vector<std::string> splitComma(const std::string &command)
     {
         ret.push_back(buffer);
     }
-
     return ret;
 }
 

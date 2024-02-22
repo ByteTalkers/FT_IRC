@@ -11,7 +11,6 @@ void Message::registerPassExecute(Server &server, Client &client, Command *cmd)
     if (cmd->getParamsCount() < 1)
     {
         client.addSendMsg(Response::ERR_NEEDMOREPARAMS_461(server, client, cmd->getCommand()));
-        client.setWriteTypes(MYSELF);
         return;
     }
     if (server.getPassword() == cmd->getParams()[0])
@@ -34,10 +33,8 @@ void Message::passExecute(Server &server, Client &client, Command *cmd)
     if (cmd->getParamsCount() < 1)
     {
         client.addSendMsg(Response::ERR_NEEDMOREPARAMS_461(server, client, cmd->getCommand()));
-        client.setWriteTypes(MYSELF);
         return;
     }
     client.addSendMsg(Response::ERR_ALREADYREGISTERED_462(server, client));
-    client.setWriteTypes(MYSELF);
     return;
 }
