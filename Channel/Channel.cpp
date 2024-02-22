@@ -241,17 +241,33 @@ void Channel::addSendMsgAll(Server &server, const std::string &from, const std::
 
 void Channel::addInvitation(const std::string &user)
 {
-    this->m_invitations[user] = true;
+    this->m_invitations.push_back(user);
 }
 
 bool Channel::isInvited(const std::string &user) const
 {
-    return m_invitations.find(user) != m_invitations.end();
+    std::deque<std::string>::const_iterator it;
+    for (it = this->m_invitations.begin(); it != this->m_invitations.end(); it++)
+    {
+        if ((*it) == user)
+        {
+            return true;
+        }
+    }
+    return false;
 }
 
 void Channel::removeInvitation(const std::string &user)
 {
-    this->m_invitations.erase(user);
+    std::deque<std::string>::const_iterator it;
+    for (it = this->m_invitations.begin(); it != this->m_invitations.end(); it++)
+    {
+        if ((*it) == user)
+        {
+            this->m_invitations.erase(it);
+            return;
+        }
+    }
 }
 
 bool Channel::checkKey(const std::string &key)
