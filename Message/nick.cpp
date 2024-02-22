@@ -13,6 +13,7 @@ static bool checkChar(char c);
  */
 void Message::registerNickExecute(Server &server, Client &client, Command *cmd)
 {
+    (void)server;
     // 일단 주석처리
     // if (cmd->getParamsCount() < 1)
     // {
