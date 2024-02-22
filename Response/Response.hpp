@@ -36,6 +36,7 @@ class Response
 
     // PASS, USER
     static std::string ERR_ALREADYREGISTERED_462(Server &server, Client &client);
+    static std::string RPL_USERHOST_302(Server &server, Client &client);
 
     // NICK
     static std::string ERR_NONICKNAMEGIVEN_431(Server &server, Client &client);

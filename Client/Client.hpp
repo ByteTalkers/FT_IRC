@@ -15,19 +15,19 @@
 #include <sys/socket.h>
 #include <unistd.h>
 
+enum eRegister
+{
+  PASS_REG,
+  NICK_REG,
+  USER_REG
+};
+
 enum writeEvent
 {
     NONE,
     MYSELF,
     EVERYBUTME,
     EVERYONE
-};
-
-enum eRegister
-{
-  PASS_REG,
-  NICK_REG,
-  USER_REG
 };
 
 class Channel; // 전방 선언
@@ -44,6 +44,7 @@ class Client
     std::string m_nick;        // 닉네임
     std::string m_username;    // 유저네임
     std::string m_hostname;    // 호스트네임
+    std::string m_realname;    // 리얼네임(등록 시 인자로 받음)
     std::string m_password;    // 패스워드
     std::string m_cur_channel; // 현재 채널
     int m_flag_connect;        // 연결 여부
@@ -51,7 +52,7 @@ class Client
     bool m_is_registered;      // 서버 등록 여부
     writeEvent m_write_types;  // write 이벤트의 종류
 
-    bool m_is_register_flags[3];
+    bool m_is_register_flags[3]; // PASS, NICK, USER 등록 플래그
 
   public:
     Client();
@@ -69,6 +70,7 @@ class Client
     std::string getCurChannel();
     writeEvent getWriteTypes();
     std::string getHostname();
+    std::string getRealname();
     bool getRegisterd();
     bool getIsOp();
     bool *getIsRegisterFlags();
@@ -79,6 +81,7 @@ class Client
     void setNick(const std::string &nick);
     void setUsername(const std::string &username);
     void setHostname(struct sockaddr_in &clnt_adr);
+    void setRealname(const std::string &realname);
     void setRecvData(const char *data);
     void setWriteTypes(const writeEvent type);
     void setCurChannel(const std::string channel);

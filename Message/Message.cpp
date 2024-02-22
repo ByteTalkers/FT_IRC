@@ -25,15 +25,17 @@ bool Message::crlfCheck()
     return false;
 }
 
-// 커맨드 체크
+/**
+ * 커맨드 실행부
+ * 1. 등록 전 실행부 => registerExecute
+ * 2. 등록 후 실행부 => commandExecute
+ */
 void Message::execute(Server &server, Client &client)
 {
     std::vector<Command *>::const_iterator it;
 
     for (it = this->m_cmds.begin(); it != this->m_cmds.end(); it++)
     {
-        // (*it)->display();
-        // 등록 여부 확인
         if (!client.getRegisterd())
         {
             registerExecute(server, client, *it);
@@ -60,9 +62,13 @@ int findCommands(const std::string &cmd)
     return -1;
 }
 
+/**
+ * CAP, PASS, NICK, USER 명령만 처리
+ */
 void Message::registerExecute(Server &server, Client &client, Command *cmd)
 {
     int cmd_num = findCommands(cmd->getCommand());
+
     switch (cmd_num)
     {
     case CAP:
@@ -77,8 +83,16 @@ void Message::registerExecute(Server &server, Client &client, Command *cmd)
         userExecute(server, client, cmd);
         break;
     }
-    client.setRegistered(true);
-    client.setWriteTypes(MYSELF);
+
+    if (client.getIsRegisterFlags()[PASS_REG] && client.getIsRegisterFlags()[USER_REG] &&
+        client.getIsRegisterFlags()[NICK_REG])
+    {
+        client.setRegistered(true);
+    }
+    else
+    {
+        client.setRegistered(false);
+    }
 }
 
 void Message::commandExecute(Server &server, Client &client, Command *cmd)
@@ -134,7 +148,6 @@ void Message::commandExecute(Server &server, Client &client, Command *cmd)
 }
 
 // Getter
-
 const std::string &Message::getOrigin() const
 {
     return this->m_origin;
@@ -146,7 +159,6 @@ const std::vector<Command *> &Message::getCmds() const
 }
 
 // Setter
-
 void Message::setOrigin(std::string &origin)
 {
     this->m_origin = origin;

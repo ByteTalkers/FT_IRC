@@ -56,8 +56,10 @@ class Message
 
     void execute(Server &server, Client &client);
 
-    // registerExecute
+    // register
+    void registerPassExecute(Server &server, Client &client, Command *cmd);
     void registerNickExecute(Server &server, Client &client, Command *cmd);
+    void registerUserExecute(Server &server, Client &client, Command *cmd);
 
     // Command
     void registerExecute(Server &server, Client &client, Command *cmd);

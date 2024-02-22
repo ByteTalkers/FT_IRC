@@ -29,6 +29,11 @@ std::string Response::ERR_ALREADYREGISTERED_462(Server &server, Client &client)
     return GENERATE(server.getName(), "461", client.getNick() + " :You may not register");
 }
 
+std::string Response::RPL_USERHOST_302(Server &server, Client &client)
+{
+    return GENERATE(server.getName(), "302", client.getNick() + " :");
+}
+
 // NICK
 std::string Response::ERR_NONICKNAMEGIVEN_431(Server &server, Client &client)
 {
