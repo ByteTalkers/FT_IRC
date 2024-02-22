@@ -21,12 +21,13 @@ static void modeL(Server &server, Client &client, Channel *channel, bool mode_fl
  * mode 실행부
  * - channel => i, t, k, o, l 옵션만 허용
  * 1. 파라미터 없으면 => ERR_NEEDMOREPARAMS_461
- * 2. 해당 채널명 없으면 => ERR_NOSUCHCHANNEL_403
- * 3. 해당 채널의 op가 아니면 => ERR_CHANOPRIVSNEEDED_482
+ * 2. 해당 채널명 없으면 => ERR_NOSUCHCHANNEL_403 
+ * 3. 파라미터 하나인 경우 => 
+ * 4. 해당 채널의 op가 아니면 => ERR_CHANOPRIVSNEEDED_482
  */
 void Message::modeExecute(Server &server, Client &client, Command *cmd)
 {
-    if (cmd->getParamsCount() < 2)
+    if (cmd->getParamsCount() < 1)
     {
         client.addSendMsg(Response::ERR_NEEDMOREPARAMS_461(server, client, cmd->getCommand()));
         client.setWriteTypes(MYSELF);
@@ -38,7 +39,21 @@ void Message::modeExecute(Server &server, Client &client, Command *cmd)
     Channel *channel = server.findChannel(channel_name);
     if (channel == NULL)
     {
+        if (channel_name == client.getNick())
+        {
+            client.addSendMsg(Response::RPL_UMODEIS_221(client));
+            client.setWriteTypes(MYSELF);
+            return;
+        }
         client.addSendMsg(Response::ERR_NOSUCHCHANNEL_403(server, client, cmd->getParams()[0]));
+        client.setWriteTypes(MYSELF);
+        return;
+    }
+
+    if (cmd->getParamsCount() == 1)
+    {
+        client.addSendMsg(Response::RPL_CHANNELMODEIS_324(server, client, *channel));
+        client.addSendMsg(Response::RPL_CREATIONTIME_329(server, client, *channel));
         client.setWriteTypes(MYSELF);
         return;
     }

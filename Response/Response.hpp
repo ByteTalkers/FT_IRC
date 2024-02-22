@@ -65,6 +65,7 @@ class Response
 
     // MODE
     static std::string RPL_CHANNELMODEIS_324(Server &server, Client &client, Channel &channel);
+    static std::string RPL_CREATIONTIME_329(Server &server, Client &client, Channel &channel);
     static std::string RPL_BANLIST_367(Server &server, Client &client, Channel &channel);
     static std::string RPL_ENDOFBANLIST_368(Server &server, Client &client, Channel &channel);
 
