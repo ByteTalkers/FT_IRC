@@ -13,24 +13,26 @@ static bool checkChar(char c);
  */
 void Message::registerNickExecute(Server &server, Client &client, Command *cmd)
 {
-    if (cmd->getParamsCount() < 1)
-    {
-        client.addSendMsg(Response::ERR_NONICKNAMEGIVEN_431(server, client));
-        client.setWriteTypes(MYSELF);
-        return;
-    }
-    if (!validCheck(cmd->getParams()[0]))
-    {
-        client.addSendMsg(Response::ERR_ERRONEUSNICKNAME_432(server, client, cmd->getParams()[0]));
-        client.setWriteTypes(MYSELF);
-        return;
-    }
-    if (server.findClient(cmd->getParams()[0]) != NULL)
-    {
-        client.addSendMsg(Response::ERR_NICKNAMEINUSE_433(server, client, cmd->getParams()[0]));
-        client.setWriteTypes(MYSELF);
-        return;
-    }
+    (void)server;
+    // 일단 주석처리
+    // if (cmd->getParamsCount() < 1)
+    // {
+    //     client.addSendMsg(Response::ERR_NONICKNAMEGIVEN_431(server, client));
+    //     client.setWriteTypes(MYSELF);
+    //     return;
+    // }
+    // if (!validCheck(cmd->getParams()[0]))
+    // {
+    //     client.addSendMsg(Response::ERR_ERRONEUSNICKNAME_432(server, client, cmd->getParams()[0]));
+    //     client.setWriteTypes(MYSELF);
+    //     return;
+    // }
+    // if (server.findClient(cmd->getParams()[0]) != NULL)
+    // {
+    //     client.addSendMsg(Response::ERR_NICKNAMEINUSE_433(server, client, cmd->getParams()[0]));
+    //     client.setWriteTypes(MYSELF);
+    //     return;
+    // }
 
     client.setNick(cmd->getParams()[0]);
     client.setRegisterFlags(NICK_REG, true);
