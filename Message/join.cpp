@@ -6,6 +6,7 @@ void Message::joinExecute(Server &server, Client &client, Command *cmd)
     {
         // 채널 이름이 없는 경우 에러 메시지 전송(Irssi: Not enough parameters given)
         client.addSendMsg(Response::ERR_NEEDMOREPARAMS_461(server, client, cmd->getCommand()));
+        client.setWriteTypes(MYSELF);
         return;
     }
 
@@ -59,6 +60,19 @@ void Message::joinExecute(Server &server, Client &client, Command *cmd)
             channel = server.getChannels()[channelName];
         }
 
+        // 비밀번호 오류
+        if (!channel->checkKey(key))
+        {
+            client.addSendMsg(Response::ERR_BADCHANNELKEY_475(server, client, *channel));
+            client.setWriteTypes(MYSELF);
+        }
+        // 초대장 없음
+        if (!channel->isInvited(client.getNick()))
+        {
+            client.addSendMsg(Response::ERR_INVITEONLYCHAN_473(server, client, *channel));
+            client.setWriteTypes(MYSELF);
+        }
+
         if (channel->isInvited(client.getNick()) || channel->checkKey(key))
         {
             if (!channel->isMember(client))
@@ -69,10 +83,15 @@ void Message::joinExecute(Server &server, Client &client, Command *cmd)
                 std::vector<Client *> members = channel->getNormals();
                 for (std::vector<Client *>::iterator it = members.begin(); it != members.end(); ++it)
                 {
+                    // if ((*it)->getNick() != client.getNick())
+                    // {
+                    //     // nana_ [codespace@127.0.0.1] has joined #a -> 이런 형식으로 출력
+                    //     // (*it)->addSendMsg((*it)->getNick() + " has joined " + channelName);
+                    // }
+                    (*it)->addSendMsg((*it)->getNick() + " JOIN :" + channelName);
                     if ((*it)->getNick() != client.getNick())
                     {
-                        // nana_ [codespace@127.0.0.1] has joined #a -> 이런 형식으로 출력
-                        (*it)->addSendMsg((*it)->getNick() + " has joined " + channelName);
+                        server.enableWriteEvent((*it)->getsockfd());
                     }
                 }
 
@@ -91,21 +110,27 @@ void Message::joinExecute(Server &server, Client &client, Command *cmd)
                         normalCount++;
                 }
                 int totalNicks = opsCount + normalCount;
-                client.addSendMsg("Irssi: " + channelName + ": Total of " + intToString(totalNicks) + " nicks [" +
-                                  intToString(opsCount) + " ops, 0 halfops, 0 voices, " + intToString(normalCount) +
-                                  " normal]");
-                client.addSendMsg("Channel " + channelName + " created " + timeToString(channel->getCreated()));
-                client.addSendMsg("Irssi: Join to " + channelName + " was synced in 0 secs");
+                // client.addSendMsg("Irssi: " + channelName + ": Total of " + intToString(totalNicks) + " nicks [" +
+                //                   intToString(opsCount) + " ops, 0 halfops, 0 voices, " + intToString(normalCount) +
+                //                   " normal]");
+                // client.addSendMsg("Channel " + channelName + " created " + timeToString(channel->getCreated()));
+                // client.addSendMsg("Irssi: Join to " + channelName + " was synced in 0 secs");
+                client.addSendMsg(Response::RPL_NAMREPLY_353(server, client, *channel));
+                client.addSendMsg(Response::RPL_ENDOFNAMES_366(server, client, *channel));
+                client.setWriteTypes(MYSELF);
             }
             else
             {
                 // 이미 채널에 있는 경우 에러 메시지 전송
-                client.addSendMsg("ERROR :You are already in " + channelName);
+                // client.addSendMsg("ERROR :You are already in " + channelName);
+                // 클라이언트에서 자체적으로 걸러서 요청을 안보내는 것 같은데 한번 같이 확인해봐야할 것 같아요
             }
         }
         else
         {
-            client.addSendMsg("ERROR :Invalid key or not invited to " + channelName);
+            // client.addSendMsg("ERROR :Invalid key or not invited to " + channelName);
+            client.addSendMsg(Response::ERR_INVITEONLYCHAN_473(server, client, *channel));
+            client.setWriteTypes(MYSELF);
         }
     }
     // JOIN 성공 시 응답 메시지 전송 로직
