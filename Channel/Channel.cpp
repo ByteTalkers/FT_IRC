@@ -1,6 +1,8 @@
 #include "Channel.hpp"
 
-Channel::Channel(std::string name, Client *cl) : m_name(name), m_cretaed(time(NULL)), m_password(""), m_user_count(1)
+Channel::Channel(std::string name, Client *cl)
+    : m_name(name), m_cretaed(time(NULL)), m_password(""), m_user_count(1), m_is_mode_invite(false),
+      m_is_mode_key(false), m_is_mode_topic(false), m_is_mode_limit(false), m_is_topic_exist(false)
 {
     this->m_operators.push_back(cl);
 }

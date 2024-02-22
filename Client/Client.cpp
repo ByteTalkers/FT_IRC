@@ -1,7 +1,11 @@
 #include "Client.hpp"
 
-Client::Client()
+Client::Client() : m_is_registered(false)
 {
+    m_is_op = false;
+    m_is_register_flags[PASS_REG] = false;
+    m_is_register_flags[NICK_REG] = false;
+    m_is_register_flags[USER_REG] = false;
 }
 
 Client::Client(const Client &other)
