@@ -62,6 +62,7 @@ class Server
     void handleSend(int fd);
     void handleRecv(int fd);
     int endServ();
+    void addChannel(std::string channelName, Channel *channel);
 
     bool checkBuffer(std::string str);
     void addReadEvent(int sockfd);
