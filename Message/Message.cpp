@@ -133,6 +133,7 @@ void Message::commandExecute(Server &server, Client &client, Command *cmd)
         topicExecute(server, client, cmd);
         break;
     case INVITE:
+        inviteExecute(server, client, cmd);
         break;
     case PRIVMSG:
         privmsgExecute(server, client, cmd);
