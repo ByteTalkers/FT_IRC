@@ -55,6 +55,11 @@ class Channel
     bool isMember(Client &cl) const;
     void addMember(Client *cl);
     bool isMemberNick(std::string &nick) const;
+    bool isMemberNick(const std::string &nick) const;
+
+    void addOperator(const std::string &nick);
+    void popOperator(const std::string &nick);
+    bool checkOpNick(const std::string &nick) const;
 
     // Getter
     std::string getName() const;
