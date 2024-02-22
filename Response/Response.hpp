@@ -72,6 +72,8 @@ class Response
     static std::string ERR_UNKNOWNMODE_472(Server &server, Client &client, const std::string &mode);
     static std::string ERR_CHANOPRIVSNEEDED_482(Server &server, Client &client, Channel &channel);
 
+    static std::string ERR_SPECIFYPARAMETER_696(Server &server, Client &client, Channel &channel, const std::string &mode);
+
     // TOPIC
     static std::string RPL_NOTOPIC_331(Server &server, Client &client, Channel &channel);
 
