@@ -19,11 +19,15 @@ Client &Client::operator=(const Client &other)
         m_nick = other.m_nick;
         m_username = other.m_username;
         m_hostname = other.m_hostname;
+        m_realname = other.m_realname;
         m_password = other.m_password;
         m_cur_channel = other.m_cur_channel;
         m_flag_connect = other.m_flag_connect;
         m_is_op = other.m_is_op;
         m_is_registered = other.m_is_registered;
+        m_is_register_flags[0] = other.m_is_register_flags[0];
+        m_is_register_flags[1] = other.m_is_register_flags[1];
+        m_is_register_flags[2] = other.m_is_register_flags[2];
         m_write_types = other.m_write_types;
         // 추가된 멤버 변수가 있다면 여기에 복사 로직을 추가
     }
@@ -67,6 +71,11 @@ void Client::setHostname(struct sockaddr_in &clnt_adr)
 
     getnameinfo((struct sockaddr *)&clnt_adr, sizeof(clnt_adr), hostname, NI_MAXHOST, service, NI_MAXSERV, 0);
     this->m_hostname = hostname;
+}
+
+void Client::setRealname(const std::string &realname)
+{
+    m_realname = realname;
 }
 
 void Client::setRecvData(const char *data)
@@ -119,6 +128,11 @@ std::string Client::getUser()
 std::string Client::getHostname()
 {
     return m_hostname;
+}
+
+std::string Client::getRealname()
+{
+    return m_realname;
 }
 
 std::string Client::getRecvData()
