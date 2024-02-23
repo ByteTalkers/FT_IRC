@@ -6,10 +6,10 @@
 #include <algorithm>
 #include <cstdlib>
 #include <ctime>
+#include <deque>
 #include <map>
 #include <string>
 #include <vector>
-#include <deque>
 
 class Client; // 전방 선언
 class Server;
@@ -22,11 +22,10 @@ class Channel
     std::vector<Client *> m_operators; // op인 유저들의 목록
     std::vector<Client *> m_normals;   // 채팅방 속 모든 유저들의 목록
     std::vector<std::string> m_bans;
-    std::deque <std::string> m_invitations; // 초대 받은 유저 리스트 목록
+    std::deque<std::string> m_invitations; // 초대 받은 유저 리스트 목록
     std::string m_topic;
     std::string m_key;
     std::string m_password;
-    int m_user_count;
     int m_limit_count;
 
     bool m_is_mode_invite;
@@ -41,11 +40,9 @@ class Channel
     Channel(const Channel &src);
     ~Channel(void);
     Channel &operator=(Channel const &rhs);
-
-    void joinChannel(Client *cl);
     void partChannel(Client &cl);
-
     bool checkOp(Client &cl);
+
     // 초대받은 유저 리스트 함수들
     void addInvitation(const std::string &user);
     bool isInvited(const std::string &user) const;
@@ -85,7 +82,6 @@ class Channel
     void setNormals(std::vector<Client *> normals);
     void setTopic(std::string topic);
     void setKey(std::string key);
-    void setUserCount(int count);
     void setLimitCount(int count);
     void setModeInvite(bool tf);
     void setModeKey(bool tf);

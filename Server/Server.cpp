@@ -327,3 +327,27 @@ void Server::addChannel(std::string channelName, Channel *channel)
 {
     m_channels.insert(std::make_pair(channelName, channel));
 }
+
+void Server::delEmptyChannel()
+{
+	// 빈 채널 목록 생성
+	std::map<std::string, Channel *>::iterator it_ch;
+	std::vector<std::string> empty_list;
+
+	// 채널의 목록을 돌면서 빈 채널을 찾고, 그 이름을 empty_list에 넣는다.
+	for (it_ch = m_channels.begin(); it_ch != m_channels.end(); ++it_ch)
+	{
+		if (it_ch->second->getUserCount() == 0)
+			empty_list.push_back(it_ch->first);
+	}
+
+	// empty_list를 돌리면서 빈 채널 지우기
+	for (size_t i = 0; i < empty_list.size(); i++)
+	{
+		std::map<std::string, Channel *>::iterator it;
+		it = m_channels.find(empty_list[i]);
+		
+		if (it != m_channels.end())
+			m_channels.erase(it);
+	}
+}

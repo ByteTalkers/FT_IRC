@@ -36,7 +36,7 @@ void Message::topicExecute(Server &server, Client &client, Command *cmd)
         client.addSendMsg(Response::RPL_NOTOPIC_331(server, client, *channel));
         return;
     }
-
+ 
     if (!channel->isMember(client))
     {
         client.addSendMsg(Response::ERR_NOTONCHANNEL_442(server, client, *channel));
