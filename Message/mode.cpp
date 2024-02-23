@@ -21,12 +21,13 @@ static void modeL(Server &server, Client &client, Channel *channel, bool mode_fl
  * mode 실행부
  * - channel => i, t, k, o, l 옵션만 허용
  * 1. 파라미터 없으면 => ERR_NEEDMOREPARAMS_461
- * 2. 해당 채널명 없으면 => ERR_NOSUCHCHANNEL_403 
- * 3. 파라미터 하나인 경우 => 
+ * 2. 해당 채널명 없으면 => ERR_NOSUCHCHANNEL_403
+ * 3. 파라미터 하나인 경우 =>
  * 4. 해당 채널의 op가 아니면 => ERR_CHANOPRIVSNEEDED_482
  */
 void Message::modeExecute(Server &server, Client &client, Command *cmd)
 {
+    cmd->display();
     if (cmd->getParamsCount() < 1)
     {
         client.addSendMsg(Response::ERR_NEEDMOREPARAMS_461(server, client, cmd->getCommand()));
@@ -47,7 +48,7 @@ void Message::modeExecute(Server &server, Client &client, Command *cmd)
         return;
     }
 
-    if (cmd->getParamsCount() == 1)
+    if (cmd->getParams().size() == 1)
     {
         client.addSendMsg(Response::RPL_CHANNELMODEIS_324(server, client, *channel));
         client.addSendMsg(Response::RPL_CREATIONTIME_329(server, client, *channel));
@@ -57,6 +58,7 @@ void Message::modeExecute(Server &server, Client &client, Command *cmd)
     std::string modes = cmd->getParams()[0];
     if (!channel->checkOp(client))
     {
+        std::cout << "check flag" << std::endl;
         for (std::size_t i = 0; i < modes.length(); i++)
         {
             if (modes[i] == '+' || modes[i] == '-')
@@ -68,7 +70,6 @@ void Message::modeExecute(Server &server, Client &client, Command *cmd)
         
         return;
     }
-
     bool mode_flag = true;
     std::size_t param_idx = 1;
 
@@ -92,15 +93,18 @@ void Message::modeExecute(Server &server, Client &client, Command *cmd)
             modeT(server, client, channel, mode_flag);
             break;
         case KMODE:
-            modeK(server, client, channel, mode_flag, param_idx < cmd->getParamsCount() ? cmd->getParams()[param_idx] : "");
+            modeK(server, client, channel, mode_flag,
+                  param_idx < cmd->getParamsCount() ? cmd->getParams()[param_idx] : "");
             param_idx++;
             break;
         case OMODE:
-            modeO(server, client, channel, mode_flag, param_idx < cmd->getParamsCount() ? cmd->getParams()[param_idx] : "");
+            modeO(server, client, channel, mode_flag,
+                  param_idx < cmd->getParamsCount() ? cmd->getParams()[param_idx] : "");
             param_idx++;
             break;
         case LMODE:
-            modeL(server, client, channel, mode_flag, param_idx < cmd->getParamsCount() ? cmd->getParams()[param_idx] : "");
+            modeL(server, client, channel, mode_flag,
+                  param_idx < cmd->getParamsCount() ? cmd->getParams()[param_idx] : "");
             param_idx++;
             break;
         case UNKNOWN:
@@ -109,11 +113,12 @@ void Message::modeExecute(Server &server, Client &client, Command *cmd)
         }
     }
 
-    while(param_idx < cmd->getParamsCount())
+    while (param_idx < cmd->getParamsCount())
     {
         for (std::size_t i = 0; i < cmd->getParams()[param_idx].size(); i++)
         {
-            client.addSendMsg(Response::ERR_UNKNOWNMODE_472(server, client, std::string(1, cmd->getParams()[param_idx][i])));
+            client.addSendMsg(
+                Response::ERR_UNKNOWNMODE_472(server, client, std::string(1, cmd->getParams()[param_idx][i])));
         }
         param_idx++;
     }
@@ -147,7 +152,7 @@ static eModes checkMode(char c)
 /**
  * 인자가 +i && 해당 채널이 Invite 모드가 아닐 때
  * 인자가 -i && 해당 채널이 Invite 모드일 때
-*/
+ */
 static void modeI(Server &server, Client &client, Channel *channel, bool mode_flag)
 {
     if (mode_flag && !channel->getModeInvite())
@@ -165,7 +170,7 @@ static void modeI(Server &server, Client &client, Channel *channel, bool mode_fl
 /**
  * 인자가 +t && 해당 채널이 Topic 모드가 아닐 때
  * 인자가 -t && 해당 채널이 Topic 모드일 때
-*/
+ */
 static void modeT(Server &server, Client &client, Channel *channel, bool mode_flag)
 {
     if (mode_flag && !channel->getModeTopic())
@@ -184,7 +189,7 @@ static void modeT(Server &server, Client &client, Channel *channel, bool mode_fl
 /**
  * 인자가 +k && 해당 채널이 Key 모드가 아닐 때
  * 인자가 -k && 해당 채널이 Key 모드일 때
-*/
+ */
 static void modeK(Server &server, Client &client, Channel *channel, bool mode_flag, const std::string &key)
 {
     if (key == "")
@@ -211,7 +216,7 @@ static void modeK(Server &server, Client &client, Channel *channel, bool mode_fl
  * 해당 유저가 서버에 존재하지 않을 때
  * 인자가 +o && 해당 채널에 유저가 있음 && 해당 채널에서 op가 아닐 때
  * 인자가 -o && 해당 채널이 유저가 없음 && 해당 채널에서 op일 때
-*/
+ */
 static void modeO(Server &server, Client &client, Channel *channel, bool mode_flag, const std::string &nick)
 {
     if (server.findClient(nick) == NULL)
@@ -232,10 +237,10 @@ static void modeO(Server &server, Client &client, Channel *channel, bool mode_fl
 }
 
 /**
- * 
+ *
  * 인자가 +l
  * 인자가 -l && 해당 채널이 limit 모드일 때
-*/
+ */
 static void modeL(Server &server, Client &client, Channel *channel, bool mode_flag, const std::string &limit)
 {
     int tmp = std::atoi(limit.c_str());

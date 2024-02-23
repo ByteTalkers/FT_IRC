@@ -4,7 +4,7 @@ Channel::Channel(std::string name, Client *cl)
     : m_name(name), m_cretaed(time(NULL)), m_password(""), m_user_count(1), m_is_mode_invite(false),
       m_is_mode_key(false), m_is_mode_topic(false), m_is_mode_limit(false), m_is_topic_exist(false)
 {
-    this->m_operators.push_back(cl);
+    (void)cl;
 }
 
 Channel::Channel(const Channel &src)
@@ -81,12 +81,12 @@ void Channel::partChannel(Client &cl)
     }
 }
 
-bool Channel::checkOp(Client cl)
+bool Channel::checkOp(Client &cl)
 {
     std::vector<Client *>::iterator it;
-    for (it = this->m_operators.begin(); it < this->m_operators.end(); it++)
+    for (it = this->m_operators.begin(); it != this->m_operators.end(); ++it)
     {
-        if ((*it) == &cl)
+        if ((*it)->getNick() == cl.getNick())
         {
             return true;
         }
