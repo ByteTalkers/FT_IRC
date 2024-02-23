@@ -41,28 +41,40 @@ class Message
 {
   private:
     std::string m_origin;
-
     std::vector<Command *> m_cmds;
+    Message();
 
   public:
-    Message();
     Message(const std::string &origin);
     ~Message();
     Message(const Message &src);
     Message &operator=(Message const &rhs);
 
+    /* getter */
+    const std::string &getOrigin() const;
+    const std::vector<Command *> &getCmds() const;
+
+    /* setter */
+    void setOrigin(std::string &origin);
+    void setCmds(std::vector<Command *> &cmds);
+
     bool crlfCheck();
+    void display();
+
+    /* parsing */
     void parsingOrigin();
 
+    /* execute */
     void execute(Server &server, Client &client);
 
-    // register
+    /* command execute before register */
+    void registerExecute(Server &server, Client &client, Command *cmd);
+
     void registerPassExecute(Server &server, Client &client, Command *cmd);
     void registerNickExecute(Server &server, Client &client, Command *cmd);
     void registerUserExecute(Server &server, Client &client, Command *cmd);
 
-    // Command
-    void registerExecute(Server &server, Client &client, Command *cmd);
+    /* command execute after register */
     void commandExecute(Server &server, Client &client, Command *cmd);
 
     void joinExecute(Server &server, Client &client, Command *cmd);
@@ -78,17 +90,6 @@ class Message
     void kickExecute(Server &server, Client &client, Command *cmd);
     void inviteExecute(Server &server, Client &client, Command *cmd);
     void topicExecute(Server &server, Client &client, Command *cmd);
-
-    // Getter
-    const std::string &getOrigin() const;
-    const std::vector<Command *> &getCmds() const;
-
-    // Setter
-    void setOrigin(std::string &origin);
-    void setCmds(std::vector<Command *> &cmds);
-
-    // test
-    void display();
 };
 
 #endif

@@ -27,7 +27,6 @@ static void modeL(Server &server, Client &client, Channel *channel, bool mode_fl
  */
 void Message::modeExecute(Server &server, Client &client, Command *cmd)
 {
-    cmd->display();
     if (cmd->getParamsCount() < 1)
     {
         client.addSendMsg(Response::ERR_NEEDMOREPARAMS_461(server, client, cmd->getCommand()));
@@ -48,17 +47,16 @@ void Message::modeExecute(Server &server, Client &client, Command *cmd)
         return;
     }
 
-    if (cmd->getParams().size() == 1)
+    if (cmd->getParamsCount() == 1)
     {
         client.addSendMsg(Response::RPL_CHANNELMODEIS_324(server, client, *channel));
         client.addSendMsg(Response::RPL_CREATIONTIME_329(server, client, *channel));
         return;
     }
 
-    std::string modes = cmd->getParams()[0];
+    std::string modes = cmd->getParams()[1];
     if (!channel->checkOp(client))
     {
-        std::cout << "check flag" << std::endl;
         for (std::size_t i = 0; i < modes.length(); i++)
         {
             if (modes[i] == '+' || modes[i] == '-')
@@ -67,7 +65,7 @@ void Message::modeExecute(Server &server, Client &client, Command *cmd)
             }
             client.addSendMsg(Response::ERR_CHANOPRIVSNEEDED_482(server, client, *channel));
         }
-        
+
         return;
     }
     bool mode_flag = true;
