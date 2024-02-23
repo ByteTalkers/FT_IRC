@@ -60,17 +60,14 @@ void Message::partExecute(Server &server, Client &client, Command *cmd)
             continue;
         }
         channel->partChannel(client);
-        std::string message = client.getNick() + " has left " + channelName;
+        // if (channel->getUserCount() == 0)
+        // {
+        //     server.getChannels().erase(it);
+        //     // delete channel;
+        // }
         if (!reason.empty())
-            message += " [" + reason + "]";
-
-        std::vector<Client *> allMembers = channel->getNormals();
-        std::vector<Client *>::iterator it_member;
-        for (it_member = allMembers.begin(); it_member != allMembers.end(); ++it_member)
-        {
-            Client *member = *it_member;
-            if (member->getNick() != client.getNick())
-                member->addSendMsg(message);
-        }
+            channel->addSendMsgAll(server, client.getNick(), "PART " + channelName, reason);
+        else
+            channel->addSendMsgAll(server, client.getNick(), "PART", channelName);
     }
 }
