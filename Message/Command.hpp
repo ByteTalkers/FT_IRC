@@ -7,6 +7,12 @@
 #include <string>
 #include <vector>
 
+/**
+ * \r\n 으로 잘려진 정보를 가지고 있음
+ * - prefix
+ * - command
+ * - params
+ */
 class Command
 {
   private:
@@ -19,21 +25,22 @@ class Command
     Command(void);
     Command(const Command &src);
     ~Command(void);
-    Command(const std::string &command, const std::vector<std::string> &params); // test를 위해 잠시 추가
     Command &operator=(Command const &rhs);
 
+    /* getter */
     const std::string &getPrefix() const;
     const std::string &getCommand() const;
     const std::vector<std::string> &getParams() const;
     const std::size_t &getParamsCount() const;
 
+    /* setter */
     void setPrefix(std::string &pre);
     void setCommand(std::string &cmd);
     void setParams(std::vector<std::string> &params);
     void setParamsCount(std::size_t &count);
 
+    /* functions */
     void addParams(std::string &param);
-
     void display();
 };
 
