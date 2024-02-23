@@ -66,6 +66,7 @@ class Response
 
     // MODE
     static std::string RPL_CHANNELMODEIS_324(Server &server, Client &client, Channel &channel);
+    static std::string RPL_CREATIONTIME_329(Server &server, Client &client, Channel &channel);
     static std::string RPL_BANLIST_367(Server &server, Client &client, Channel &channel);
     static std::string RPL_ENDOFBANLIST_368(Server &server, Client &client, Channel &channel);
 
@@ -105,10 +106,6 @@ class Response
     // MODE user +i
     static std::string RPL_UMODEIS_221(Client &client);
 
-    // WHOIS
-    static std::string RPL_WHOISUSER_311(Server &server, Client &client);
-    static std::string RPL_WHOISSERVER_312(Server &server, Client &client);
-    static std::string RPL_ENDOFWHOIS_318(Server &server, Client &client);
 };
 
 #endif

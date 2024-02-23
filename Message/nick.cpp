@@ -25,7 +25,6 @@ void Message::registerNickExecute(Server &server, Client &client, Command *cmd)
         client.setWriteTypes(MYSELF);
         return;
     }
-
     if (server.searchNick(client.getsockfd(), cmd->getParams()[0]))
     {
         client.addSendMsg(Response::ERR_NICKNAMEINUSE_433(server, client, cmd->getParams()[0]));

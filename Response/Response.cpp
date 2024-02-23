@@ -150,6 +150,12 @@ std::string Response::RPL_CHANNELMODEIS_324(Server &server, Client &client, Chan
                     client.getNick() + " " + channel.getName() + " " + modes + " :" + channel.getKey());
 }
 
+std::string Response::RPL_CREATIONTIME_329(Server &server, Client &client, Channel &channel)
+{
+    return GENERATE(server.getName(), "329",
+                    client.getNick() + " " + channel.getName() + " :" + timeToString(channel.getCreated()));
+}
+
 std::string Response::RPL_BANLIST_367(Server &server, Client &client, Channel &channel)
 {
     return GENERATE(server.getName(), "367", client.getNick() + " " + channel.getName());
@@ -264,25 +270,4 @@ std::string Response::RPL_ENDOFWHO_315(Server &server, Client &client, Channel &
 std::string Response::RPL_UMODEIS_221(Client &client)
 {
     return GENERATE(client.getUser(), "MODE", client.getNick() + " :+i");
-}
-
-// WHOIS
-std::string Response::RPL_WHOISUSER_311(Server &server, Client &client)
-{
-    // nick> <user> <host> * :<real_name>
-    return GENERATE(server.getName(), "311",
-                    client.getNick() + client.getNick() + client.getUser() + " * " + " :" + client.getUser());
-}
-
-std::string Response::RPL_WHOISSERVER_312(Server &server, Client &client)
-{
-    // <nick> <server> :<server_info>
-    // irc.local :Local IRC Server
-    return GENERATE(server.getName(), "312", client.getNick() + " " + server.getName() + " :Local FT_IRC");
-}
-
-std::string Response::RPL_ENDOFWHOIS_318(Server &server, Client &client)
-{
-    // <nick> :<info>
-    return GENERATE(server.getName(), "318", client.getNick() + " :End of /WHOIS list.");
 }

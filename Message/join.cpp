@@ -107,6 +107,7 @@ void Message::joinExecute(Server &server, Client &client, Command *cmd)
         {
             channel->addOperator(client.getNick());
         }
+        client.addSendMsg(Response::GENERATE(client.getNick(), "JOIN", " :" + channelName));
         client.addSendMsg(Response::RPL_NAMREPLY_353(server, client, *channel));
         client.addSendMsg(Response::RPL_ENDOFNAMES_366(server, client, *channel));
     }

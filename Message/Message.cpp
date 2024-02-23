@@ -49,8 +49,8 @@ void Message::execute(Server &server, Client &client)
 
 int findCommands(const std::string &cmd)
 {
-    const std::string commands[14] = {"CAP",  "PASS", "NICK",  "USER",   "PING",    "QUIT",  "JOIN",
-                                      "PART", "MODE", "TOPIC", "INVITE", "PRIVMSG", "WHOIS", "KICK"};
+    const std::string commands[14] = {"CAP",  "PASS", "NICK",  "USER",   "PING",    "QUIT", "JOIN",
+                                      "PART", "MODE", "TOPIC", "INVITE", "PRIVMSG", "WHO",  "KICK"};
 
     for (int i = 0; i < 13; i++)
     {
@@ -133,12 +133,13 @@ void Message::commandExecute(Server &server, Client &client, Command *cmd)
         topicExecute(server, client, cmd);
         break;
     case INVITE:
+        inviteExecute(server, client, cmd);
         break;
     case PRIVMSG:
         privmsgExecute(server, client, cmd);
         break;
-    case WHOIS:
-        whoisExecute(server, client, cmd);
+    case WHO:
+        whoExecute(server, client, cmd);
         break;
     case KICK:
         kickExecute(server, client, cmd);
