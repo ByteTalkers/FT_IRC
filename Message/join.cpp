@@ -42,6 +42,9 @@ static void checkInviteMode(Server &server, Client &client, Channel &channel, st
         channel.removeInvitation(client.getNick());
         // 채널에 멤버 추가
         channel.addMember(&client);
+        client.addSendMsg(Response::GENERATE(client.getNick(), "JOIN", " :" + channel.getName()));
+        client.addSendMsg(Response::RPL_NAMREPLY_353(server, client, channel));
+        client.addSendMsg(Response::RPL_ENDOFNAMES_366(server, client, channel));
     }
 }
 
@@ -88,6 +91,7 @@ void Message::joinExecute(Server &server, Client &client, Command *cmd)
         if (channel->getModeInvite()) // 초대 모드
         {
             checkInviteMode(server, client, *channel, key);
+            continue;
         }
         // 키 체크
         if (channel->getModeKey() && !channel->checkKey(key))
@@ -107,7 +111,7 @@ void Message::joinExecute(Server &server, Client &client, Command *cmd)
         {
             channel->addOperator(client.getNick());
         }
-        client.addSendMsg(Response::GENERATE(client.getNick(), "JOIN", " :" + channelName));
+        channel->addSendMsgAll(server, client.getNick(), "JOIN ", channelName);
         client.addSendMsg(Response::RPL_NAMREPLY_353(server, client, *channel));
         client.addSendMsg(Response::RPL_ENDOFNAMES_366(server, client, *channel));
     }

@@ -65,10 +65,10 @@ void Message::execute(Server &server, Client &client)
  */
 static int findCommands(const std::string &cmd)
 {
-    const std::string commands[14] = {"CAP",  "PASS", "NICK",  "USER",   "PING",    "QUIT", "JOIN",
+    const std::string commands[COMMAND_SIZE] = {"CAP",  "PASS", "NICK",  "USER",   "PING",    "QUIT", "JOIN",
                                       "PART", "MODE", "TOPIC", "INVITE", "PRIVMSG", "WHO",  "KICK"};
 
-    for (int i = 0; i < 13; i++)
+    for (int i = 0; i < COMMAND_SIZE; i++)
     {
         if (cmd == commands[i])
         {
@@ -173,12 +173,11 @@ void Message::commandExecute(Server &server, Client &client, Command *cmd)
         break;
     }
 
+    if (!client.getSendMsg().empty())
+        client.setWriteTypes(MYSELF);
     // 만약 irc 메소드가 KICK, QUIT, PART면 채널을 지울 수도 있음.
     if (cmd_num == QUIT || cmd_num == KICK || cmd_num == PART)
         server.delEmptyChannel();
-
-    if (!client.getSendMsg().empty())
-        client.setWriteTypes(MYSELF);
 }
 
 /* getter */

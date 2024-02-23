@@ -196,15 +196,14 @@ void Channel::setTopicExist(bool tf)
 
 void Channel::addSendMsgAll(Server &server, const std::string &from, const std::string &cmd, const std::string &msg)
 {
-    std::vector<Client *>::iterator it;
-    for (it = this->m_normals.begin(); it != this->m_normals.end(); it++)
+    for (std::size_t i = 0; i < m_normals.size(); i++)
     {
-        if (cmd == "PRIVMSG" && (*it)->getNick() == from)
+        if (cmd == "PRIVMSG" && m_normals[i]->getNick() == from)
         {
             continue;
         }
-        (*it)->addSendMsg(Response::GENERATE(from, cmd, this->m_name + " :" + msg).c_str());
-        server.enableWriteEvent((*it)->getsockfd());
+        m_normals[i]->addSendMsg(Response::GENERATE(from, cmd, this->m_name + " :" + msg).c_str());
+        server.enableWriteEvent(m_normals[i]->getsockfd());
     }
 }
 

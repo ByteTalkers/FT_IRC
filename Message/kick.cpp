@@ -26,13 +26,17 @@ void Message::kickExecute(Server &server, Client &client, Command *cmd)
     }
 
     Client *targetClient = server.findClient(targetNick);
-    if (!targetClient || !channel->isMember(*targetClient))
+    if (!targetClient)
+    {
+        client.addSendMsg(Response::ERR_NOTONCHANNEL_442(server, client, *channel));
+        return;
+    }
+    if (!channel->isMember(*targetClient))
     {
         client.addSendMsg(Response::ERR_NOSUCHNICK_401(server, client, targetNick));
         return;
     }
 
+    channel->addSendMsgAll(server, client.getNick(), "KICK " + channelName + " " + targetNick, reason);
     channel->partChannel(*targetClient);
-    std::string kickMessage = "KICK " + channelName + " " + targetNick + " :" + reason;
-    channel->addSendMsgAll(server, client.getNick(), "KICK", kickMessage);
 }
