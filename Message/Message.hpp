@@ -15,6 +15,8 @@
 #include "../Server/Server.hpp"
 #include "Command.hpp"
 
+#define COMMAND_SIZE 14
+
 class Client;
 class Server;
 class Channel;
