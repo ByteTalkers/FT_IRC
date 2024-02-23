@@ -16,16 +16,19 @@ static void modeT(Server &server, Client &client, Channel *channel, bool mode_fl
 static void modeK(Server &server, Client &client, Channel *channel, bool mode_flag, const std::string &key);
 static void modeO(Server &server, Client &client, Channel *channel, bool mode_flag, const std::string &nick);
 static void modeL(Server &server, Client &client, Channel *channel, bool mode_flag, const std::string &limit);
-static void modeB(Server &server, Client &client, Channel *channel);
 
 /**
  * mode 실행부
  * - channel => i, t, k, o, l 옵션만 허용
  * 1. 파라미터 없으면 => ERR_NEEDMOREPARAMS_461
- * 2. 해당 채널명 없으면 => ERR_NOSUCHCHANNEL_403
- * 5. mode #a b는 채널 op 아니어도 보내주기(채널 입장 시 요청오는 부분임)
- * 3. 파라미터 하나인 경우 => RPL_CHANNELMODEIS_324, RPL_CREATIONTIME_329
- * 4. 해당 채널의 op가 아니면 => ERR_CHANOPRIVSNEEDED_482
+ * 2. 유저명이 들어온 경우
+ * - 해당 유저명 없으면 => ERR_NOSUCHNICK_401
+ * - 해당 유저가 요청 클라이언트와 다를 때, 파라미터가 있으면 => ERR_UMODEUNKNWONFLAG_501
+ * - 해당 유저가 요청 클라이언트와 다를 때, 파라미터가 없으면 => ERR_USERSDONTMATCH_502
+ * - 해당 유저와 요청 클라이언트가 같으면 => RPL_UMODEIS_221
+ * 3. 해당 채널명 없으면 => ERR_NOSUCHCHANNEL_403
+ * 4. 파라미터 하나인 경우 => RPL_CHANNELMODEIS_324, RPL_CREATIONTIME_329
+ * 5. 해당 채널의 op가 아니면 => ERR_CHANOPRIVSNEEDED_482
  */
 void Message::modeExecute(Server &server, Client &client, Command *cmd)
 {
@@ -35,16 +38,39 @@ void Message::modeExecute(Server &server, Client &client, Command *cmd)
         return;
     }
 
+    if (cmd->getParams()[0][0] != '#' && cmd->getParams()[0][0] != '&')
+    {
+        Client *find_client = server.findClient(cmd->getParams()[0]);
+        if (find_client == NULL)
+        {
+            client.addSendMsg(Response::ERR_NOSUCHNICK_401(server, client, cmd->getParams()[0]));
+            return;
+        }
+        if (find_client != &client)
+        {
+            if (cmd->getParamsCount() > 1)
+            {
+                for (std::size_t i = 1; i < cmd->getParamsCount(); i++)
+                {
+                    for (std::size_t j = 0; j < cmd->getParams()[i].length(); j++)
+                    {
+                        client.addSendMsg(Response::ERR_UMODEUNKNWONFLAG_501(server, client, std::string(1, cmd->getParams()[i][j])));
+                    }
+                }
+            }
+            client.addSendMsg(Response::ERR_USERSDONTMATCH_502(server, client));
+            return;
+        }
+        client.addSendMsg(Response::RPL_UMODEIS_221(client));
+        return;
+    }
+
     std::string channel_name;
     channel_name = cmd->getParams()[0];
     Channel *channel = server.findChannel(channel_name);
+
     if (channel == NULL)
     {
-        if (channel_name == client.getNick())
-        {
-            client.addSendMsg(Response::RPL_UMODEIS_221(client));
-            return;
-        }
         client.addSendMsg(Response::ERR_NOSUCHCHANNEL_403(server, client, cmd->getParams()[0]));
         return;
     }
@@ -56,11 +82,6 @@ void Message::modeExecute(Server &server, Client &client, Command *cmd)
         return;
     }
 
-    if (cmd->getParamsCount() == 2 && cmd->getParams()[1] == "b")
-    {
-        modeB(server, client, channel);
-        return;
-    }
     std::string modes = cmd->getParams()[1];
     if (!channel->checkOp(client))
     {
@@ -79,12 +100,14 @@ void Message::modeExecute(Server &server, Client &client, Command *cmd)
 
     for (std::size_t i = 0; i < modes.length(); i++)
     {
-        if (modes[i] == '+' || modes[i] == '-')
+        if (modes[i] == '+')
         {
-            if (modes[i] == '-')
-            {
-                mode_flag = false;
-            }
+            mode_flag = true;
+            continue;
+        } 
+        if (modes[i] == '-')
+        {
+            mode_flag = false;
             continue;
         }
 
@@ -218,9 +241,9 @@ static void modeK(Server &server, Client &client, Channel *channel, bool mode_fl
 
 /**
  * 해당 유저가 서버에 존재하지 않을 때
- * 해당 유저가 자신일 때
- * 인자가 +o && 해당 채널에 유저가 있음 && 해당 채널에서 op가 아닐 때
- * 인자가 -o && 해당 채널이 유저가 없음 && 해당 채널에서 op일 때
+ * 해당 유저가 채널에 존재하지 않을 때
+ * 인자가 +o && 해당 채널에서 op가 아닐 때
+ * 인자가 -o && 해당 채널에서 op일 때
  */
 static void modeO(Server &server, Client &client, Channel *channel, bool mode_flag, const std::string &nick)
 {
@@ -230,16 +253,17 @@ static void modeO(Server &server, Client &client, Channel *channel, bool mode_fl
         client.addSendMsg(Response::ERR_NOSUCHNICK_401(server, client, nick));
         return;
     }
-    if (find_client == &client)
+    if (channel->isMember(*find_client))
     {
+        client.addSendMsg(Response::ERR_NOTONCHANNEL_442(server, client, *channel));
         return;
     }
-    if (mode_flag && channel->isMemberNick(nick) && !channel->checkOpNick(nick))
+    if (mode_flag && !channel->checkOpNick(nick))
     {
         channel->addOperator(nick);
         channel->addSendMsgAll(server, client.getNick(), "MODE", "+o");
     }
-    if (!mode_flag && channel->isMemberNick(nick) && channel->checkOpNick(nick))
+    if (!mode_flag && channel->checkOpNick(nick))
     {
         channel->popOperator(nick);
         channel->addSendMsgAll(server, client.getNick(), "MODE", "-o");
@@ -265,13 +289,4 @@ static void modeL(Server &server, Client &client, Channel *channel, bool mode_fl
         channel->setModeLimit(false);
         channel->addSendMsgAll(server, client.getNick(), "MODE", "-l :" + intToString(tmp));
     }
-}
-
-/**
- * 인자가 b일 때
-*/
-static void modeB(Server &server, Client &client, Channel *channel)
-{
-    client.addSendMsg(Response::RPL_ENDOFBANLIST_368(server, client, *channel));
-    return;
 }

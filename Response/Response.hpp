@@ -75,6 +75,8 @@ class Response
     static std::string ERR_UNKNOWNMODE_472(Server &server, Client &client, const std::string &mode);
     static std::string ERR_CHANOPRIVSNEEDED_482(Server &server, Client &client, Channel &channel);
 
+    static std::string ERR_UMODEUNKNWONFLAG_501(Server &server, Client &client, const std::string &mode);
+    static std::string ERR_USERSDONTMATCH_502(Server &server, Client &client);
     static std::string ERR_SPECIFYPARAMETER_696(Server &server, Client &client, Channel &channel,
                                                 const std::string &mode);
 

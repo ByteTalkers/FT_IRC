@@ -188,6 +188,16 @@ std::string Response::ERR_CHANOPRIVSNEEDED_482(Server &server, Client &client, C
                     client.getNick() + " " + channel.getName() + " :You're not channel operator");
 }
 
+std::string Response::ERR_UMODEUNKNWONFLAG_501(Server &server, Client &client, const std::string &mode)
+{
+    return GENERATE(server.getName(), "501", client.getNick() + mode + " :is an unknown mode character");
+}
+
+std::string Response::ERR_USERSDONTMATCH_502(Server &server, Client &client)
+{
+    return GENERATE(server.getName(), "502", client.getNick() + " :Can't view modes for other users");
+}
+
 std::string Response::ERR_SPECIFYPARAMETER_696(Server &server, Client &client, Channel &channel,
                                                const std::string &mode)
 {
@@ -269,5 +279,5 @@ std::string Response::RPL_ENDOFWHO_315(Server &server, Client &client, Channel &
 // MODE user +i
 std::string Response::RPL_UMODEIS_221(Client &client)
 {
-    return GENERATE(client.getUser(), "MODE", client.getNick() + " :+i");
+    return GENERATE(client.getUser(), "MODE", client.getNick() + " :+");
 }
