@@ -84,6 +84,12 @@ std::string Response::ERR_TOOMANYCHANNELS_405(Server &server, Client &client, Ch
                     client.getNick() + " " + channel.getName() + " :You have joined too many channels");
 }
 
+std::string Response::ERR_CHANNEL_IS_FULL_471(Server &server, Client &client, Channel &channel)
+{
+    return GENERATE(server.getName(), "471",
+                    client.getNick() + " " + channel.getName() + " :Cannot join channel (channel is full)");
+}
+
 std::string Response::RPL_NAMREPLY_353(Server &server, Client &client, Channel &channel)
 {
     std::string list = client.getNick() + " = " + channel.getName() + " :";
@@ -176,9 +182,12 @@ std::string Response::ERR_CHANOPRIVSNEEDED_482(Server &server, Client &client, C
                     client.getNick() + " " + channel.getName() + " :You're not channel operator");
 }
 
-std::string Response::ERR_SPECIFYPARAMETER_696(Server &server, Client &client, Channel &channel, const std::string &mode)
+std::string Response::ERR_SPECIFYPARAMETER_696(Server &server, Client &client, Channel &channel,
+                                               const std::string &mode)
 {
-    return GENERATE(server.getName(), "696", client.getNick() + " " + channel.getName() + " " + mode[0] + " * :You must specify a parameter for the " + mode + " mode.");
+    return GENERATE(server.getName(), "696",
+                    client.getNick() + " " + channel.getName() + " " + mode[0] +
+                        " * :You must specify a parameter for the " + mode + " mode.");
 }
 
 // TOPIC
@@ -261,7 +270,8 @@ std::string Response::RPL_UMODEIS_221(Client &client)
 std::string Response::RPL_WHOISUSER_311(Server &server, Client &client)
 {
     // nick> <user> <host> * :<real_name>
-    return GENERATE(server.getName(), "311", client.getNick() + client.getNick() + client.getUser() + " * " + " :" + client.getUser());
+    return GENERATE(server.getName(), "311",
+                    client.getNick() + client.getNick() + client.getUser() + " * " + " :" + client.getUser());
 }
 
 std::string Response::RPL_WHOISSERVER_312(Server &server, Client &client)
