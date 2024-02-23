@@ -1,63 +1,50 @@
 #include "Message.hpp"
 
+/**
+ * topic 실행부
+ * 파라미터 없으면 => ERR_NEEDMOREPARAMS_461
+ * 해당 채널이 없으면 => ERR_NOSUCHCHANNEL_403
+ * 파라미터로 채널명만 들어온 경우는 토픽 확인만 => 토픽 존재 시 RPL_TOPIC_332, 토픽 없으면 RPL_NOTOPIC_331
+ * 채널명 + 토픽내용이면 토픽 세팅
+ * 채널의 토픽 설정이 운영자 전용 + 해당 클라이언트가 운영자가 아니면 => ERR_CHANOPRIVSNEEDED_482
+ * (채널의 토픽 설정이 운영자 전용 + 해당 클라이언트 운영자) or (채널에 토픽 설정이 false) => 토픽 설정 후 메시지
+ */
 void Message::topicExecute(Server &server, Client &client, Command *cmd)
 {
-    // 파라미터 없음
     if (cmd->getParamsCount() < 1)
     {
         client.addSendMsg(Response::ERR_NEEDMOREPARAMS_461(server, client, cmd->getCommand()));
         return;
     }
 
-    std::string channel_name;
-    channel_name = cmd->getParams()[0];
+    std::string channel_name = cmd->getParams()[0];
     Channel *channel = server.findChannel(channel_name);
-    // 해당 채널 없음
     if (channel == NULL)
     {
         client.addSendMsg(Response::ERR_NOSUCHCHANNEL_403(server, client, cmd->getParams()[0]));
         return;
     }
 
-    // 파라미터 채널명만 들어온 경우 => 토픽 확인
     if (cmd->getParamsCount() == 1)
     {
-        // 토픽 존재여부 확인
         if (channel->getTopicExist())
         {
-            client.addSendMsg(
-                Response::RPL_TOPIC_332(server, client, *channel));
+            client.addSendMsg(Response::RPL_TOPIC_332(server, client, *channel));
+            return;
         }
-        else
-        {
-            client.addSendMsg(Response::RPL_NOTOPIC_331(server, client, *channel));
-        }
-        
+        client.addSendMsg(Response::RPL_NOTOPIC_331(server, client, *channel));
+        return;
     }
-    // 채널명 + 인자인 경우 => 토픽 세팅
-    else
+
+    if (channel->getModeTopic() && !channel->checkOp(client))
     {
-        // 채널의 토픽 설정 운영자 전용인지 아닌지 확인
-        if (channel->getModeTopic())
-        {
-            // 채널 op인지 확인
-            if (channel->checkOp(client))
-            {
-                channel->setTopicExist(true);
-                channel->setTopic(cmd->getParams()[1]);
-                channel->addSendMsgAll(server, client.getNick(), "TOPIC", cmd->getParams()[1]);
-            }
-            else
-            {
-                client.addSendMsg(
-                    Response::ERR_CHANOPRIVSNEEDED_482(server, client, *channel));
-            }
-        }
-        else
-        {
-            channel->setTopicExist(true);
-            channel->setTopic(cmd->getParams()[1]);
-            channel->addSendMsgAll(server, client.getNick(), "TOPIC", cmd->getParams()[1]);
-        }
+        client.addSendMsg(Response::ERR_CHANOPRIVSNEEDED_482(server, client, *channel));
+        return;
+    }
+    if ((channel->getModeTopic() && channel->checkOp(client)) || !channel->getModeTopic())
+    {
+        channel->setTopicExist(true);
+        channel->setTopic(cmd->getParams()[1]);
+        channel->addSendMsgAll(server, client.getNick(), "TOPIC", cmd->getParams()[1]);
     }
 }
