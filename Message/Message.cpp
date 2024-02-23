@@ -1,9 +1,4 @@
 #include "Message.hpp"
-
-Message::Message()
-{
-}
-
 Message::Message(const std::string &origin) : m_origin(origin)
 {
 }
@@ -12,6 +7,24 @@ Message::~Message()
 {
 }
 
+Message::Message(const Message &src)
+{
+    *this = src;
+}
+
+Message &Message::operator=(Message const &rhs)
+{
+    if (this != &rhs)
+    {
+        this->m_origin = rhs.m_origin;
+        this->m_cmds = rhs.m_cmds;
+    }
+    return *this;
+}
+
+/**
+ * 문자열 끝에 crlf가 있는지 확인하는 함수
+ */
 bool Message::crlfCheck()
 {
     std::string crlf;
@@ -47,7 +60,10 @@ void Message::execute(Server &server, Client &client)
     }
 }
 
-int findCommands(const std::string &cmd)
+/**
+ * 커맨드를 찾는 함수
+ */
+static int findCommands(const std::string &cmd)
 {
     const std::string commands[14] = {"CAP",  "PASS", "NICK",  "USER",   "PING",    "QUIT", "JOIN",
                                       "PART", "MODE", "TOPIC", "INVITE", "PRIVMSG", "WHO",  "KICK"};
@@ -63,6 +79,7 @@ int findCommands(const std::string &cmd)
 }
 
 /**
+ * 등록 전 실행되는 커맨드 함수
  * CAP, PASS, NICK, USER 명령만 처리
  */
 void Message::registerExecute(Server &server, Client &client, Command *cmd)
@@ -101,6 +118,10 @@ void Message::registerExecute(Server &server, Client &client, Command *cmd)
     }
 }
 
+/**
+ * 등록 후 실행되는 커맨드 함수
+ * CAP, PASS, NICK, USER, PING, QUIT, JOIN, PART, MODE, TOPIC, INVITE, PRIVMSG, WHO, KICK 처리
+ */
 void Message::commandExecute(Server &server, Client &client, Command *cmd)
 {
     int cmd_num = findCommands(cmd->getCommand());
@@ -152,13 +173,17 @@ void Message::commandExecute(Server &server, Client &client, Command *cmd)
         break;
     }
 
+	// if kick & quit이면 채널을 지울 수도 있음.
+	if (cmd_num == QUIT || cmd_num == KICK)
+		server.delEmptyChannel();
+
     if (!client.getSendMsg().empty())
     {
         client.setWriteTypes(MYSELF);
     }
 }
 
-// Getter
+/* getter */
 const std::string &Message::getOrigin() const
 {
     return this->m_origin;
@@ -169,7 +194,7 @@ const std::vector<Command *> &Message::getCmds() const
     return this->m_cmds;
 }
 
-// Setter
+/* setter */
 void Message::setOrigin(std::string &origin)
 {
     this->m_origin = origin;
@@ -180,7 +205,9 @@ void Message::setCmds(std::vector<Command *> &cmds)
     this->m_cmds = cmds;
 }
 
-// test
+/**
+ * Message 멤버변수 보여주는 함수
+ */
 void Message::display()
 {
     std::cout << "origin: " << this->getOrigin();

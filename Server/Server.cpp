@@ -131,7 +131,6 @@ void Server::handleKqueue()
     while (1)
     {
         struct kevent event_arr[MAX_EVENTS];
-        // struct timespec timeout = {1, 0};
         int event_cnt = kevent(m_kqueue, &m_change_vec[0], m_change_vec.size(), event_arr, MAX_EVENTS, NULL);
         if (event_cnt == -1)
             break;
@@ -155,8 +154,6 @@ void Server::handleKqueue()
                 Server::handleRecv(fd);
             else if (event_arr[i].filter == EVFILT_WRITE) // 쓰기 이벤트 -> 데이터 전송
                 Server::handleSend(fd);
-            // else if (event_arr[i].filter == EVFILT_TIMER)
-            // 	Server::handleTimeout();
         }
     }
 }
@@ -189,7 +186,7 @@ void Server::handleRecv(int fd)
     memset(buffer, 0, sizeof(buffer));
     ssize_t bytes_read = recv(clnt_sock, buffer, sizeof(buffer) - 1, 0);
     if (bytes_read == -1)
-        std::runtime_error("something is wrong on clnt_sock or recv()");
+        throw std::runtime_error("something is wrong on clnt_sock or recv()");
     if (checkBuffer(buffer) == true)
     {
         buffer[bytes_read] = '\0';
@@ -275,10 +272,6 @@ void Server::setCreated(time_t time)
     m_created = time;
 }
 
-void Server::handleTimeout()
-{
-}
-
 Channel *Server::findChannel(const std::string &ch_name)
 {
     try
@@ -333,4 +326,28 @@ int Server::endServ()
 void Server::addChannel(std::string channelName, Channel *channel)
 {
     m_channels.insert(std::make_pair(channelName, channel));
+}
+
+void Server::delEmptyChannel()
+{
+	// 빈 채널 목록 생성
+	std::map<std::string, Channel *>::iterator it_ch;
+	std::vector<std::string> empty_list;
+
+	// 채널의 목록을 돌면서 빈 채널을 찾고, 그 이름을 empty_list에 넣는다.
+	for (it_ch = m_channels.begin(); it_ch != m_channels.end(); ++it_ch)
+	{
+		if (it_ch->second->getUserCount() == 0)
+			empty_list.push_back(it_ch->first);
+	}
+
+	// empty_list를 돌리면서 빈 채널 지우기
+	for (size_t i = 0; i < empty_list.size(); i++)
+	{
+		std::map<std::string, Channel *>::iterator it;
+		it = m_channels.find(empty_list[i]);
+		
+		if (it != m_channels.end())
+			m_channels.erase(it);
+	}
 }

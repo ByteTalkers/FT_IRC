@@ -1,6 +1,6 @@
 #include "Command.hpp"
 
-Command::Command(void) : m_params_count(0)
+Command::Command(void) : m_prefix(""), m_command(""), m_params_count(0)
 {
 }
 
@@ -8,12 +8,24 @@ Command::~Command(void)
 {
 }
 
-Command::Command(const std::string &command, const std::vector<std::string> &params) // test를 위해 잠시 추가
-    : m_command(command), m_params(params)
+Command::Command(const Command &src)
 {
+    *this = src;
 }
 
-// Getter
+Command &Command::operator=(Command const &rhs)
+{
+    if (this != &rhs)
+    {
+        m_prefix = rhs.m_prefix;
+        m_command = rhs.m_command;
+        m_params = rhs.m_params;
+        m_params_count = rhs.m_params_count;
+    }
+    return *this;
+}
+
+/* getter */
 const std::string &Command::getPrefix() const
 {
     return this->m_prefix;
@@ -34,7 +46,7 @@ const std::size_t &Command::getParamsCount() const
     return this->m_params_count;
 }
 
-// Setter
+/* setter */
 void Command::setPrefix(std::string &pre)
 {
     this->m_prefix = pre;
@@ -55,12 +67,18 @@ void Command::setParamsCount(std::size_t &count)
     this->m_params_count = count;
 }
 
+/**
+ * m_params에 param을 하나씩 추가하는 함수
+ */
 void Command::addParams(std::string &param)
 {
     this->m_params.push_back(param);
     this->m_params_count++;
 }
 
+/**
+ * Command 멤버변수 보여주는 함수
+ */
 void Command::display()
 {
     std::cout << "prefix: " << m_prefix << std::endl;

@@ -1,8 +1,8 @@
 #include "Channel.hpp"
 
 Channel::Channel(std::string name, Client *cl)
-    : m_name(name), m_cretaed(time(NULL)), m_password(""), m_is_mode_invite(false),
-      m_is_mode_key(false), m_is_mode_topic(false), m_is_mode_limit(false), m_is_topic_exist(false)
+    : m_name(name), m_cretaed(time(NULL)), m_password(""), m_is_mode_invite(false), m_is_mode_key(false),
+      m_is_mode_topic(false), m_is_mode_limit(false), m_is_topic_exist(false)
 {
     (void)cl;
 }
@@ -18,7 +18,6 @@ Channel::Channel(const Channel &src)
     this->m_topic = src.m_topic;
     this->m_key = src.m_key;
     this->m_limit_count = src.m_limit_count;
-
     this->m_is_mode_invite = src.m_is_mode_invite;
     this->m_is_mode_key = src.m_is_mode_key;
     this->m_is_mode_topic = src.m_is_mode_topic;
@@ -255,9 +254,7 @@ bool Channel::isMember(Client &client) const
     for (std::vector<Client *>::const_iterator it = m_normals.begin(); it != m_normals.end(); ++it)
     {
         if ((*it)->getNick() == client.getNick())
-        {
             return true;
-        }
     }
     return false;
 }
@@ -265,9 +262,7 @@ bool Channel::isMember(Client &client) const
 void Channel::addMember(Client *client)
 {
     if (!isMember(*client))
-    {
         m_normals.push_back(client);
-    }
 }
 
 bool Channel::isMemberNick(std::string &nick) const
@@ -275,9 +270,7 @@ bool Channel::isMemberNick(std::string &nick) const
     for (std::vector<Client *>::const_iterator it = m_normals.begin(); it != m_normals.end(); ++it)
     {
         if ((*it)->getNick() == nick)
-        {
             return true;
-        }
     }
     return false;
 }
@@ -287,9 +280,7 @@ bool Channel::isMemberNick(const std::string &nick) const
     for (std::vector<Client *>::const_iterator it = m_normals.begin(); it != m_normals.end(); ++it)
     {
         if ((*it)->getNick() == nick)
-        {
             return true;
-        }
     }
     return false;
 }
@@ -323,9 +314,7 @@ bool Channel::checkOpNick(const std::string &nick) const
     for (std::vector<Client *>::const_iterator it = m_operators.begin(); it != m_operators.end(); ++it)
     {
         if (((*it)->getNick() == nick))
-        {
             return true;
-        }
     }
     return false;
 }

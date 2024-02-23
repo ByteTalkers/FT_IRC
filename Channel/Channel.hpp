@@ -40,10 +40,9 @@ class Channel
     Channel(const Channel &src);
     ~Channel(void);
     Channel &operator=(Channel const &rhs);
-
     void partChannel(Client &cl);
-
     bool checkOp(Client &cl);
+
     // 초대받은 유저 리스트 함수들
     void addInvitation(const std::string &user);
     bool isInvited(const std::string &user) const;

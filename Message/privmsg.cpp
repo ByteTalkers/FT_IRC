@@ -13,9 +13,17 @@ static ePrivmsg validCheck(Server &server, const std::string &to);
 static void sendPrivmsgToChannel(Server &server, Client &client, const std::vector<std::string> &params);
 static void sendPrivmsgToClient(Server &server, Client &client, const std::vector<std::string> &params);
 
+/**
+ * privmsg 실행부
+ * - 파라미터 없으면 => ERR_NEEDMOREPARAMS_461
+ * - 첫번째 파라미터 => 받는 사람 or 채널
+ * - 채널 대상인 경우, 보내는 클라이언트가 채널에 포함됐는지 확인 => ERR_CANNOTSENDTOCHAN_404
+ * - 없는 채널 => ERR_NOSUCHCHANNEL_403
+ * - 없는 유저 => ERR_NOSUCHNICK_401
+ * - 메시지는 남은 파라미터들 사이에 스페이스 추가해서 합쳐줌
+ */
 void Message::privmsgExecute(Server &server, Client &client, Command *cmd)
 {
-    // 파라미터 없음
     if (cmd->getParamsCount() < 2)
     {
         client.addSendMsg(Response::ERR_NEEDMOREPARAMS_461(server, client, cmd->getCommand()));
@@ -32,26 +40,20 @@ void Message::privmsgExecute(Server &server, Client &client, Command *cmd)
         Channel *channel = NULL;
         switch (to)
         {
-        // 채널 유저들에게 보내주기
         case CHANNEL:
             channel = server.findChannel(channel_name);
-            // 채널에 포함됐는지 확인 필요
-            if (channel->isMember(client))
-            {
-                sendPrivmsgToChannel(server, client, cmd->getParams());
-            }
-            else
+            if (!channel->isMember(client))
             {
                 client.addSendMsg(Response::ERR_CANNOTSENDTOCHAN_404(server, client, *channel));
+                break;
             }
+            sendPrivmsgToChannel(server, client, cmd->getParams());
             break;
-        // 해당 클라이언트에게만
         case CLIENT:
             sendPrivmsgToClient(server, client, cmd->getParams());
             break;
         case NOCHANNEL:
-            client.addSendMsg(
-                Response::ERR_NOSUCHCHANNEL_403(server, client, cmd->getParams()[0]));
+            client.addSendMsg(Response::ERR_NOSUCHCHANNEL_403(server, client, cmd->getParams()[0]));
             break;
         case NOCLIENT:
             client.addSendMsg(Response::ERR_NOSUCHNICK_401(server, client, cmd->getParams()[0]));
@@ -60,33 +62,47 @@ void Message::privmsgExecute(Server &server, Client &client, Command *cmd)
     }
 }
 
+/**
+ * 나머지 파라미터들 스페이스 추가해서 합치는 함수
+ */
+static const std::string makeMsg(const std::vector<std::string> &params)
+{
+    std::string msg = "";
+    for (std::size_t i = 1; i < params.size(); i++)
+    {
+        msg += params[i];
+        if (i != params.size() - 1)
+        {
+            msg += " ";
+        }
+    }
+    return msg;
+}
+
+/**
+ * 채널에 메시지를 보내는 함수
+ */
 static void sendPrivmsgToChannel(Server &server, Client &client, const std::vector<std::string> &params)
 {
     Channel *receiver = server.findChannel(params[0]);
-    std::string msg = "";
-    for (std::size_t i = 1; i < params.size(); i++)
-    {
-        msg += params[i];
-    }
-    receiver->addSendMsgAll(server, client.getNick(), "PRIVMSG", msg);
+    receiver->addSendMsgAll(server, client.getNick(), "PRIVMSG", makeMsg(params));
 }
 
+/**
+ * 해당 유저의 send버퍼에 메시지를 담아주고, write이벤트를 켜주는 함수
+ */
 static void sendPrivmsgToClient(Server &server, Client &client, const std::vector<std::string> &params)
 {
     Client *receiver = server.findClient(params[0]);
-    std::string msg = "";
-    for (std::size_t i = 1; i < params.size(); i++)
-    {
-        msg += params[i];
-    }
     client.setRecvFd(receiver->getsockfd());
-    std::cout << Response::GENERATE(client.getNick(), "PRIVMSG", receiver->getNick() + " :" + msg) << std::endl;
-    receiver->addSendMsg(Response::GENERATE(client.getNick(), "PRIVMSG", receiver->getNick() + " :" + msg).c_str());
-    std::cout << "rec fd: " << receiver->getsockfd() << std::endl;
-    // 일단 직접 writevent 건들기
+    receiver->addSendMsg(
+        Response::GENERATE(client.getNick(), "PRIVMSG", receiver->getNick() + " :" + makeMsg(params)).c_str());
     server.enableWriteEvent(receiver->getsockfd());
 }
 
+/**
+ * 콤마(,) 기준으로 스플릿하는 함수
+ */
 static std::vector<std::string> splitComma(const std::string &command)
 {
     std::vector<std::string> ret;
@@ -100,6 +116,9 @@ static std::vector<std::string> splitComma(const std::string &command)
     return ret;
 }
 
+/**
+ * 채널인지, 유저인지 확인하는 함수
+ */
 static ePrivmsg validCheck(Server &server, const std::string &to)
 {
     if (to[0] == '&' || to[0] == '#')
@@ -109,10 +128,7 @@ static ePrivmsg validCheck(Server &server, const std::string &to)
         {
             return CHANNEL;
         }
-        else
-        {
-            return NOCHANNEL;
-        }
+        return NOCHANNEL;
     }
     else
     {
@@ -121,9 +137,6 @@ static ePrivmsg validCheck(Server &server, const std::string &to)
         {
             return CLIENT;
         }
-        else
-        {
-            return NOCLIENT;
-        }
+        return NOCLIENT;
     }
 }
