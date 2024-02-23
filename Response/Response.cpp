@@ -153,7 +153,7 @@ std::string Response::RPL_CHANNELMODEIS_324(Server &server, Client &client, Chan
 std::string Response::RPL_CREATIONTIME_329(Server &server, Client &client, Channel &channel)
 {
     return GENERATE(server.getName(), "329",
-                    client.getNick() + " " + channel.getName() + " :" + timeToString(channel.getCreated()));
+                    client.getNick() + " " + channel.getName() + " :" + std::to_string(channel.getCreated()));
 }
 
 std::string Response::RPL_BANLIST_367(Server &server, Client &client, Channel &channel)
