@@ -19,6 +19,7 @@ Message &Message::operator=(Message const &rhs)
         this->m_origin = rhs.m_origin;
         this->m_cmds = rhs.m_cmds;
     }
+    return *this;
 }
 
 /**

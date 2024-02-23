@@ -22,6 +22,7 @@ Command &Command::operator=(Command const &rhs)
         m_params = rhs.m_params;
         m_params_count = rhs.m_params_count;
     }
+    return *this;
 }
 
 /* getter */
