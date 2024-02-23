@@ -15,7 +15,6 @@ void Message::inviteExecute(Server &server, Client &client, Command *cmd)
     if (cmd->getParamsCount() < 2)
     {
         client.addSendMsg(Response::ERR_NEEDMOREPARAMS_461(server, client, cmd->getCommand()));
-        client.setWriteTypes(MYSELF);
         return;
     }
     std::string channel_name = cmd->getParams()[1];
@@ -23,37 +22,31 @@ void Message::inviteExecute(Server &server, Client &client, Command *cmd)
     if (channel == NULL)
     {
         client.addSendMsg(Response::ERR_NOSUCHCHANNEL_403(server, client, channel_name));
-        client.setWriteTypes(MYSELF);
         return;
     }
     Client *invited = server.findClient(cmd->getParams()[0]);
     if (invited == NULL)
     {
         client.addSendMsg(Response::ERR_NOSUCHNICK_401(server, client, cmd->getParams()[0]));
-        client.setWriteTypes(MYSELF);
         return;
     }
     if (!channel->isMember(client))
     {
         client.addSendMsg(Response::ERR_NOTONCHANNEL_442(server, client, *channel));
-        client.setWriteTypes(MYSELF);
         return;
     }
     if (!channel->checkOp(client))
     {
         client.addSendMsg(Response::ERR_CHANOPRIVSNEEDED_482(server, client, *channel));
-        client.setWriteTypes(MYSELF);
         return;
     }
     if (channel->isMember(*invited))
     {
         client.addSendMsg(Response::ERR_USERONCHANNEL_443(server, client, *invited, *channel));
-        client.setWriteTypes(MYSELF);
         return;
     }
 
     client.addSendMsg(Response::RPL_INVITING_341(server, client, *invited, *channel));
-    client.setWriteTypes(MYSELF);
     invited->addSendMsg(Response::GENERATE(client.getNick(), "INVITE", invited->getNick() + " :" + channel_name));
     server.enableWriteEvent(invited->getsockfd());
 }

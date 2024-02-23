@@ -16,19 +16,16 @@ void Message::registerNickExecute(Server &server, Client &client, Command *cmd)
     if (cmd->getParamsCount() < 1)
     {
         client.addSendMsg(Response::ERR_NONICKNAMEGIVEN_431(server, client));
-        client.setWriteTypes(MYSELF);
         return;
     }
     if (!validCheck(cmd->getParams()[0]))
     {
         client.addSendMsg(Response::ERR_ERRONEUSNICKNAME_432(server, client, cmd->getParams()[0]));
-        client.setWriteTypes(MYSELF);
         return;
     }
     if (server.searchNick(client.getsockfd(), cmd->getParams()[0]))
     {
         client.addSendMsg(Response::ERR_NICKNAMEINUSE_433(server, client, cmd->getParams()[0]));
-        client.setWriteTypes(MYSELF);
         return;
     }
 
@@ -48,13 +45,11 @@ void Message::nickExecute(Server &server, Client &client, Command *cmd)
     if (cmd->getParamsCount() < 1)
     {
         client.addSendMsg(Response::ERR_NEEDMOREPARAMS_461(server, client, cmd->getCommand()));
-        client.setWriteTypes(MYSELF);
         return;
     }
     if (!validCheck(cmd->getParams()[0]))
     {
         client.addSendMsg(Response::ERR_ERRONEUSNICKNAME_432(server, client, cmd->getParams()[0]));
-        client.setWriteTypes(MYSELF);
         return;
     }
     client.setNick(cmd->getParams()[0]);

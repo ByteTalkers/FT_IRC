@@ -30,7 +30,6 @@ void Message::modeExecute(Server &server, Client &client, Command *cmd)
     if (cmd->getParamsCount() < 1)
     {
         client.addSendMsg(Response::ERR_NEEDMOREPARAMS_461(server, client, cmd->getCommand()));
-        client.setWriteTypes(MYSELF);
         return;
     }
 
@@ -42,11 +41,9 @@ void Message::modeExecute(Server &server, Client &client, Command *cmd)
         if (channel_name == client.getNick())
         {
             client.addSendMsg(Response::RPL_UMODEIS_221(client));
-            client.setWriteTypes(MYSELF);
             return;
         }
         client.addSendMsg(Response::ERR_NOSUCHCHANNEL_403(server, client, cmd->getParams()[0]));
-        client.setWriteTypes(MYSELF);
         return;
     }
 
@@ -54,7 +51,6 @@ void Message::modeExecute(Server &server, Client &client, Command *cmd)
     {
         client.addSendMsg(Response::RPL_CHANNELMODEIS_324(server, client, *channel));
         client.addSendMsg(Response::RPL_CREATIONTIME_329(server, client, *channel));
-        client.setWriteTypes(MYSELF);
         return;
     }
 
@@ -69,7 +65,7 @@ void Message::modeExecute(Server &server, Client &client, Command *cmd)
             }
             client.addSendMsg(Response::ERR_CHANOPRIVSNEEDED_482(server, client, *channel));
         }
-        client.setWriteTypes(MYSELF);
+        
         return;
     }
 
@@ -120,11 +116,6 @@ void Message::modeExecute(Server &server, Client &client, Command *cmd)
             client.addSendMsg(Response::ERR_UNKNOWNMODE_472(server, client, std::string(1, cmd->getParams()[param_idx][i])));
         }
         param_idx++;
-    }
-
-    if (!client.getSendMsg().empty())
-    {
-        client.setWriteTypes(MYSELF);
     }
 }
 

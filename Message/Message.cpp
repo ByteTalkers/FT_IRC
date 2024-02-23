@@ -89,11 +89,15 @@ void Message::registerExecute(Server &server, Client &client, Command *cmd)
     {
         client.setRegistered(true);
         client.addSendMsg(Response::RPL_WELCOME_001(server, client));
-        client.setWriteTypes(MYSELF);
     }
     else
     {
         client.setRegistered(false);
+    }
+
+    if (!client.getSendMsg().empty())
+    {
+        client.setWriteTypes(MYSELF);
     }
 }
 
@@ -147,7 +151,11 @@ void Message::commandExecute(Server &server, Client &client, Command *cmd)
     default:
         break;
     }
-    client.setWriteTypes(MYSELF);
+
+    if (!client.getSendMsg().empty())
+    {
+        client.setWriteTypes(MYSELF);
+    }
 }
 
 // Getter

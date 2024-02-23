@@ -10,5 +10,4 @@ void Message::pingExecute(Server &server, Client &client, Command *cmd)
     {
         client.addSendMsg(Response::PONG(server, cmd->getParams()[0]));
     }
-    client.setWriteTypes(MYSELF);
 }

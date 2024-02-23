@@ -12,13 +12,11 @@ void Message::registerUserExecute(Server &server, Client &client, Command *cmd)
     if (cmd->getParamsCount() < 4)
     {
         client.addSendMsg(Response::ERR_NEEDMOREPARAMS_461(server, client, cmd->getCommand()));
-        client.setWriteTypes(MYSELF);
         return;
     }
     if (client.getIsRegisterFlags()[USER_REG])
     {
         client.addSendMsg(Response::ERR_ALREADYREGISTERED_462(server, client));
-        client.setWriteTypes(MYSELF);
         return;
     }
     client.setUsername(cmd->getParams()[0]);
@@ -38,9 +36,8 @@ void Message::userExecute(Server &server, Client &client, Command *cmd)
     if (cmd->getParamsCount() < 1)
     {
         client.addSendMsg(Response::ERR_NEEDMOREPARAMS_461(server, client, cmd->getCommand()));
-        client.setWriteTypes(MYSELF);
         return;
     }
     client.addSendMsg(Response::RPL_USERHOST_302(server, client));
-    client.setWriteTypes(MYSELF);
+    
 }
