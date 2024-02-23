@@ -1,8 +1,8 @@
 #include "Channel.hpp"
 
 Channel::Channel(std::string name, Client *cl)
-    : m_name(name), m_cretaed(time(NULL)), m_password(""), m_user_count(1), m_is_mode_invite(false),
-      m_is_mode_key(false), m_is_mode_topic(false), m_is_mode_limit(false), m_is_topic_exist(false)
+    : m_name(name), m_cretaed(time(NULL)), m_password(""), m_is_mode_invite(false), m_is_mode_key(false),
+      m_is_mode_topic(false), m_is_mode_limit(false), m_is_topic_exist(false)
 {
     (void)cl;
 }
@@ -17,9 +17,7 @@ Channel::Channel(const Channel &src)
     this->m_invitations = src.m_invitations;
     this->m_topic = src.m_topic;
     this->m_key = src.m_key;
-    this->m_user_count = src.m_user_count;
     this->m_limit_count = src.m_limit_count;
-
     this->m_is_mode_invite = src.m_is_mode_invite;
     this->m_is_mode_key = src.m_is_mode_key;
     this->m_is_mode_topic = src.m_is_mode_topic;
@@ -32,30 +30,6 @@ Channel::~Channel()
 {
     this->m_operators.clear();
     this->m_normals.clear();
-}
-
-// 채널에 들어옴
-void Channel::joinChannel(Client *cl)
-{
-    if (this->m_is_mode_invite)
-    {
-        // todo: 초대 여부 확인
-    }
-    if (this->m_is_mode_key)
-    {
-        // todo: 비밀번호 입력 확인
-    }
-    if (this->m_is_mode_limit)
-    {
-        if (this->m_user_count == this->m_limit_count)
-        {
-            // todo: error reply 설정
-        }
-    }
-
-    this->m_user_count++;
-    cl->setCurChannel(this->getName()); // 클라이언트의 현재 채널이름 설정
-    this->m_normals.push_back(cl);      // 목록에 넣기
 }
 
 // 채널 나가기
@@ -127,7 +101,7 @@ std::string Channel::getKey() const
 
 int Channel::getUserCount() const
 {
-    return this->m_user_count;
+    return this->m_normals.size();
 }
 
 int Channel::getLimitCount() const
@@ -188,11 +162,6 @@ void Channel::setTopic(std::string topic)
 void Channel::setKey(std::string key)
 {
     this->m_key = key;
-}
-
-void Channel::setUserCount(int count)
-{
-    this->m_user_count = count;
 }
 
 void Channel::setLimitCount(int count)
@@ -285,9 +254,7 @@ bool Channel::isMember(Client &client) const
     for (std::vector<Client *>::const_iterator it = m_normals.begin(); it != m_normals.end(); ++it)
     {
         if ((*it)->getNick() == client.getNick())
-        {
             return true;
-        }
     }
     return false;
 }
@@ -295,9 +262,7 @@ bool Channel::isMember(Client &client) const
 void Channel::addMember(Client *client)
 {
     if (!isMember(*client))
-    {
         m_normals.push_back(client);
-    }
 }
 
 bool Channel::isMemberNick(std::string &nick) const
@@ -305,9 +270,7 @@ bool Channel::isMemberNick(std::string &nick) const
     for (std::vector<Client *>::const_iterator it = m_normals.begin(); it != m_normals.end(); ++it)
     {
         if ((*it)->getNick() == nick)
-        {
             return true;
-        }
     }
     return false;
 }
@@ -317,9 +280,7 @@ bool Channel::isMemberNick(const std::string &nick) const
     for (std::vector<Client *>::const_iterator it = m_normals.begin(); it != m_normals.end(); ++it)
     {
         if ((*it)->getNick() == nick)
-        {
             return true;
-        }
     }
     return false;
 }
@@ -335,7 +296,7 @@ void Channel::addOperator(const std::string &nick)
         }
     }
 }
-    
+
 void Channel::popOperator(const std::string &nick)
 {
     for (std::vector<Client *>::const_iterator it = m_operators.begin(); it != m_operators.end(); ++it)
@@ -353,9 +314,7 @@ bool Channel::checkOpNick(const std::string &nick) const
     for (std::vector<Client *>::const_iterator it = m_operators.begin(); it != m_operators.end(); ++it)
     {
         if (((*it)->getNick() == nick))
-        {
             return true;
-        }
     }
     return false;
 }
