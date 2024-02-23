@@ -61,7 +61,6 @@ void Message::modeExecute(Server &server, Client &client, Command *cmd)
         modeB(server, client, channel);
         return;
     }
-
     std::string modes = cmd->getParams()[1];
     if (!channel->checkOp(client))
     {
@@ -73,7 +72,6 @@ void Message::modeExecute(Server &server, Client &client, Command *cmd)
             }
             client.addSendMsg(Response::ERR_CHANOPRIVSNEEDED_482(server, client, *channel));
         }
-
         return;
     }
     bool mode_flag = true;
