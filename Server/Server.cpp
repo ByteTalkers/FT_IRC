@@ -131,7 +131,6 @@ void Server::handleKqueue()
     while (1)
     {
         struct kevent event_arr[MAX_EVENTS];
-        // struct timespec timeout = {1, 0};
         int event_cnt = kevent(m_kqueue, &m_change_vec[0], m_change_vec.size(), event_arr, MAX_EVENTS, NULL);
         if (event_cnt == -1)
             break;
@@ -155,8 +154,6 @@ void Server::handleKqueue()
                 Server::handleRecv(fd);
             else if (event_arr[i].filter == EVFILT_WRITE) // 쓰기 이벤트 -> 데이터 전송
                 Server::handleSend(fd);
-            // else if (event_arr[i].filter == EVFILT_TIMER)
-            // 	Server::handleTimeout();
         }
     }
 }
@@ -189,7 +186,7 @@ void Server::handleRecv(int fd)
     memset(buffer, 0, sizeof(buffer));
     ssize_t bytes_read = recv(clnt_sock, buffer, sizeof(buffer) - 1, 0);
     if (bytes_read == -1)
-        std::runtime_error("something is wrong on clnt_sock or recv()");
+        throw std::runtime_error("something is wrong on clnt_sock or recv()");
     if (checkBuffer(buffer) == true)
     {
         buffer[bytes_read] = '\0';
@@ -273,10 +270,6 @@ void Server::setName(std::string name)
 void Server::setCreated(time_t time)
 {
     m_created = time;
-}
-
-void Server::handleTimeout()
-{
 }
 
 Channel *Server::findChannel(const std::string &ch_name)

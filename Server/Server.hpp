@@ -56,7 +56,6 @@ class Server
     void initServSock();
     void initKqueue();
     void handleKqueue();
-    void handleTimeout();
     void handleConnect();
     void handleDisconnect(int fd);
     void handleSend(int fd);
