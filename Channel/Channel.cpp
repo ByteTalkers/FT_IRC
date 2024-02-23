@@ -1,7 +1,7 @@
 #include "Channel.hpp"
 
 Channel::Channel(std::string name, Client *cl)
-    : m_name(name), m_cretaed(time(NULL)), m_password(""), m_user_count(1), m_is_mode_invite(false),
+    : m_name(name), m_cretaed(time(NULL)), m_password(""), m_user_count(0), m_is_mode_invite(false),
       m_is_mode_key(false), m_is_mode_topic(false), m_is_mode_limit(false), m_is_topic_exist(false)
 {
     (void)cl;
@@ -76,6 +76,7 @@ void Channel::partChannel(Client &cl)
         if ((*it)->getNick() == cl.getNick())
         {
             this->m_normals.erase(it);
+            m_user_count--;
             break;
         }
     }
@@ -127,7 +128,7 @@ std::string Channel::getKey() const
 
 int Channel::getUserCount() const
 {
-    return this->m_user_count;
+    return this->m_normals.size();
 }
 
 int Channel::getLimitCount() const
@@ -297,6 +298,7 @@ void Channel::addMember(Client *client)
     if (!isMember(*client))
     {
         m_normals.push_back(client);
+		m_user_count++;
     }
 }
 
@@ -335,7 +337,7 @@ void Channel::addOperator(const std::string &nick)
         }
     }
 }
-    
+
 void Channel::popOperator(const std::string &nick)
 {
     for (std::vector<Client *>::const_iterator it = m_operators.begin(); it != m_operators.end(); ++it)

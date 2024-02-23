@@ -152,6 +152,10 @@ void Message::commandExecute(Server &server, Client &client, Command *cmd)
         break;
     }
 
+	// if kick & quit이면 채널을 지울 수도 있음.
+	if (cmd_num == QUIT || cmd_num == KICK)
+		server.delEmptyChannel();
+
     if (!client.getSendMsg().empty())
     {
         client.setWriteTypes(MYSELF);
