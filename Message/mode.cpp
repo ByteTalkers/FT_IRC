@@ -59,7 +59,7 @@ void Message::modeExecute(Server &server, Client &client, Command *cmd)
         return;
     }
 
-    std::string modes = cmd->getParams()[0];
+    std::string modes = cmd->getParams()[1];
     if (!channel->checkOp(client))
     {
         std::cout << "check flag" << std::endl;
