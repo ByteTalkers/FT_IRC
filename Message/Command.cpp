@@ -1,6 +1,6 @@
 #include "Command.hpp"
 
-Command::Command(void)
+Command::Command(void) : m_params_count(0)
 {
 }
 
