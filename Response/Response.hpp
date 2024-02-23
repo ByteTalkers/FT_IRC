@@ -57,6 +57,7 @@ class Response
     static std::string ERR_BADCHANNELKEY_475(Server &server, Client &client, Channel &channel);
     static std::string ERR_NOSUCHCHANNEL_403(Server &server, Client &client, const std::string &ch_name);
     static std::string ERR_TOOMANYCHANNELS_405(Server &server, Client &client, Channel &channel);
+    static std::string ERR_CHANNEL_IS_FULL_471(Server &server, Client &client, Channel &channel);
 
     static std::string RPL_NAMREPLY_353(Server &server, Client &client, Channel &channel);
     static std::string RPL_ENDOFNAMES_366(Server &server, Client &client, Channel &channel);
@@ -74,7 +75,8 @@ class Response
     static std::string ERR_UNKNOWNMODE_472(Server &server, Client &client, const std::string &mode);
     static std::string ERR_CHANOPRIVSNEEDED_482(Server &server, Client &client, Channel &channel);
 
-    static std::string ERR_SPECIFYPARAMETER_696(Server &server, Client &client, Channel &channel, const std::string &mode);
+    static std::string ERR_SPECIFYPARAMETER_696(Server &server, Client &client, Channel &channel,
+                                                const std::string &mode);
 
     // TOPIC
     static std::string RPL_NOTOPIC_331(Server &server, Client &client, Channel &channel);

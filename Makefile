@@ -7,7 +7,7 @@ FILE = Server/Server.cpp Server/utils.cpp \
 	Message/nick.cpp Message/pass.cpp Message/user.cpp Message/parsing.cpp \
 	Message/who.cpp Message/mode.cpp Message/ping.cpp Message/join.cpp \
 	Message/part.cpp Message/Command.cpp Message/quit.cpp Message/topic.cpp \
-	Message/privmsg.cpp Message/kick.cpp 
+	Message/privmsg.cpp Message/kick.cpp Message/invite.cpp
 
 all : make
 	rm -rf *.dSYM

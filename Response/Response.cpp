@@ -84,6 +84,12 @@ std::string Response::ERR_TOOMANYCHANNELS_405(Server &server, Client &client, Ch
                     client.getNick() + " " + channel.getName() + " :You have joined too many channels");
 }
 
+std::string Response::ERR_CHANNEL_IS_FULL_471(Server &server, Client &client, Channel &channel)
+{
+    return GENERATE(server.getName(), "471",
+                    client.getNick() + " " + channel.getName() + " :Cannot join channel (channel is full)");
+}
+
 std::string Response::RPL_NAMREPLY_353(Server &server, Client &client, Channel &channel)
 {
     std::string list = client.getNick() + " = " + channel.getName() + " :";
