@@ -32,7 +32,8 @@ void Message::partExecute(Server &server, Client &client, Command *cmd)
     {
         if (client.getCurChannel().empty())
         {
-            client.addSendMsg("You're not on that channel");
+            std::string curChannel = client.getCurChannel();
+            client.addSendMsg(Response::ERR_NOTONCHANNEL_442(server, client, *server.getChannels()[curChannel]));
             return;
         }
         else
@@ -48,29 +49,25 @@ void Message::partExecute(Server &server, Client &client, Command *cmd)
         std::map<std::string, Channel *>::iterator it = server.getChannels().find(channelName);
         if (it == server.getChannels().end())
         {
-            // 403: No such channel
+            client.addSendMsg(Response::ERR_NOSUCHCHANNEL_403(server, client, channelName));
             continue;
         }
 
         Channel *channel = it->second;
         if (!channel->isMember(client))
         {
-            // 442: You're not on that channel
+            client.addSendMsg(Response::ERR_NOTONCHANNEL_442(server, client, *channel));
             continue;
         }
-
         channel->partChannel(client);
-        std::string message = client.getNick() + " has left " + channelName;
+        // if (channel->getUserCount() == 0)
+        // {
+        //     server.getChannels().erase(it);
+        //     // delete channel;
+        // }
         if (!reason.empty())
-            message += " [" + reason + "]";
-
-        std::vector<Client *> allMembers = channel->getNormals();
-        std::vector<Client *>::iterator it_member;
-        for (it_member = allMembers.begin(); it_member != allMembers.end(); ++it_member)
-        {
-            Client *member = *it_member;
-            if (member->getNick() != client.getNick())
-                member->addSendMsg(message);
-        }
+            channel->addSendMsgAll(server, client.getNick(), "PART " + channelName, reason);
+        else
+            channel->addSendMsgAll(server, client.getNick(), "PART", channelName);
     }
 }
