@@ -173,14 +173,12 @@ void Message::commandExecute(Server &server, Client &client, Command *cmd)
         break;
     }
 
-	// if kick & quit이면 채널을 지울 수도 있음.
-	if (cmd_num == QUIT || cmd_num == KICK)
-		server.delEmptyChannel();
+    // 만약 irc 메소드가 KICK, QUIT, PART면 채널을 지울 수도 있음.
+    if (cmd_num == QUIT || cmd_num == KICK || cmd_num == PART)
+        server.delEmptyChannel();
 
     if (!client.getSendMsg().empty())
-    {
         client.setWriteTypes(MYSELF);
-    }
 }
 
 /* getter */
