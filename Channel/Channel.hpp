@@ -90,7 +90,7 @@ class Channel
     void setTopicExist(bool tf);
 
     // 기타 함수
-    void addSendMsgAll(Server &server, const std::string &from, const std::string &cmd, const std::string &msg);
+    void addSendMsgAll(Server &server, const std::string &from, const std::string &cmd, const std::string &msg, const std::string &last);
 };
 
 #endif
