@@ -45,17 +45,17 @@ bool Message::crlfCheck()
  */
 void Message::execute(Server &server, Client &client)
 {
-    std::vector<Command *>::const_iterator it;
+    std::vector<Command>::iterator it;
 
     for (it = this->m_cmds.begin(); it != this->m_cmds.end(); it++)
     {
         if (!client.getRegisterd())
         {
-            registerExecute(server, client, *it);
+            registerExecute(server, client, &(*it));
         }
         else
         {
-            commandExecute(server, client, *it);
+            commandExecute(server, client, &(*it));
         }
     }
 }
@@ -66,7 +66,7 @@ void Message::execute(Server &server, Client &client)
 static int findCommands(const std::string &cmd)
 {
     const std::string commands[COMMAND_SIZE] = {"CAP",  "PASS", "NICK",  "USER",   "PING",    "QUIT", "JOIN",
-                                      "PART", "MODE", "TOPIC", "INVITE", "PRIVMSG", "WHO",  "KICK"};
+                                                "PART", "MODE", "TOPIC", "INVITE", "PRIVMSG", "WHO",  "KICK"};
 
     for (int i = 0; i < COMMAND_SIZE; i++)
     {
@@ -186,7 +186,7 @@ const std::string &Message::getOrigin() const
     return this->m_origin;
 }
 
-const std::vector<Command *> &Message::getCmds() const
+const std::vector<Command> &Message::getCmds() const
 {
     return this->m_cmds;
 }
@@ -197,7 +197,7 @@ void Message::setOrigin(std::string &origin)
     this->m_origin = origin;
 }
 
-void Message::setCmds(std::vector<Command *> &cmds)
+void Message::setCmds(std::vector<Command> &cmds)
 {
     this->m_cmds = cmds;
 }

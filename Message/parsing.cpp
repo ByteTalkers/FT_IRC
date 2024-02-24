@@ -17,10 +17,10 @@ void Message::parsingOrigin()
             split.pop_back();
         }
 
-        Command *cmd = new Command();
+        Command cmd;
 
         // space 기준으로 스플릿
-        parsingSpace(split, cmd);
+        parsingSpace(split, &cmd);
         this->m_cmds.push_back(cmd);
     }
 }
