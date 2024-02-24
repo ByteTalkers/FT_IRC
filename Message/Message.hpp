@@ -43,7 +43,7 @@ class Message
 {
   private:
     std::string m_origin;
-    std::vector<Command *> m_cmds;
+    std::vector<Command> m_cmds;
     Message();
 
   public:
@@ -54,11 +54,11 @@ class Message
 
     /* getter */
     const std::string &getOrigin() const;
-    const std::vector<Command *> &getCmds() const;
+    const std::vector<Command> &getCmds() const;
 
     /* setter */
     void setOrigin(std::string &origin);
-    void setCmds(std::vector<Command *> &cmds);
+    void setCmds(std::vector<Command> &cmds);
 
     bool crlfCheck();
     void display();
