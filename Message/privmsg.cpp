@@ -85,7 +85,7 @@ static const std::string makeMsg(const std::vector<std::string> &params)
 static void sendPrivmsgToChannel(Server &server, Client &client, const std::vector<std::string> &params)
 {
     Channel *receiver = server.findChannel(params[0]);
-    receiver->addSendMsgAll(server, client.getNick(), "PRIVMSG", makeMsg(params));
+    receiver->addSendMsgAll(server, client.getNick(), "PRIVMSG", receiver->getName(), makeMsg(params));
 }
 
 /**
