@@ -2,7 +2,6 @@
 
 Client::Client() : m_is_registered(false)
 {
-    m_is_op = false;
     m_is_register_flags[PASS_REG] = false;
     m_is_register_flags[NICK_REG] = false;
     m_is_register_flags[USER_REG] = false;
@@ -27,7 +26,6 @@ Client &Client::operator=(const Client &other)
         m_password = other.m_password;
         m_cur_channel = other.m_cur_channel;
         m_flag_connect = other.m_flag_connect;
-        m_is_op = other.m_is_op;
         m_is_registered = other.m_is_registered;
         m_is_register_flags[0] = other.m_is_register_flags[0];
         m_is_register_flags[1] = other.m_is_register_flags[1];
@@ -162,11 +160,6 @@ writeEvent Client::getWriteTypes()
 bool Client::getRegisterd()
 {
     return m_is_registered;
-}
-
-bool Client::getIsOp()
-{
-    return m_is_op;
 }
 
 bool *Client::getIsRegisterFlags()
