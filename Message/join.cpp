@@ -66,6 +66,11 @@ void Message::joinExecute(Server &server, Client &client, Command *cmd)
     for (size_t i = 0; i < channelNames.size(); ++i)
     {
         std::string channelName = channelNames[i];
+        if (channelName[0] != '#' && channelName[0] != '&')
+        {
+            client.addSendMsg(Response::ERR_BADCHANMASK_476(server, client, channelName));
+            return;
+        }
         std::string key = i < keys.size() ? keys[i] : "";
 
         Channel *channel = server.findChannel(channelName);
