@@ -17,9 +17,9 @@
 
 enum eRegister
 {
-  PASS_REG,
-  NICK_REG,
-  USER_REG
+    PASS_REG,
+    NICK_REG,
+    USER_REG
 };
 
 enum writeEvent
@@ -50,6 +50,7 @@ class Client
     int m_flag_connect;        // 연결 여부
     bool m_is_registered;      // 서버 등록 여부
     writeEvent m_write_types;  // write 이벤트의 종류
+    std::string m_leave_msg;   // 떠나는 이유 관련 메시지
 
     bool m_is_register_flags[3]; // PASS, NICK, USER 등록 플래그
 
@@ -72,6 +73,7 @@ class Client
     std::string getRealname();
     bool getRegisterd();
     bool *getIsRegisterFlags();
+    std::string getLeaveMsg();
 
     // Setter 함수들
     void setRecvFd(const int number);
@@ -88,6 +90,7 @@ class Client
     void addSendMsg(std::string msg);
     void setRegistered(bool tf);
     void setRegisterFlags(int i, bool tf);
+    void setLeaveMsg(std::string msg);
 
     void startListen(int serv_sock);
     void startParseMessage(Server &serv);
