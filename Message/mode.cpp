@@ -46,18 +46,23 @@ void Message::modeExecute(Server &server, Client &client, Command *cmd)
             client.addSendMsg(Response::ERR_NOSUCHNICK_401(server, client, cmd->getParams()[0]));
             return;
         }
-        if (find_client != &client)
+        if (cmd->getParamsCount() > 1)
         {
-            if (cmd->getParamsCount() > 1)
+            for (std::size_t i = 1; i < cmd->getParamsCount(); i++)
             {
-                for (std::size_t i = 1; i < cmd->getParamsCount(); i++)
+                for (std::size_t j = 0; j < cmd->getParams()[i].length(); j++)
                 {
-                    for (std::size_t j = 0; j < cmd->getParams()[i].length(); j++)
+                    if (cmd->getParams()[i][j] != '+' && cmd->getParams()[i][j] != '-')
                     {
-                        client.addSendMsg(Response::ERR_UMODEUNKNWONFLAG_501(server, client, std::string(1, cmd->getParams()[i][j])));
+                        client.addSendMsg(
+                            Response::ERR_UMODEUNKNWONFLAG_501(server, client, std::string(1, cmd->getParams()[i][j])));
                     }
                 }
             }
+            return;
+        }
+        if (find_client != &client)
+        {
             client.addSendMsg(Response::ERR_USERSDONTMATCH_502(server, client));
             return;
         }
@@ -104,7 +109,7 @@ void Message::modeExecute(Server &server, Client &client, Command *cmd)
         {
             mode_flag = true;
             continue;
-        } 
+        }
         if (modes[i] == '-')
         {
             mode_flag = false;
@@ -234,7 +239,7 @@ static void modeK(Server &server, Client &client, Channel *channel, bool mode_fl
     if (!mode_flag && channel->getModeKey())
     {
         channel->setModeKey(false);
-        channel->addSendMsgAll(server, client.getClientPrefix(), "MODE",channel->getName() + " -k", channel->getKey());
+        channel->addSendMsgAll(server, client.getClientPrefix(), "MODE", channel->getName() + " -k", channel->getKey());
         channel->setKey("");
     }
 }
@@ -266,12 +271,14 @@ static void modeO(Server &server, Client &client, Channel *channel, bool mode_fl
     if (mode_flag && !channel->checkOpNick(nick))
     {
         channel->addOperator(nick);
-        channel->addSendMsgAll(server, client.getClientPrefix(), "MODE", channel->getName() + " +o", find_client->getNick());
+        channel->addSendMsgAll(server, client.getClientPrefix(), "MODE", channel->getName() + " +o",
+                               find_client->getNick());
     }
     if (!mode_flag && channel->checkOpNick(nick))
     {
         channel->popOperator(nick);
-        channel->addSendMsgAll(server, client.getClientPrefix(), "MODE", channel->getName() + " -o", find_client->getNick());
+        channel->addSendMsgAll(server, client.getClientPrefix(), "MODE", channel->getName() + " -o",
+                               find_client->getNick());
     }
 }
 

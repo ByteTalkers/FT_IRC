@@ -61,7 +61,6 @@ void Message::registerNickExecute(Server &server, Client &client, Command *cmd)
             }
         }
     }
-
 }
 
 /**

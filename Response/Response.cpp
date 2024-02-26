@@ -199,7 +199,7 @@ std::string Response::ERR_CHANOPRIVSNEEDED_482(Server &server, Client &client, C
 
 std::string Response::ERR_UMODEUNKNWONFLAG_501(Server &server, Client &client, const std::string &mode)
 {
-    return GENERATE(server.getName(), "501", client.getNick() + mode + " :is an unknown mode character");
+    return GENERATE(server.getName(), "501", client.getNick() + " " + mode + " :is an unknown mode character");
 }
 
 std::string Response::ERR_USERSDONTMATCH_502(Server &server, Client &client)

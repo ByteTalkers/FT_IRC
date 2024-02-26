@@ -7,7 +7,7 @@ static void setCmd(std::string &split, Command *cmd);
  * 클라이언트가 보낸 메시지 파싱하는 부분
  * - \n 기준으로 파싱하고 \r가 붙어있다면 떼줌
  * - 스페이스 기준으로 스플릿
-*/
+ */
 void Message::parsingOrigin()
 {
     std::istringstream iss(this->m_origin);
@@ -33,7 +33,7 @@ void Message::parsingOrigin()
  * - 첫번째 인자에 ':' 가 붙어있다면 => prefix
  * - 다음 인자부터는 커맨드가 비어있다면 => command
  * - ':'가 붙은 인자가 나오면 거기부터는 스페이스가 포함될 수 있는 last 인자 => 스페이스까지 다 넣어줌
-*/
+ */
 static void parsingSpace(std::string &split, Command *cmd)
 {
     std::istringstream iss(split);
@@ -55,7 +55,7 @@ static void parsingSpace(std::string &split, Command *cmd)
         }
         else
         {
-            if (!is_last && split[0] == ':') 
+            if (!is_last && split[0] == ':')
             {
                 is_last = true;
                 break;

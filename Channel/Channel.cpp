@@ -194,7 +194,8 @@ void Channel::setTopicExist(bool tf)
     this->m_is_topic_exist = tf;
 }
 
-void Channel::addSendMsgAll(Server &server, const std::string &from, const std::string &cmd, const std::string &msg, const std::string &last)
+void Channel::addSendMsgAll(Server &server, const std::string &from, const std::string &cmd, const std::string &msg,
+                            const std::string &last)
 {
     for (std::size_t i = 0; i < m_normals.size(); i++)
     {
