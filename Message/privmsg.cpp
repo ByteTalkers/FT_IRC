@@ -99,12 +99,12 @@ static void sendPrivmsgToChannel(Server &server, Client &client, const std::vect
         }
     }
     Channel *receiver = server.findChannel(params[0]);
-    receiver->addSendMsgAll(server, client.getNick(), "PRIVMSG", receiver->getName(), params[1]);
+    receiver->addSendMsgAll(server, client.getClientPrefix(), "PRIVMSG", receiver->getName(), params[1]);
     if (isLotto)
     {
-        receiver->addSendMsgAll(server, client.getNick(), "PRIVMSG", receiver->getName(), lottoMsg);
+        receiver->addSendMsgAll(server, client.getClientPrefix(), "PRIVMSG", receiver->getName(), lottoMsg);
         client.addSendMsg(
-            Response::GENERATE(client.getNick(), "PRIVMSG", receiver->getName() + " :" + lottoMsg).c_str());
+            Response::GENERATE(client.getClientPrefix(), "PRIVMSG", receiver->getName() + " :" + lottoMsg).c_str());
         server.enableWriteEvent(client.getsockfd());
     }
 }
@@ -117,7 +117,7 @@ static void sendPrivmsgToClient(Server &server, Client &client, const std::vecto
     Client *receiver = server.findClient(params[0]);
     client.setRecvFd(receiver->getsockfd());
     receiver->addSendMsg(
-        Response::GENERATE(client.getNick(), "PRIVMSG", receiver->getNick() + " :" + params[1]).c_str());
+        Response::GENERATE(client.getClientPrefix(), "PRIVMSG", receiver->getNick() + " :" + params[1]).c_str());
     server.enableWriteEvent(receiver->getsockfd());
 }
 
