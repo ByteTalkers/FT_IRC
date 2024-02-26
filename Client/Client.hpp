@@ -48,7 +48,6 @@ class Client
     std::string m_password;    // 패스워드
     std::string m_cur_channel; // 현재 채널
     int m_flag_connect;        // 연결 여부
-    bool m_is_op;              // op(방장) 여부
     bool m_is_registered;      // 서버 등록 여부
     writeEvent m_write_types;  // write 이벤트의 종류
 
@@ -72,7 +71,6 @@ class Client
     std::string getHostname();
     std::string getRealname();
     bool getRegisterd();
-    bool getIsOp();
     bool *getIsRegisterFlags();
 
     // Setter 함수들
