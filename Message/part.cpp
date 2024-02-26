@@ -23,10 +23,10 @@ void Message::partExecute(Server &server, Client &client, Command *cmd)
     std::vector<std::string> channels;
     std::string reason;
 
-    cmd->display();
     if (cmd->getParams().empty()) // /part     /part #channel
     {
         client.addSendMsg(Response::ERR_NEEDMOREPARAMS_461(server, client, "PART"));
+        return;
     }
     parseChannelAndReason(cmd->getParams(), channels, reason);
 
@@ -50,6 +50,7 @@ void Message::partExecute(Server &server, Client &client, Command *cmd)
             channel->addSendMsgAll(server, client.getNick(), "PART " + channelName, reason);
         else
             channel->addSendMsgAll(server, client.getNick(), "PART", channelName);
+        std::cout << "partExecute in" << std::endl;
         channel->partChannel(client);
     }
 }
