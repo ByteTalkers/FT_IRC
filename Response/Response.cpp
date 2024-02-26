@@ -103,18 +103,17 @@ std::string Response::ERR_CHANNEL_IS_FULL_471(Server &server, Client &client, Ch
 std::string Response::RPL_NAMREPLY_353(Server &server, Client &client, Channel &channel)
 {
     std::string list = client.getNick() + " = " + channel.getName() + " :";
-    std::vector<Client *>::iterator it;
-    for (it = channel.getNormals().begin(); it != channel.getNormals().end(); it++)
+    for (size_t i = 0; i < channel.getNormals().size(); ++i)
     {
-        if (it != channel.getNormals().begin())
+        if (channel.getNormals()[i] != channel.getNormals()[0])
         {
             list += " ";
         }
-        if (channel.checkOp(*(*it)))
+        if (channel.checkOp(*(channel.getNormals()[i])))
         {
             list += "@";
         }
-        list += (*it)->getNick();
+        list += channel.getNormals()[i]->getNick();
     }
     return GENERATE(server.getName(), "353", list);
 }
