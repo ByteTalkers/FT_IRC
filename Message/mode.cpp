@@ -185,12 +185,12 @@ static void modeI(Server &server, Client &client, Channel *channel, bool mode_fl
     if (mode_flag && !channel->getModeInvite())
     {
         channel->setModeInvite(true);
-        channel->addSendMsgAll(server, client.getNick(), "MODE", "+i");
+        channel->addSendMsgAll(server, client.getNick(), "MODE", channel->getName(), "+i");
     }
     if (!mode_flag && channel->getModeInvite())
     {
         channel->setModeInvite(false);
-        channel->addSendMsgAll(server, client.getNick(), "MODE", "-i");
+        channel->addSendMsgAll(server, client.getNick(), "MODE", channel->getName(), "-i");
     }
 }
 
@@ -203,13 +203,13 @@ static void modeT(Server &server, Client &client, Channel *channel, bool mode_fl
     if (mode_flag && !channel->getModeTopic())
     {
         channel->setModeTopic(true);
-        channel->addSendMsgAll(server, client.getNick(), "MODE", "+t");
+        channel->addSendMsgAll(server, client.getNick(), "MODE", channel->getName(), "+t");
     }
     if (!mode_flag && channel->getModeTopic())
     {
         channel->setModeTopic(false);
         channel->setTopicExist(false);
-        channel->addSendMsgAll(server, client.getNick(), "MODE", "-t");
+        channel->addSendMsgAll(server, client.getNick(), "MODE", channel->getName(), "-t");
     }
 }
 
@@ -229,19 +229,19 @@ static void modeK(Server &server, Client &client, Channel *channel, bool mode_fl
     {
         channel->setModeKey(true);
         channel->setKey(key);
-        channel->addSendMsgAll(server, client.getNick(), "MODE", "+k");
+        channel->addSendMsgAll(server, client.getNick(), "MODE", channel->getName() + "+k", key);
     }
     if (!mode_flag && channel->getModeKey())
     {
         channel->setModeKey(false);
+        channel->addSendMsgAll(server, client.getNick(), "MODE",channel->getName() + "-k", channel->getKey());
         channel->setKey("");
-        channel->addSendMsgAll(server, client.getNick(), "MODE", "-k");
     }
 }
 
 /**
- * 해당 유저가 서버에 존재하지 않을 때
- * 해당 유저가 채널에 존재하지 않을 때
+ * 해당 유저가 서버에 존재하지 않을 때 => ERR_NOSUCHNICK_401
+ * 해당 유저가 채널에 존재하지 않을 때 => 무시
  * 인자가 +o && 해당 채널에서 op가 아닐 때
  * 인자가 -o && 해당 채널에서 op일 때
  */
@@ -253,20 +253,19 @@ static void modeO(Server &server, Client &client, Channel *channel, bool mode_fl
         client.addSendMsg(Response::ERR_NOSUCHNICK_401(server, client, nick));
         return;
     }
-    if (channel->isMember(*find_client))
+    if (!channel->isMember(*find_client))
     {
-        client.addSendMsg(Response::ERR_NOTONCHANNEL_442(server, client, *channel));
         return;
     }
     if (mode_flag && !channel->checkOpNick(nick))
     {
         channel->addOperator(nick);
-        channel->addSendMsgAll(server, client.getNick(), "MODE", "+o");
+        channel->addSendMsgAll(server, client.getNick(), "MODE", channel->getName() + "+o", find_client->getNick());
     }
     if (!mode_flag && channel->checkOpNick(nick))
     {
         channel->popOperator(nick);
-        channel->addSendMsgAll(server, client.getNick(), "MODE", "-o");
+        channel->addSendMsgAll(server, client.getNick(), "MODE", channel->getName() + "-o", find_client->getNick());
     }
 }
 
@@ -282,11 +281,11 @@ static void modeL(Server &server, Client &client, Channel *channel, bool mode_fl
     {
         channel->setModeLimit(true);
         channel->setLimitCount(tmp);
-        channel->addSendMsgAll(server, client.getNick(), "MODE", "+l :" + intToString(tmp));
+        channel->addSendMsgAll(server, client.getNick(), "MODE", channel->getName() + "+l", intToString(tmp));
     }
     if (!mode_flag && channel->getModeLimit())
     {
         channel->setModeLimit(false);
-        channel->addSendMsgAll(server, client.getNick(), "MODE", "-l :" + intToString(tmp));
+        channel->addSendMsgAll(server, client.getNick(), "MODE", channel->getName() + "-l", intToString(tmp));
     }
 }
