@@ -28,11 +28,13 @@ static void checkInviteMode(Server &server, Client &client, Channel &channel, st
         if (!channel.checkKey(key))
         {
             client.addSendMsg(Response::ERR_BADCHANNELKEY_475(server, client, channel));
+            return;
         }
         // 인원 수 체크
         if (channel.getModeLimit() && channel.getLimitCount() <= channel.getUserCount())
         {
             client.addSendMsg(Response::ERR_CHANNEL_IS_FULL_471(server, client, channel));
+            return;
         }
         client.addSendMsg(Response::ERR_INVITEONLYCHAN_473(server, client, channel));
     }

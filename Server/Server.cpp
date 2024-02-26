@@ -351,7 +351,10 @@ void Server::delEmptyChannel()
         it = m_channels.find(empty_list[i]);
 
         if (it != m_channels.end())
+        {
+            delete it->second;
             m_channels.erase(it);
+        }
     }
 }
 
@@ -363,18 +366,11 @@ void Server::delClientFromChannel(Client &clnt)
         Channel *ch = it->second;
         if (ch->isMember(clnt))
         {
-            const std::vector<Client *> members = ch->getNormals();
-            for (size_t i = 0; i < members.size(); ++i)
-            {
-                if (members[i]->getNick() != clnt.getNick())
-                {
-                    // 이때 채널에 있는 모든 유저들에게 메시지를 보내야 한다.
-                    if (clnt.getLeaveMsg() == "null")
-                        ch->addSendMsgAll(*this, members[i]->getClientPrefix(), "QUIT", "", "Connection: close");
-                    else
-                        ch->addSendMsgAll(*this, members[i]->getClientPrefix(), "QUIT", "", "Quit: " + clnt.getLeaveMsg());
-                }
-            }
+            // 이때 채널에 있는 모든 유저들에게 메시지를 보내야 한다.
+            if (clnt.getLeaveMsg() == "null")
+                ch->addSendMsgAll(*this, clnt.getClientPrefix(), "QUIT", "", "Connection: close");
+            else
+                ch->addSendMsgAll(*this, clnt.getClientPrefix(), "QUIT", "", "Quit: " + clnt.getLeaveMsg());
             ch->partChannel(clnt);
         }
     }
