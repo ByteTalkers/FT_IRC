@@ -185,12 +185,12 @@ static void modeI(Server &server, Client &client, Channel *channel, bool mode_fl
     if (mode_flag && !channel->getModeInvite())
     {
         channel->setModeInvite(true);
-        channel->addSendMsgAll(server, client.getNick(), "MODE", channel->getName(), "+i");
+        channel->addSendMsgAll(server, client.getClientPrefix(), "MODE", channel->getName(), "+i");
     }
     if (!mode_flag && channel->getModeInvite())
     {
         channel->setModeInvite(false);
-        channel->addSendMsgAll(server, client.getNick(), "MODE", channel->getName(), "-i");
+        channel->addSendMsgAll(server, client.getClientPrefix(), "MODE", channel->getName(), "-i");
     }
 }
 
@@ -203,13 +203,13 @@ static void modeT(Server &server, Client &client, Channel *channel, bool mode_fl
     if (mode_flag && !channel->getModeTopic())
     {
         channel->setModeTopic(true);
-        channel->addSendMsgAll(server, client.getNick(), "MODE", channel->getName(), "+t");
+        channel->addSendMsgAll(server, client.getClientPrefix(), "MODE", channel->getName(), "+t");
     }
     if (!mode_flag && channel->getModeTopic())
     {
         channel->setModeTopic(false);
         channel->setTopicExist(false);
-        channel->addSendMsgAll(server, client.getNick(), "MODE", channel->getName(), "-t");
+        channel->addSendMsgAll(server, client.getClientPrefix(), "MODE", channel->getName(), "-t");
     }
 }
 
@@ -229,12 +229,12 @@ static void modeK(Server &server, Client &client, Channel *channel, bool mode_fl
     {
         channel->setModeKey(true);
         channel->setKey(key);
-        channel->addSendMsgAll(server, client.getNick(), "MODE", channel->getName() + " +k", key);
+        channel->addSendMsgAll(server, client.getClientPrefix(), "MODE", channel->getName() + " +k", key);
     }
     if (!mode_flag && channel->getModeKey())
     {
         channel->setModeKey(false);
-        channel->addSendMsgAll(server, client.getNick(), "MODE",channel->getName() + " -k", channel->getKey());
+        channel->addSendMsgAll(server, client.getClientPrefix(), "MODE",channel->getName() + " -k", channel->getKey());
         channel->setKey("");
     }
 }
@@ -266,12 +266,12 @@ static void modeO(Server &server, Client &client, Channel *channel, bool mode_fl
     if (mode_flag && !channel->checkOpNick(nick))
     {
         channel->addOperator(nick);
-        channel->addSendMsgAll(server, client.getNick(), "MODE", channel->getName() + " +o", find_client->getNick());
+        channel->addSendMsgAll(server, client.getClientPrefix(), "MODE", channel->getName() + " +o", find_client->getNick());
     }
     if (!mode_flag && channel->checkOpNick(nick))
     {
         channel->popOperator(nick);
-        channel->addSendMsgAll(server, client.getNick(), "MODE", channel->getName() + " -o", find_client->getNick());
+        channel->addSendMsgAll(server, client.getClientPrefix(), "MODE", channel->getName() + " -o", find_client->getNick());
     }
 }
 
@@ -287,11 +287,11 @@ static void modeL(Server &server, Client &client, Channel *channel, bool mode_fl
     {
         channel->setModeLimit(true);
         channel->setLimitCount(tmp);
-        channel->addSendMsgAll(server, client.getNick(), "MODE", channel->getName() + " +l", intToString(tmp));
+        channel->addSendMsgAll(server, client.getClientPrefix(), "MODE", channel->getName() + " +l", intToString(tmp));
     }
     if (!mode_flag && channel->getModeLimit())
     {
         channel->setModeLimit(false);
-        channel->addSendMsgAll(server, client.getNick(), "MODE", channel->getName() + " -l", intToString(tmp));
+        channel->addSendMsgAll(server, client.getClientPrefix(), "MODE", channel->getName() + " -l", intToString(tmp));
     }
 }

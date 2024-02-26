@@ -288,5 +288,5 @@ std::string Response::RPL_ENDOFWHO_315(Server &server, Client &client, Channel &
 // MODE user +i
 std::string Response::RPL_UMODEIS_221(Client &client)
 {
-    return GENERATE(client.getUser(), "MODE", client.getNick() + " :+");
+    return GENERATE(client.getClientPrefix(), "MODE", client.getNick() + " :+");
 }
