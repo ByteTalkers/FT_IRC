@@ -37,6 +37,7 @@ class Response
     // PASS, USER
     static std::string ERR_ALREADYREGISTERED_462(Server &server, Client &client);
     static std::string RPL_USERHOST_302(Server &server, Client &client);
+	static std::string ERR_PASSWDMISMATCH_464(Server &server, Client &client);
 
     // NICK
     static std::string ERR_NONICKNAMEGIVEN_431(Server &server, Client &client);
@@ -52,6 +53,7 @@ class Response
     // :irc.local 353 a = #a :@a
     // :irc.local 366 a #a :End of /NAMES list.
     static std::string RPL_TOPIC_332(Server &server, Client &client, Channel &channel);
+	static std::string ERR_BADCHANMASK_476(Server &server, Client &client, const std::string &ch_name);
 
     static std::string ERR_INVITEONLYCHAN_473(Server &server, Client &client, Channel &channel);
     static std::string ERR_BADCHANNELKEY_475(Server &server, Client &client, Channel &channel);
