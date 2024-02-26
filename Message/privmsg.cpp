@@ -102,7 +102,7 @@ static void sendPrivmsgToChannel(Server &server, Client &client, const std::vect
 {
     bool isLotto = false;
     std::string lottoMsg = "Lotto numbers: ";
-    if (params.size() > 1 && params[1] == "@lotto")
+    if (params.size() > 1 && params[1] == LOTTO)
     {
         isLotto = true;
         std::vector<int> lottoNumbers = executeLotto();
@@ -114,6 +114,7 @@ static void sendPrivmsgToChannel(Server &server, Client &client, const std::vect
         }
     }
     Channel *receiver = server.findChannel(params[0]);
+    receiver->addSendMsgAll(server, client.getNick(), "PRIVMSG", receiver->getName(), makeMsg(params));
     if (isLotto)
     {
         receiver->addSendMsgAll(server, client.getNick(), "PRIVMSG", receiver->getName(), lottoMsg);
@@ -121,7 +122,6 @@ static void sendPrivmsgToChannel(Server &server, Client &client, const std::vect
             Response::GENERATE(client.getNick(), "PRIVMSG", receiver->getName() + " :" + lottoMsg).c_str());
         server.enableWriteEvent(client.getsockfd());
     }
-    receiver->addSendMsgAll(server, client.getNick(), "PRIVMSG", receiver->getName(), makeMsg(params));
 }
 
 /**
