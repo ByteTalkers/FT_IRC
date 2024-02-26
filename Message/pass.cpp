@@ -13,6 +13,10 @@ void Message::registerPassExecute(Server &server, Client &client, Command *cmd)
         client.addSendMsg(Response::ERR_NEEDMOREPARAMS_461(server, client, cmd->getCommand()));
         return;
     }
+    if (server.getPassword() != cmd->getParams()[0])
+    {
+        client.addSendMsg(Response::ERR_PASSWDMISMATCH_464(server, client));
+    }
     if (server.getPassword() == cmd->getParams()[0])
     {
         client.setRegisterFlags(PASS_REG, true);
