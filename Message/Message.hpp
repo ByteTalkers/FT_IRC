@@ -16,6 +16,7 @@
 #include "Command.hpp"
 
 #define COMMAND_SIZE 14
+#define LOTTO "@lotto"
 
 class Client;
 class Server;

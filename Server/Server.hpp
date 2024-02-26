@@ -81,5 +81,6 @@ class Server
     Channel *findChannel(const std::string &ch_name);
     Client *findClient(const std::string &client_name);
     bool searchNick(int fd, const std::string &nick);
-	void delEmptyChannel();
+    void delEmptyChannel();
+    void delClientFromChannel(Client &clnt);
 };

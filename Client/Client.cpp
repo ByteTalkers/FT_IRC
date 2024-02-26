@@ -1,6 +1,6 @@
 #include "Client.hpp"
 
-Client::Client() : m_is_registered(false)
+Client::Client() : m_is_registered(false), m_leave_msg("null")
 {
     m_is_register_flags[PASS_REG] = false;
     m_is_register_flags[NICK_REG] = false;
@@ -31,6 +31,7 @@ Client &Client::operator=(const Client &other)
         m_is_register_flags[1] = other.m_is_register_flags[1];
         m_is_register_flags[2] = other.m_is_register_flags[2];
         m_write_types = other.m_write_types;
+        m_leave_msg = other.m_leave_msg;
         // 추가된 멤버 변수가 있다면 여기에 복사 로직을 추가
     }
     return *this;
@@ -172,6 +173,11 @@ bool *Client::getIsRegisterFlags()
     return m_is_register_flags;
 }
 
+std::string Client::getLeaveMsg()
+{
+    return m_leave_msg;
+}
+
 void Client::startListen(int serv_sock)
 {
     struct sockaddr_in clnt_adr;
@@ -220,4 +226,9 @@ void Client::startSend()
 void Client::addSendMsg(std::string msg)
 {
     this->m_send_msg += msg;
+}
+
+void Client::setLeaveMsg(std::string msg)
+{
+    this->m_leave_msg = msg;
 }

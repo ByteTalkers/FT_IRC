@@ -65,12 +65,48 @@ void Message::privmsgExecute(Server &server, Client &client, Command *cmd)
 }
 
 /**
+ * @lotto 명령어를 실행하는 함수
+ */
+static std::vector<int> executeLotto(void)
+{
+    std::vector<int> numbers;
+    while (numbers.size() < 6)
+    {
+        int num = rand() % 45 + 1;
+        if (std::find(numbers.begin(), numbers.end(), num) == numbers.end())
+            numbers.push_back(num);
+    }
+    std::sort(numbers.begin(), numbers.end());
+    return numbers;
+}
+
+/**
  * 채널에 메시지를 보내는 함수
  */
 static void sendPrivmsgToChannel(Server &server, Client &client, const std::vector<std::string> &params)
 {
+    bool isLotto = false;
+    std::string lottoMsg = "Lotto numbers: ";
+    if (params.size() > 1 && params[1] == LOTTO)
+    {
+        isLotto = true;
+        std::vector<int> lottoNumbers = executeLotto();
+        for (size_t i = 0; i < lottoNumbers.size(); ++i)
+        {
+            lottoMsg += std::to_string(lottoNumbers[i]);
+            if (i != lottoNumbers.size() - 1)
+                lottoMsg += ", ";
+        }
+    }
     Channel *receiver = server.findChannel(params[0]);
-    receiver->addSendMsgAll(server, client.getClientPrefix(), "PRIVMSG", receiver->getName(), params[1]);
+    receiver->addSendMsgAll(server, client.getNick(), "PRIVMSG", receiver->getName(), params[1]);
+    if (isLotto)
+    {
+        receiver->addSendMsgAll(server, client.getNick(), "PRIVMSG", receiver->getName(), lottoMsg);
+        client.addSendMsg(
+            Response::GENERATE(client.getNick(), "PRIVMSG", receiver->getName() + " :" + lottoMsg).c_str());
+        server.enableWriteEvent(client.getsockfd());
+    }
 }
 
 /**

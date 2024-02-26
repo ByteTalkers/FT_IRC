@@ -1,6 +1,6 @@
 #include "Server.hpp"
 
-Server::Server() : m_password("password"), m_portnum(9000), m_error(false)
+Server::Server() : m_password("password"), m_portnum(9000), m_name("ByteTalkers"), m_error(false)
 {
 }
 
@@ -55,7 +55,7 @@ void Server::setErrorCode()
     m_error = true;
 }
 
-Server::Server(std::string password) : m_password(password), m_error(false)
+Server::Server(std::string password) : m_password(password), m_name("ByteTalkers"), m_error(false)
 {
 }
 
@@ -139,7 +139,6 @@ void Server::handleKqueue()
         for (int i = 0; i < event_cnt; i++)
         {
             int fd = event_arr[i].ident;
-
             if (fd == m_serv_sock)
             {
                 if (event_arr[i].flags & EV_EOF)
@@ -215,7 +214,6 @@ void Server::handleSend(int fd)
 
     // 추후 추가 : 데이터 재전송
     clnt.startSend();
-    // std::cout << "handle send : " << clnt.getSendMsg() << std::endl;
     std::cout << "write success :  fd => " << clnt.getsockfd() << std::endl;
     std::cout << "================ end ==========\n";
 
@@ -226,9 +224,13 @@ void Server::handleSend(int fd)
 
 void Server::handleDisconnect(int fd)
 {
+    std::cout << "============ Disconnection start =========" << std::endl;
     // 클라이언트 목록에서 해당하는 클라이언트를 fd로 찾는다.
     std::map<int, Client>::iterator it_clnt = m_clients.find(fd);
     Client clnt = it_clnt->second;
+
+    // 각 채널에서 나갈 클라이언트 삭제
+    delClientFromChannel(clnt);
 
     // 클라이언트의 소켓을 닫는다.
     if (close(fd) == -1)
@@ -237,6 +239,7 @@ void Server::handleDisconnect(int fd)
     // 전체 유저 목록에서 지운다.
     m_clients.erase(it_clnt);
     std::cout << "success : erase" << std::endl;
+    std::cout << "========== Disconnection end =======" << std::endl;
 }
 
 std::string Server::getClientCount()
@@ -330,24 +333,49 @@ void Server::addChannel(std::string channelName, Channel *channel)
 
 void Server::delEmptyChannel()
 {
-	// 빈 채널 목록 생성
-	std::map<std::string, Channel *>::iterator it_ch;
-	std::vector<std::string> empty_list;
+    // 빈 채널 목록 생성
+    std::map<std::string, Channel *>::iterator it_ch;
+    std::vector<std::string> empty_list;
 
-	// 채널의 목록을 돌면서 빈 채널을 찾고, 그 이름을 empty_list에 넣는다.
-	for (it_ch = m_channels.begin(); it_ch != m_channels.end(); ++it_ch)
-	{
-		if (it_ch->second->getUserCount() == 0)
-			empty_list.push_back(it_ch->first);
-	}
+    // 채널의 목록을 돌면서 빈 채널을 찾고, 그 이름을 empty_list에 넣는다.
+    for (it_ch = m_channels.begin(); it_ch != m_channels.end(); ++it_ch)
+    {
+        if (it_ch->second->getUserCount() == 0)
+            empty_list.push_back(it_ch->first);
+    }
 
-	// empty_list를 돌리면서 빈 채널 지우기
-	for (size_t i = 0; i < empty_list.size(); i++)
-	{
-		std::map<std::string, Channel *>::iterator it;
-		it = m_channels.find(empty_list[i]);
-		
-		if (it != m_channels.end())
-			m_channels.erase(it);
-	}
+    // empty_list를 돌리면서 빈 채널 지우기
+    for (size_t i = 0; i < empty_list.size(); i++)
+    {
+        std::map<std::string, Channel *>::iterator it;
+        it = m_channels.find(empty_list[i]);
+
+        if (it != m_channels.end())
+            m_channels.erase(it);
+    }
+}
+
+void Server::delClientFromChannel(Client &clnt)
+{
+    std::map<std::string, Channel *>::iterator it;
+    for (it = m_channels.begin(); it != m_channels.end(); ++it)
+    {
+        Channel *ch = it->second;
+        if (ch->isMember(clnt))
+        {
+            const std::vector<Client *> members = ch->getNormals();
+            for (size_t i = 0; i < members.size(); ++i)
+            {
+                if (members[i]->getNick() != clnt.getNick())
+                {
+                    // 이때 채널에 있는 모든 유저들에게 메시지를 보내야 한다.
+                    if (clnt.getLeaveMsg() == "null")
+                        ch->addSendMsgAll(*this, members[i]->getNick(), "QUIT", "", "Connection: close");
+                    else
+                        ch->addSendMsgAll(*this, members[i]->getNick(), "QUIT", "", "Quit: " + clnt.getLeaveMsg());
+                }
+            }
+            ch->partChannel(clnt);
+        }
+    }
 }
