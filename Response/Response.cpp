@@ -23,6 +23,11 @@ std::string Response::ERR_NEEDMOREPARAMS_461(Server &server, Client &client, con
     return GENERATE(server.getName(), "461", client.getNick() + " " + command + " :Not enough parameters");
 }
 
+std::string Response::ERR_BADCHANMASK_476(Server &server, Client &client, const std::string &ch_name)
+{
+    return GENERATE(server.getName(), "476", client.getNick() + " " + ch_name + " :Bad Channel Mask");
+}
+
 // PASS USER
 std::string Response::ERR_ALREADYREGISTERED_462(Server &server, Client &client)
 {
@@ -32,6 +37,11 @@ std::string Response::ERR_ALREADYREGISTERED_462(Server &server, Client &client)
 std::string Response::RPL_USERHOST_302(Server &server, Client &client)
 {
     return GENERATE(server.getName(), "302", client.getNick() + " :");
+}
+
+std::string Response::ERR_PASSWDMISMATCH_464(Server &server, Client &client)
+{
+    return GENERATE(server.getName(), "464", client.getNick() + " :Password incorrect");
 }
 
 // NICK
