@@ -37,6 +37,6 @@ void Message::kickExecute(Server &server, Client &client, Command *cmd)
         return;
     }
 
-    channel->addSendMsgAll(server, client.getNick(), "KICK " + channelName + " " + targetNick, reason);
+    channel->addSendMsgAll(server, client.getNick(), "KICK", channelName + " " + targetNick, reason);
     channel->partChannel(*targetClient);
 }

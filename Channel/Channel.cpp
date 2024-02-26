@@ -194,7 +194,7 @@ void Channel::setTopicExist(bool tf)
     this->m_is_topic_exist = tf;
 }
 
-void Channel::addSendMsgAll(Server &server, const std::string &from, const std::string &cmd, const std::string &msg)
+void Channel::addSendMsgAll(Server &server, const std::string &from, const std::string &cmd, const std::string &msg, const std::string &last)
 {
     for (std::size_t i = 0; i < m_normals.size(); i++)
     {
@@ -202,7 +202,7 @@ void Channel::addSendMsgAll(Server &server, const std::string &from, const std::
         {
             continue;
         }
-        m_normals[i]->addSendMsg(Response::GENERATE(from, cmd, this->m_name + " :" + msg).c_str());
+        m_normals[i]->addSendMsg(Response::GENERATE(from, cmd, msg + " :" + last).c_str());
         server.enableWriteEvent(m_normals[i]->getsockfd());
     }
 }
