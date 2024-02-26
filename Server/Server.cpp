@@ -370,9 +370,9 @@ void Server::delClientFromChannel(Client &clnt)
                 {
                     // 이때 채널에 있는 모든 유저들에게 메시지를 보내야 한다.
                     if (clnt.getLeaveMsg() == "null")
-                        ch->addSendMsgAll(*this, members[i]->getNick(), "QUIT", "", "Connection: close");
+                        ch->addSendMsgAll(*this, members[i]->getClientPrefix(), "QUIT", "", "Connection: close");
                     else
-                        ch->addSendMsgAll(*this, members[i]->getNick(), "QUIT", "", "Quit: " + clnt.getLeaveMsg());
+                        ch->addSendMsgAll(*this, members[i]->getClientPrefix(), "QUIT", "", "Quit: " + clnt.getLeaveMsg());
                 }
             }
             ch->partChannel(clnt);
