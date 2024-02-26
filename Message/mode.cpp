@@ -88,18 +88,6 @@ void Message::modeExecute(Server &server, Client &client, Command *cmd)
     }
 
     std::string modes = cmd->getParams()[1];
-    if (!channel->checkOp(client))
-    {
-        for (std::size_t i = 0; i < modes.length(); i++)
-        {
-            if (modes[i] == '+' || modes[i] == '-')
-            {
-                continue;
-            }
-            client.addSendMsg(Response::ERR_CHANOPRIVSNEEDED_482(server, client, *channel));
-        }
-        return;
-    }
     bool mode_flag = true;
     std::size_t param_idx = 2;
 
@@ -187,6 +175,11 @@ static eModes checkMode(char c)
  */
 static void modeI(Server &server, Client &client, Channel *channel, bool mode_flag)
 {
+    if (!channel->checkOp(client))
+    {
+        client.addSendMsg(Response::ERR_CHANOPRIVSNEEDED_482(server, client, *channel));
+        return;
+    }
     if (mode_flag && !channel->getModeInvite())
     {
         channel->setModeInvite(true);
@@ -205,6 +198,11 @@ static void modeI(Server &server, Client &client, Channel *channel, bool mode_fl
  */
 static void modeT(Server &server, Client &client, Channel *channel, bool mode_flag)
 {
+    if (!channel->checkOp(client))
+    {
+        client.addSendMsg(Response::ERR_CHANOPRIVSNEEDED_482(server, client, *channel));
+        return;
+    }
     if (mode_flag && !channel->getModeTopic())
     {
         channel->setModeTopic(true);
@@ -229,7 +227,11 @@ static void modeK(Server &server, Client &client, Channel *channel, bool mode_fl
         client.addSendMsg(Response::ERR_SPECIFYPARAMETER_696(server, client, *channel, "key"));
         return;
     }
-
+    if (!channel->checkOp(client))
+    {
+        client.addSendMsg(Response::ERR_CHANOPRIVSNEEDED_482(server, client, *channel));
+        return;
+    }
     if (mode_flag && !channel->getModeKey())
     {
         channel->setModeKey(true);
@@ -254,10 +256,14 @@ static void modeO(Server &server, Client &client, Channel *channel, bool mode_fl
 {
     if (nick == "")
     {
-        client.addSendMsg(Response::ERR_SPECIFYPARAMETER_696(server, client, *channel, "nick"));
+        client.addSendMsg(Response::ERR_SPECIFYPARAMETER_696(server, client, *channel, "op"));
         return;
     }
-
+    if (!channel->checkOp(client))
+    {
+        client.addSendMsg(Response::ERR_CHANOPRIVSNEEDED_482(server, client, *channel));
+        return;
+    }
     Client *find_client = server.findClient(nick);
     if (find_client == NULL)
     {
@@ -288,8 +294,19 @@ static void modeO(Server &server, Client &client, Channel *channel, bool mode_fl
  */
 static void modeL(Server &server, Client &client, Channel *channel, bool mode_flag, const std::string &limit)
 {
-    int tmp = std::atoi(limit.c_str());
+    if (limit == "")
+    {
+        client.addSendMsg(Response::ERR_SPECIFYPARAMETER_696(server, client, *channel, "limit"));
+        return;
+    }
 
+    if (!channel->checkOp(client))
+    {
+        client.addSendMsg(Response::ERR_CHANOPRIVSNEEDED_482(server, client, *channel));
+        return;
+    }
+
+    int tmp = std::atoi(limit.c_str());
     if (mode_flag)
     {
         channel->setModeLimit(true);
