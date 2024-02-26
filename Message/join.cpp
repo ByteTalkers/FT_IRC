@@ -44,7 +44,7 @@ static void checkInviteMode(Server &server, Client &client, Channel &channel, st
         channel.removeInvitation(client.getNick());
         // 채널에 멤버 추가
         channel.addMember(&client);
-        client.addSendMsg(Response::GENERATE(client.getNick(), "JOIN", " :" + channel.getName()));
+        client.addSendMsg(Response::GENERATE(client.getClientPrefix(), "JOIN", " :" + channel.getName()));
         client.addSendMsg(Response::RPL_NAMREPLY_353(server, client, channel));
         client.addSendMsg(Response::RPL_ENDOFNAMES_366(server, client, channel));
     }

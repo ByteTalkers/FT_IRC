@@ -47,6 +47,7 @@ void Message::inviteExecute(Server &server, Client &client, Command *cmd)
     }
     channel->addInvitation(invited->getNick());
     client.addSendMsg(Response::RPL_INVITING_341(server, client, *invited, *channel));
-    invited->addSendMsg(Response::GENERATE(client.getNick(), "INVITE", invited->getNick() + " :" + channel_name));
+    invited->addSendMsg(
+        Response::GENERATE(client.getClientPrefix(), "INVITE", invited->getNick() + " :" + channel_name));
     server.enableWriteEvent(invited->getsockfd());
 }
