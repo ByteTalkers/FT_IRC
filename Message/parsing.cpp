@@ -40,22 +40,21 @@ static void parsingSpace(std::string &split, Command *cmd)
     std::string buffer;
     std::string last;
     bool is_prefix_exist = false;
-    bool is_first = true;
     bool is_last = false;
+    std::size_t idx = 0;
 
     while (std::getline(iss, buffer, ' '))
     {
         std::string split = buffer;
-        if (is_first && !is_prefix_exist && split[0] == ':')
+        if (idx == 0 && split[0] == ':')
         {
             split.substr(1);
             cmd->addParams(split);
-            is_first = false;
             is_prefix_exist = true;
         }
         else
         {
-            if (!is_last && split[0] == ':')
+            if (split[0] == ':')
             {
                 is_last = true;
                 break;
@@ -65,7 +64,9 @@ static void parsingSpace(std::string &split, Command *cmd)
                 setCmd(split, cmd);
             }
         }
+        idx++;
     }
+
     if (is_last)
     {
         std::size_t pos = 0;

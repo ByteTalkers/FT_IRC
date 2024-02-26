@@ -199,7 +199,7 @@ void Channel::addSendMsgAll(Server &server, const std::string &from, const std::
 {
     for (std::size_t i = 0; i < m_normals.size(); i++)
     {
-        if (cmd == "PRIVMSG" && m_normals[i]->getNick() == from)
+        if (cmd == "PRIVMSG" && m_normals[i]->getClientPrefix() == from)
         {
             continue;
         }
