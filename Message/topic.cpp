@@ -52,6 +52,6 @@ void Message::topicExecute(Server &server, Client &client, Command *cmd)
     {
         channel->setTopicExist(true);
         channel->setTopic(cmd->getParams()[1]);
-        channel->addSendMsgAll(server, client.getNick(), "TOPIC", channel_name, cmd->getParams()[1]);
+        channel->addSendMsgAll(server, client.getClientPrefix(), "TOPIC", channel_name, cmd->getParams()[1]);
     }
 }

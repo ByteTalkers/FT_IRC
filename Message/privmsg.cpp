@@ -24,6 +24,8 @@ static void sendPrivmsgToClient(Server &server, Client &client, const std::vecto
  */
 void Message::privmsgExecute(Server &server, Client &client, Command *cmd)
 {
+
+
     if (cmd->getParamsCount() < 2)
     {
         client.addSendMsg(Response::ERR_NEEDMOREPARAMS_461(server, client, cmd->getCommand()));
@@ -63,23 +65,6 @@ void Message::privmsgExecute(Server &server, Client &client, Command *cmd)
 }
 
 /**
- * 나머지 파라미터들 스페이스 추가해서 합치는 함수
- */
-static const std::string makeMsg(const std::vector<std::string> &params)
-{
-    std::string msg = "";
-    for (std::size_t i = 1; i < params.size(); i++)
-    {
-        msg += params[i];
-        if (i != params.size() - 1)
-        {
-            msg += " ";
-        }
-    }
-    return msg;
-}
-
-/**
  * @lotto 명령어를 실행하는 함수
  */
 static std::vector<int> executeLotto(void)
@@ -114,7 +99,7 @@ static void sendPrivmsgToChannel(Server &server, Client &client, const std::vect
         }
     }
     Channel *receiver = server.findChannel(params[0]);
-    receiver->addSendMsgAll(server, client.getNick(), "PRIVMSG", receiver->getName(), makeMsg(params));
+    receiver->addSendMsgAll(server, client.getNick(), "PRIVMSG", receiver->getName(), params[1]);
     if (isLotto)
     {
         receiver->addSendMsgAll(server, client.getNick(), "PRIVMSG", receiver->getName(), lottoMsg);
@@ -132,7 +117,7 @@ static void sendPrivmsgToClient(Server &server, Client &client, const std::vecto
     Client *receiver = server.findClient(params[0]);
     client.setRecvFd(receiver->getsockfd());
     receiver->addSendMsg(
-        Response::GENERATE(client.getNick(), "PRIVMSG", receiver->getNick() + " :" + makeMsg(params)).c_str());
+        Response::GENERATE(client.getNick(), "PRIVMSG", receiver->getNick() + " :" + params[1]).c_str());
     server.enableWriteEvent(receiver->getsockfd());
 }
 

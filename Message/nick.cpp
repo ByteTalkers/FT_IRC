@@ -15,12 +15,21 @@ void Message::registerNickExecute(Server &server, Client &client, Command *cmd)
 {
     if (cmd->getParamsCount() < 1)
     {
-        client.addSendMsg(Response::ERR_NONICKNAMEGIVEN_431(server, client));
+        client.addSendMsg(Response::ERR_NEEDMOREPARAMS_461(server, client, cmd->getCommand()));
         return;
     }
-    if (!validCheck(cmd->getParams()[0]))
+    if (cmd->getParamsCount() != 1 || !validCheck(cmd->getParams()[0]))
     {
-        client.addSendMsg(Response::ERR_ERRONEUSNICKNAME_432(server, client, cmd->getParams()[0]));
+        std::string nicks = "";
+        for (std::size_t i = 0; i < cmd->getParamsCount(); ++i)
+        {
+            if (i != 0)
+            {
+                nicks += " ";
+            }
+            nicks += cmd->getParams()[i];
+        }
+        client.addSendMsg(Response::ERR_ERRONEUSNICKNAME_432(server, client, nicks));
         return;
     }
     if (server.searchNick(client.getsockfd(), cmd->getParams()[0]))
@@ -30,7 +39,28 @@ void Message::registerNickExecute(Server &server, Client &client, Command *cmd)
     }
 
     client.setNick(cmd->getParams()[0]);
-    client.setRegisterFlags(NICK_REG, true);
+    if (!client.getRegisterd())
+    {
+        client.setRegisterFlags(NICK_REG, true);
+    }
+    else
+    {
+        if (client.getCurChannel().empty())
+        {
+            client.addSendMsg(Response::GENERATE(client.getClientPrefix(), "NICK", ":" + client.getNick()));
+            return;
+        }
+        Channel *channel;
+        std::map<std::string, Channel *>::iterator it;
+        for (it = server.getChannels().begin(); it != server.getChannels().end(); ++it)
+        {
+            channel = (*it).second;
+            if (channel->isMember(client))
+            {
+                channel->addSendMsgAll(server, client.getClientPrefix(), "NICK", "", client.getNick());
+            }
+        }
+    }
 }
 
 /**

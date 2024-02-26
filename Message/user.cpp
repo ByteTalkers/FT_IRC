@@ -33,7 +33,7 @@ void Message::registerUserExecute(Server &server, Client &client, Command *cmd)
  */
 void Message::userExecute(Server &server, Client &client, Command *cmd)
 {
-    if (cmd->getParamsCount() < 1)
+    if (cmd->getParamsCount() < 4)
     {
         client.addSendMsg(Response::ERR_NEEDMOREPARAMS_461(server, client, cmd->getCommand()));
         return;

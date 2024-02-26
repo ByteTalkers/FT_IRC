@@ -47,9 +47,9 @@ void Message::partExecute(Server &server, Client &client, Command *cmd)
             continue;
         }
         if (!reason.empty())
-            channel->addSendMsgAll(server, client.getNick(), "PART", channelName, reason);
+            channel->addSendMsgAll(server, client.getClientPrefix(), "PART", channelName, reason);
         else
-            channel->addSendMsgAll(server, client.getNick(), "PART", "", channelName);
+            channel->addSendMsgAll(server, client.getClientPrefix(), "PART", "", channelName);
         channel->partChannel(client);
     }
 }

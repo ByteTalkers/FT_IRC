@@ -74,6 +74,7 @@ class Client
     bool getRegisterd();
     bool *getIsRegisterFlags();
     std::string getLeaveMsg();
+    std::string getClientPrefix();
 
     // Setter 함수들
     void setRecvFd(const int number);
@@ -96,4 +97,5 @@ class Client
     void startParseMessage(Server &serv);
     void startResponse(std::map<int, Channel> &channels);
     void startSend();
+
 };

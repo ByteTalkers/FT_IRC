@@ -112,6 +112,11 @@ void Client::setRegisterFlags(int i, bool tf)
     m_is_register_flags[i] = tf;
 }
 
+std::string Client::getClientPrefix()
+{
+    return  m_nick + "!" + m_username + "@" + m_hostname;
+}
+
 // Getter 함수들
 int Client::getrecvfd()
 {
