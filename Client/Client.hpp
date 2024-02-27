@@ -95,7 +95,6 @@ class Client
 
     void startListen(int serv_sock);
     void startParseMessage(Server &serv);
-    void startResponse(std::map<int, Channel> &channels);
     void startSend();
 
 };

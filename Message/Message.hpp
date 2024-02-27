@@ -57,12 +57,7 @@ class Message
     const std::string &getOrigin() const;
     const std::vector<Command> &getCmds() const;
 
-    /* setter */
-    void setOrigin(std::string &origin);
-    void setCmds(std::vector<Command> &cmds);
-
-    bool crlfCheck();
-    void display();
+    // void display();
 
     /* parsing */
     void parsingOrigin();
@@ -88,7 +83,7 @@ class Message
     void whoExecute(Server &server, Client &client, Command *cmd);
     void pingExecute(Server &server, Client &client, Command *cmd);
     void partExecute(Server &server, Client &client, Command *cmd);
-    void quitExecute(Server &server, Client &client, Command *cmd);
+    void quitExecute(Client &client, Command *cmd);
     void privmsgExecute(Server &server, Client &client, Command *cmd);
     void kickExecute(Server &server, Client &client, Command *cmd);
     void inviteExecute(Server &server, Client &client, Command *cmd);

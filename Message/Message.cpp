@@ -23,22 +23,6 @@ Message &Message::operator=(Message const &rhs)
 }
 
 /**
- * 문자열 끝에 crlf가 있는지 확인하는 함수
- */
-bool Message::crlfCheck()
-{
-    std::string crlf;
-
-    crlf = this->m_origin.substr(this->m_origin.length() - 2);
-    if (crlf == "\r\n")
-    {
-        this->m_origin = this->m_origin.substr(0, this->m_origin.length() - 2);
-        return true;
-    }
-    return false;
-}
-
-/**
  * 커맨드 실행부
  * 1. 등록 전 실행부 => registerExecute
  * 2. 등록 후 실행부 => commandExecute
@@ -143,7 +127,7 @@ void Message::commandExecute(Server &server, Client &client, Command *cmd)
         pingExecute(server, client, cmd);
         break;
     case QUIT:
-        quitExecute(server, client, cmd);
+        quitExecute(client, cmd);
         break;
     case JOIN:
         joinExecute(server, client, cmd);
@@ -191,27 +175,16 @@ const std::vector<Command> &Message::getCmds() const
     return this->m_cmds;
 }
 
-/* setter */
-void Message::setOrigin(std::string &origin)
-{
-    this->m_origin = origin;
-}
-
-void Message::setCmds(std::vector<Command> &cmds)
-{
-    this->m_cmds = cmds;
-}
-
 /**
  * Message 멤버변수 보여주는 함수
  */
-void Message::display()
-{
-    std::cout << "origin: " << this->getOrigin();
-    if (!this->crlfCheck())
-    {
-        std::cout << std::endl << "Invalid" << std::endl;
-        return;
-    }
-    std::cout << std::endl;
-}
+// void Message::display()
+// {
+//     std::cout << "origin: " << this->getOrigin();
+//     if (!this->crlfCheck())
+//     {
+//         std::cout << std::endl << "Invalid" << std::endl;
+//         return;
+//     }
+//     std::cout << std::endl;
+// }
