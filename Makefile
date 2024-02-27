@@ -1,6 +1,6 @@
 NAME = ircserv
 
-CXX = c++
+CXX = c++ -std=c++98
 CXXFLAGS = -Wall -Wextra -Werror -g #-fsanitize=address
 RM = rm -f
 
