@@ -39,7 +39,7 @@ class Command
 
     /* functions */
     void addParams(std::string &param);
-    void display();
+    // void display();
 };
 
 #endif

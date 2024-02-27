@@ -62,7 +62,7 @@ class Message
     void setCmds(std::vector<Command> &cmds);
 
     bool crlfCheck();
-    void display();
+    // void display();
 
     /* parsing */
     void parsingOrigin();

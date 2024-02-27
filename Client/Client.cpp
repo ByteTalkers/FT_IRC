@@ -114,7 +114,7 @@ void Client::setRegisterFlags(int i, bool tf)
 
 std::string Client::getClientPrefix()
 {
-    return  m_nick + "!" + m_username + "@" + m_hostname;
+    return m_nick + "!" + m_username + "@" + m_hostname;
 }
 
 // Getter 함수들
@@ -214,10 +214,7 @@ void Client::startResponse(std::map<int, Channel> &channels)
 void Client::startSend()
 {
     int clnt_sock = getsockfd();
-    std::cout << "m_send_msg : " << m_send_msg << std::endl;
     send(clnt_sock, m_send_msg.c_str(), m_send_msg.length(), 0);
-
-    std::cout << "handle send : " << getSendMsg() << std::endl;
 
     // m_send_msg 비워주기
     m_send_msg.clear();

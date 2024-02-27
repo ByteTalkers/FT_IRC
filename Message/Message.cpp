@@ -205,13 +205,13 @@ void Message::setCmds(std::vector<Command> &cmds)
 /**
  * Message 멤버변수 보여주는 함수
  */
-void Message::display()
-{
-    std::cout << "origin: " << this->getOrigin();
-    if (!this->crlfCheck())
-    {
-        std::cout << std::endl << "Invalid" << std::endl;
-        return;
-    }
-    std::cout << std::endl;
-}
+// void Message::display()
+// {
+//     std::cout << "origin: " << this->getOrigin();
+//     if (!this->crlfCheck())
+//     {
+//         std::cout << std::endl << "Invalid" << std::endl;
+//         return;
+//     }
+//     std::cout << std::endl;
+// }

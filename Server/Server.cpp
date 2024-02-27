@@ -172,7 +172,6 @@ void Server::handleConnect()
 
     // 클라이언트의 map에 등록
     m_clients.insert(std::make_pair(clnt.getsockfd(), clnt));
-    std::cout << "insert!" << std::endl;
 }
 
 void Server::handleRecv(int fd)
@@ -192,9 +191,6 @@ void Server::handleRecv(int fd)
         clnt.setRecvData(buffer);
 
         // 데이터 파싱
-        std::cout << "================ start ==========\n";
-        std::cout << "clnt: " << clnt.getRecvData() << std::endl;
-        std::cout << "read success" << std::endl;
         clnt.startParseMessage(*this);
 
         // write 이벤트 활성화
@@ -214,8 +210,6 @@ void Server::handleSend(int fd)
 
     // 추후 추가 : 데이터 재전송
     clnt.startSend();
-    std::cout << "write success :  fd => " << clnt.getsockfd() << std::endl;
-    std::cout << "================ end ==========\n";
 
     // 클라이언트 소켓의 write 이벤트 비활성화
     disableWriteEvent(clnt.getsockfd());
@@ -224,7 +218,6 @@ void Server::handleSend(int fd)
 
 void Server::handleDisconnect(int fd)
 {
-    std::cout << "============ Disconnection start =========" << std::endl;
     // 클라이언트 목록에서 해당하는 클라이언트를 fd로 찾는다.
     std::map<int, Client>::iterator it_clnt = m_clients.find(fd);
     Client clnt = it_clnt->second;
@@ -238,8 +231,6 @@ void Server::handleDisconnect(int fd)
 
     // 전체 유저 목록에서 지운다.
     m_clients.erase(it_clnt);
-    std::cout << "success : erase" << std::endl;
-    std::cout << "========== Disconnection end =======" << std::endl;
 }
 
 std::string Server::getClientCount()
