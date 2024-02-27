@@ -205,12 +205,6 @@ void Client::startParseMessage(Server &serv)
     msg.execute(serv, *this);
 }
 
-void Client::startResponse(std::map<int, Channel> &channels)
-{
-    // response 클래스의 객체 넣기
-    (void)channels;
-}
-
 void Client::startSend()
 {
     int clnt_sock = getsockfd();

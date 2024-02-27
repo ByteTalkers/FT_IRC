@@ -88,7 +88,7 @@ class Message
     void whoExecute(Server &server, Client &client, Command *cmd);
     void pingExecute(Server &server, Client &client, Command *cmd);
     void partExecute(Server &server, Client &client, Command *cmd);
-    void quitExecute(Server &server, Client &client, Command *cmd);
+    void quitExecute(Client &client, Command *cmd);
     void privmsgExecute(Server &server, Client &client, Command *cmd);
     void kickExecute(Server &server, Client &client, Command *cmd);
     void inviteExecute(Server &server, Client &client, Command *cmd);
