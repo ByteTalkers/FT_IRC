@@ -115,32 +115,31 @@ void Message::modeExecute(Server &server, Client &client, Command *cmd)
         case KMODE:
             modeK(server, client, channel, mode_flag,
                   param_idx < cmd->getParamsCount() ? cmd->getParams()[param_idx] : "");
-            param_idx++;
+                if (param_idx < cmd->getParamsCount())
+                {
+                    param_idx++;
+                }
             break;
         case OMODE:
             modeO(server, client, channel, mode_flag,
                   param_idx < cmd->getParamsCount() ? cmd->getParams()[param_idx] : "");
-            param_idx++;
+                if (param_idx < cmd->getParamsCount())
+                {
+                    param_idx++;
+                }
             break;
         case LMODE:
             modeL(server, client, channel, mode_flag,
                   param_idx < cmd->getParamsCount() ? cmd->getParams()[param_idx] : "");
-            param_idx++;
+                if (param_idx < cmd->getParamsCount())
+                {
+                    param_idx++;
+                }
             break;
         case UNKNOWN:
             client.addSendMsg(Response::ERR_UNKNOWNMODE_472(server, client, std::string(1, modes[i])));
             break;
         }
-    }
-
-    while (param_idx < cmd->getParamsCount())
-    {
-        for (std::size_t i = 0; i < cmd->getParams()[param_idx].size(); i++)
-        {
-            client.addSendMsg(
-                Response::ERR_UNKNOWNMODE_472(server, client, std::string(1, cmd->getParams()[param_idx][i])));
-        }
-        param_idx++;
     }
 }
 
@@ -222,7 +221,7 @@ static void modeT(Server &server, Client &client, Channel *channel, bool mode_fl
  */
 static void modeK(Server &server, Client &client, Channel *channel, bool mode_flag, const std::string &key)
 {
-    if (key == "")
+    if (mode_flag && key == "")
     {
         client.addSendMsg(Response::ERR_SPECIFYPARAMETER_696(server, client, *channel, "key"));
         return;
@@ -254,7 +253,7 @@ static void modeK(Server &server, Client &client, Channel *channel, bool mode_fl
  */
 static void modeO(Server &server, Client &client, Channel *channel, bool mode_flag, const std::string &nick)
 {
-    if (nick == "")
+    if (mode_flag && nick == "")
     {
         client.addSendMsg(Response::ERR_SPECIFYPARAMETER_696(server, client, *channel, "op"));
         return;
@@ -294,7 +293,7 @@ static void modeO(Server &server, Client &client, Channel *channel, bool mode_fl
  */
 static void modeL(Server &server, Client &client, Channel *channel, bool mode_flag, const std::string &limit)
 {
-    if (limit == "")
+    if (mode_flag && limit == "")
     {
         client.addSendMsg(Response::ERR_SPECIFYPARAMETER_696(server, client, *channel, "limit"));
         return;
@@ -316,6 +315,6 @@ static void modeL(Server &server, Client &client, Channel *channel, bool mode_fl
     if (!mode_flag && channel->getModeLimit())
     {
         channel->setModeLimit(false);
-        channel->addSendMsgAll(server, client.getClientPrefix(), "MODE", channel->getName() + " -l", intToString(tmp));
+        channel->addSendMsgAll(server, client.getClientPrefix(), "MODE", channel->getName(), "-l");
     }
 }

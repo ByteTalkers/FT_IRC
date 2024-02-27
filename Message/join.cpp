@@ -44,7 +44,11 @@ static void checkInviteMode(Server &server, Client &client, Channel &channel, st
         channel.removeInvitation(client.getNick());
         // 채널에 멤버 추가
         channel.addMember(&client);
-        client.addSendMsg(Response::GENERATE(client.getClientPrefix(), "JOIN", " :" + channel.getName()));
+        channel.addSendMsgAll(server, client.getClientPrefix(), "JOIN ", "", channel.getName());
+        if (channel.getTopicExist())
+        {
+            client.addSendMsg(Response::RPL_TOPIC_332(server, client, channel));
+        }
         client.addSendMsg(Response::RPL_NAMREPLY_353(server, client, channel));
         client.addSendMsg(Response::RPL_ENDOFNAMES_366(server, client, channel));
     }
@@ -82,6 +86,11 @@ void Message::joinExecute(Server &server, Client &client, Command *cmd)
             channel = new Channel(channelName, &client);
             server.addChannel(channelName, channel);
             isNewChannel = true;
+            if (key != "")
+            {
+                channel->setKey(keys[i]);
+                channel->setModeKey(true);
+            }
         }
 
         if (channel->isMember(client))
@@ -119,6 +128,10 @@ void Message::joinExecute(Server &server, Client &client, Command *cmd)
             channel->addOperator(client.getNick());
         }
         channel->addSendMsgAll(server, client.getClientPrefix(), "JOIN ", "", channelName);
+        if (channel->getTopicExist())
+        {
+            client.addSendMsg(Response::RPL_TOPIC_332(server, client, *channel));
+        }
         client.addSendMsg(Response::RPL_NAMREPLY_353(server, client, *channel));
         client.addSendMsg(Response::RPL_ENDOFNAMES_366(server, client, *channel));
     }
