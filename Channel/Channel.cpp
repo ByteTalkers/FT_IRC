@@ -1,10 +1,9 @@
 #include "Channel.hpp"
 
-Channel::Channel(std::string name, Client *cl)
+Channel::Channel(std::string name)
     : m_name(name), m_cretaed(time(NULL)), m_password(""), m_is_mode_invite(false), m_is_mode_key(false),
       m_is_mode_topic(false), m_is_mode_limit(false), m_is_topic_exist(false)
 {
-    (void)cl;
 }
 
 Channel::Channel(const Channel &src)
@@ -199,7 +198,7 @@ void Channel::addSendMsgAll(Server &server, const std::string &from, const std::
 {
     for (std::size_t i = 0; i < m_normals.size(); i++)
     {
-        if ((cmd == "PRIVMSG" || cmd == "QUIT")&& m_normals[i]->getClientPrefix() == from)
+        if ((cmd == "PRIVMSG" || cmd == "QUIT") && m_normals[i]->getClientPrefix() == from)
         {
             continue;
         }

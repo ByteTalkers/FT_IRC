@@ -172,7 +172,6 @@ void Server::handleConnect()
 
     // 클라이언트의 map에 등록
     m_clients.insert(std::make_pair(clnt.getsockfd(), clnt));
-    std::cout << "insert!" << std::endl;
 }
 
 void Server::handleRecv(int fd)
@@ -214,7 +213,7 @@ void Server::handleSend(int fd)
 
     // 추후 추가 : 데이터 재전송
     clnt.startSend();
-    std::cout << "write success :  fd => " << clnt.getsockfd() << std::endl;
+    std::cout << "write success: fd => " << clnt.getsockfd() << std::endl;
     std::cout << "================ end ==========\n";
 
     // 클라이언트 소켓의 write 이벤트 비활성화
@@ -238,7 +237,7 @@ void Server::handleDisconnect(int fd)
 
     // 전체 유저 목록에서 지운다.
     m_clients.erase(it_clnt);
-    std::cout << "success : erase" << std::endl;
+    std::cout << "success: erase" << std::endl;
     std::cout << "========== Disconnection end =======" << std::endl;
 }
 

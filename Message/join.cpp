@@ -83,7 +83,7 @@ void Message::joinExecute(Server &server, Client &client, Command *cmd)
         bool isNewChannel = false;
         if (channel == NULL)
         {
-            channel = new Channel(channelName, &client);
+            channel = new Channel(channelName);
             server.addChannel(channelName, channel);
             isNewChannel = true;
             if (key != "")

@@ -72,12 +72,12 @@ void Command::addParams(std::string &param)
 /**
  * Command 멤버변수 보여주는 함수
  */
-void Command::display()
-{
-    std::cout << "prefix: " << m_prefix << std::endl;
-    std::cout << "command: " << m_command << std::endl;
-    for (std::size_t i = 0; i < m_params.size(); i++)
-    {
-        std::cout << "param " << i << ": " << m_params[i] << std::endl;
-    }
-}
+// void Command::display()
+// {
+//     std::cout << "prefix: " << m_prefix << std::endl;
+//     std::cout << "command: " << m_command << std::endl;
+//     for (std::size_t i = 0; i < m_params.size(); i++)
+//     {
+//         std::cout << "param " << i << ": " << m_params[i] << std::endl;
+//     }
+// }

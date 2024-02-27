@@ -36,7 +36,7 @@ class Channel
     bool m_is_topic_exist; // 토픽 세팅 여부
 
   public:
-    Channel(std::string name, Client *cl);
+    Channel(std::string name);
     Channel(const Channel &src);
     ~Channel(void);
     Channel &operator=(Channel const &rhs);
@@ -90,7 +90,8 @@ class Channel
     void setTopicExist(bool tf);
 
     // 기타 함수
-    void addSendMsgAll(Server &server, const std::string &from, const std::string &cmd, const std::string &msg, const std::string &last);
+    void addSendMsgAll(Server &server, const std::string &from, const std::string &cmd, const std::string &msg,
+                       const std::string &last);
 };
 
 #endif
