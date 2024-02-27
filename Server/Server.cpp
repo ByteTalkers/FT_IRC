@@ -231,6 +231,9 @@ void Server::handleDisconnect(int fd)
     // 각 채널에서 나갈 클라이언트 삭제
     delClientFromChannel(clnt);
 
+    // 빈 채널 삭제 (ctrl + c를 위한 로직)
+    delEmptyChannel();
+
     // 클라이언트의 소켓을 닫는다.
     if (close(fd) == -1)
         throw std::runtime_error("close() error");
