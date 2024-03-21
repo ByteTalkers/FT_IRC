@@ -40,7 +40,7 @@ const std::vector<std::string> &Command::getParams() const
     return this->m_params;
 }
 
-std::size_t Command::getParamsCount() const
+size_t Command::getParamsCount() const
 {
     return this->m_params.size();
 }
@@ -76,7 +76,7 @@ void Command::addParams(std::string &param)
 // {
 //     std::cout << "prefix: " << m_prefix << std::endl;
 //     std::cout << "command: " << m_command << std::endl;
-//     for (std::size_t i = 0; i < m_params.size(); i++)
+//     for (size_t i = 0; i < m_params.size(); i++)
 //     {
 //         std::cout << "param " << i << ": " << m_params[i] << std::endl;
 //     }

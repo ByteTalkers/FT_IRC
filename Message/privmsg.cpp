@@ -22,9 +22,16 @@ static void sendPrivmsgToClient(Server &server, Client &client, const std::vecto
  * - 없는 유저 => ERR_NOSUCHNICK_401
  * - 메시지는 남은 파라미터들 사이에 스페이스 추가해서 합쳐줌
  */
+
+/**
+ * @brief privmsgExecute 함수는 PRIVMSG 명령을 처리하는 메서드입니다.
+ *
+ * @param server 서버 객체
+ * @param client 클라이언트 객체
+ * @param cmd 명령 객체
+ */
 void Message::privmsgExecute(Server &server, Client &client, Command *cmd)
 {
-
 
     if (cmd->getParamsCount() < 2)
     {
@@ -65,7 +72,9 @@ void Message::privmsgExecute(Server &server, Client &client, Command *cmd)
 }
 
 /**
- * @lotto 명령어를 실행하는 함수
+ * @brief 로또 번호를 생성하여 반환하는 함수입니다.
+ *
+ * @return std::vector<int> 생성된 로또 번호를 담고 있는 벡터
  */
 static std::vector<int> executeLotto(void)
 {
@@ -81,7 +90,20 @@ static std::vector<int> executeLotto(void)
 }
 
 /**
- * 채널에 메시지를 보내는 함수
+ * @brief 특정 채널에 PRIVMSG를 보내는 함수입니다.
+ *
+ * @param server 서버 객체
+ * @param client 클라이언트 객체
+ * @param params PRIVMSG를 보낼 때 필요한 매개변수들의 벡터
+ *
+ * @details 이 함수는 주어진 채널에 PRIVMSG를 보내는 역할을 합니다.
+ * 만약 params의 크기가 2 이상이고 params[1]이 "LOTTO"와 같다면,
+ * 로또 번호를 생성하여 PRIVMSG에 추가합니다.
+ *
+ * @note 이 함수는 server 객체에서 주어진 채널을 찾아서 PRIVMSG를 보냅니다.
+ * 만약 로또 번호가 추가되었다면, 해당 채널과 클라이언트에게 추가적인 메시지를 보냅니다.
+ *
+ * @see Server, Client, Channel
  */
 static void sendPrivmsgToChannel(Server &server, Client &client, const std::vector<std::string> &params)
 {
@@ -110,7 +132,11 @@ static void sendPrivmsgToChannel(Server &server, Client &client, const std::vect
 }
 
 /**
- * 해당 유저의 send버퍼에 메시지를 담아주고, write이벤트를 켜주는 함수
+ * @brief 클라이언트에게 PRIVMSG 메시지를 보내는 함수입니다.
+ *
+ * @param server 서버 객체
+ * @param client 보내는 클라이언트 객체
+ * @param params PRIVMSG 메시지의 매개변수로 사용될 벡터
  */
 static void sendPrivmsgToClient(Server &server, Client &client, const std::vector<std::string> &params)
 {
@@ -122,7 +148,10 @@ static void sendPrivmsgToClient(Server &server, Client &client, const std::vecto
 }
 
 /**
- * 콤마(,) 기준으로 스플릿하는 함수
+ * @brief 문자열을 쉼표로 분리하여 std::vector<std::string>으로 반환하는 함수입니다.
+ *
+ * @param command 분리할 문자열
+ * @return 쉼표로 분리된 문자열들을 담은 std::vector<std::string>
  */
 static std::vector<std::string> splitComma(const std::string &command)
 {
@@ -138,7 +167,11 @@ static std::vector<std::string> splitComma(const std::string &command)
 }
 
 /**
- * 채널인지, 유저인지 확인하는 함수
+ * @brief 주어진 서버와 수신자(to)를 기반으로 유효성을 검사합니다.
+ *
+ * @param server 서버 객체
+ * @param to 수신자
+ * @return ePrivmsg 유효성 검사 결과
  */
 static ePrivmsg validCheck(Server &server, const std::string &to)
 {
@@ -147,17 +180,17 @@ static ePrivmsg validCheck(Server &server, const std::string &to)
         Channel *channel = server.findChannel(to);
         if (channel != NULL)
         {
-            return CHANNEL;
+            return ePrivmsg::CHANNEL;
         }
-        return NOCHANNEL;
+        return ePrivmsg::NOCHANNEL;
     }
     else
     {
         Client *client = server.findClient(to);
         if (client != NULL)
         {
-            return CLIENT;
+            return ePrivmsg::CLIENT;
         }
-        return NOCLIENT;
+        return ePrivmsg::NOCLIENT;
     }
 }

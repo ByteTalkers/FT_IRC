@@ -59,6 +59,12 @@ Server::Server(std::string password) : m_password(password), m_name("ByteTalkers
 {
 }
 
+/**
+ * @brief 포트 번호를 확인하고 설정하는 함수입니다.
+ *
+ * @param str 포트 번호를 나타내는 문자열입니다.
+ * @throws std::runtime_error 유효하지 않은 포트 번호일 경우 예외를 던집니다.
+ */
 void Server::checkPortnum(std::string str)
 {
     std::istringstream port_stream(str);
@@ -76,6 +82,14 @@ void Server::checkPortnum(std::string str)
     setPortnum(port_number);
 }
 
+/**
+ * @brief 서버 소켓을 초기화하는 함수입니다.
+ *
+ * @details 서버 소켓을 생성하고 bind, listen 등의 작업을 수행합니다.
+ *          소켓 생성에 실패하거나 오류가 발생한 경우 예외를 던집니다.
+ *
+ * @throws std::runtime_error 소켓 생성, bind, listen, setsockopt, fcntl 함수에서 오류가 발생한 경우
+ */
 void Server::initServSock()
 {
     struct sockaddr_in serv_adr;
@@ -113,6 +127,13 @@ void Server::initServSock()
         throw std::runtime_error("fcntl() error");
 }
 
+/**
+ * @brief Server 클래스의 initKqueue 함수입니다.
+ *
+ * 이 함수는 kqueue를 초기화하고, serv_sock의 read 이벤트를 이벤트 벡터에 등록합니다.
+ *
+ * @throws std::runtime_error kqueue() 함수 호출에 실패한 경우 예외를 던집니다.
+ */
 void Server::initKqueue()
 {
     // kq 만들기
@@ -126,6 +147,14 @@ void Server::initKqueue()
     addReadEvent(m_serv_sock);
 }
 
+/**
+ * @brief kqueue를 처리하는 함수입니다.
+ *
+ * 이 함수는 무한 루프를 돌면서 kqueue 이벤트를 처리합니다.
+ * kqueue에서 발생한 이벤트를 처리하고, 연결을 끊거나 데이터를 읽고 쓰는 작업을 수행합니다.
+ *
+ * @throws std::runtime_error 서버 소켓 에러가 발생한 경우 예외를 던집니다.
+ */
 void Server::handleKqueue()
 {
     while (1)
@@ -157,6 +186,11 @@ void Server::handleKqueue()
     }
 }
 
+/**
+ * @brief 클라이언트 연결을 처리하는 함수입니다.
+ *
+ * 클라이언트 소켓을 생성하고, 이벤트를 활성화시키고, 클라이언트를 서버에 등록합니다.
+ */
 void Server::handleConnect()
 {
     Client clnt;
@@ -174,6 +208,11 @@ void Server::handleConnect()
     m_clients.insert(std::make_pair(clnt.getsockfd(), clnt));
 }
 
+/**
+ * @brief 클라이언트로부터 데이터를 수신하고 처리하는 함수입니다.
+ *
+ * @param fd 파일 디스크립터
+ */
 void Server::handleRecv(int fd)
 {
     // 데이터 받기
@@ -206,6 +245,11 @@ void Server::handleRecv(int fd)
         clnt.setRecvData(buffer);
 }
 
+/**
+ * @brief 클라이언트 소켓에 데이터를 전송하는 함수입니다.
+ *
+ * @param fd 전송할 클라이언트 소켓의 파일 디스크립터
+ */
 void Server::handleSend(int fd)
 {
     // clnt 찾기 (at()을 써야 이미 있는 원소가 찾아진다.)
@@ -221,6 +265,11 @@ void Server::handleSend(int fd)
     clnt.setWriteTypes(NONE);
 }
 
+/**
+ * @brief 클라이언트의 연결이 끊겼을 때 호출되는 함수입니다.
+ *
+ * @param fd 연결이 끊긴 클라이언트의 파일 디스크립터
+ */
 void Server::handleDisconnect(int fd)
 {
     std::cout << "============ Disconnection start =========" << std::endl;
@@ -244,6 +293,11 @@ void Server::handleDisconnect(int fd)
     std::cout << "========== Disconnection end =======" << std::endl;
 }
 
+/**
+ * @brief 클라이언트 수를 문자열 형태로 반환하는 함수입니다.
+ *
+ * @return 클라이언트 수를 나타내는 문자열
+ */
 std::string Server::getClientCount()
 {
     std::stringstream ss;
@@ -277,6 +331,12 @@ void Server::setCreated(time_t time)
     m_created = time;
 }
 
+/**
+ * @brief 채널을 찾는 함수입니다.
+ *
+ * @param ch_name 찾을 채널의 이름
+ * @return 찾은 채널의 포인터. 채널을 찾지 못한 경우 NULL을 반환합니다.
+ */
 Channel *Server::findChannel(const std::string &ch_name)
 {
     try
@@ -290,6 +350,12 @@ Channel *Server::findChannel(const std::string &ch_name)
     }
 }
 
+/**
+ * @brief 클라이언트를 찾는 함수입니다.
+ *
+ * @param client_name 찾을 클라이언트의 이름
+ * @return Client* 찾은 클라이언트의 포인터, 찾지 못한 경우 NULL을 반환합니다.
+ */
 Client *Server::findClient(const std::string &client_name)
 {
     std::map<int, Client>::iterator it;
@@ -303,6 +369,14 @@ Client *Server::findClient(const std::string &client_name)
     return NULL;
 }
 
+/**
+ * @brief 지정된 닉네임을 가진 클라이언트를 검색합니다.
+ *
+ * @param fd 클라이언트의 파일 디스크립터
+ * @param nick 검색할 닉네임
+ * @return true 클라이언트를 찾았을 경우
+ * @return false 클라이언트를 찾지 못한 경우
+ */
 bool Server::searchNick(int fd, const std::string &nick)
 {
     std::map<int, Client>::iterator it;
@@ -316,6 +390,13 @@ bool Server::searchNick(int fd, const std::string &nick)
     return false;
 }
 
+/**
+ * @brief 서버를 종료하는 함수입니다.
+ *
+ * 이 함수는 서버에서 사용 중인 모든 채널을 삭제하고, 서버의 에러 코드를 반환합니다.
+ *
+ * @return 서버의 에러 코드를 반환합니다.
+ */
 int Server::endServ()
 {
     std::map<std::string, Channel *>::iterator it_map;
@@ -328,11 +409,24 @@ int Server::endServ()
     return static_cast<int>(m_error);
 }
 
+/**
+ * @brief 채널을 추가하는 함수입니다.
+ *
+ * @param channelName 추가할 채널의 이름
+ * @param channel 추가할 채널의 포인터
+ */
 void Server::addChannel(std::string channelName, Channel *channel)
 {
     m_channels.insert(std::make_pair(channelName, channel));
 }
 
+/**
+ * @brief 빈 채널을 삭제하는 함수입니다.
+ *
+ * 채널 목록을 돌면서 빈 채널을 찾고, 해당 채널을 삭제합니다.
+ *
+ * @return 없음
+ */
 void Server::delEmptyChannel()
 {
     // 빈 채널 목록 생성
@@ -360,6 +454,11 @@ void Server::delEmptyChannel()
     }
 }
 
+/**
+ * @brief 클라이언트를 채널에서 제거하는 함수입니다.
+ *
+ * @param clnt 제거할 클라이언트 객체
+ */
 void Server::delClientFromChannel(Client &clnt)
 {
     std::map<std::string, Channel *>::iterator it;
