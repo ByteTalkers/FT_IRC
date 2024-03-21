@@ -30,7 +30,7 @@ class Command
     const std::string &getPrefix() const;
     const std::string &getCommand() const;
     const std::vector<std::string> &getParams() const;
-    std::size_t getParamsCount() const;
+    size_t getParamsCount() const;
 
     /* setter */
     void setPrefix(std::string &pre);

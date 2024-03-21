@@ -23,9 +23,14 @@ Message &Message::operator=(Message const &rhs)
 }
 
 /**
- * 커맨드 실행부
- * 1. 등록 전 실행부 => registerExecute
- * 2. 등록 후 실행부 => commandExecute
+ * @brief Message 클래스의 execute 함수입니다.
+ *
+ * 이 함수는 서버와 클라이언트에 대한 작업을 수행합니다.
+ * m_cmds 벡터의 각 Command에 대해 반복하며, 클라이언트가 등록되어 있는지 확인한 후
+ * 등록되어 있지 않다면 registerExecute 함수를 호출하고, 등록되어 있다면 commandExecute 함수를 호출합니다.
+ *
+ * @param server 서버 객체
+ * @param client 클라이언트 객체
  */
 void Message::execute(Server &server, Client &client)
 {
@@ -44,9 +49,6 @@ void Message::execute(Server &server, Client &client)
     }
 }
 
-/**
- * 커맨드를 찾는 함수
- */
 static int findCommands(const std::string &cmd)
 {
     const std::string commands[COMMAND_SIZE] = {"CAP",  "PASS", "NICK",  "USER",   "PING",    "QUIT", "JOIN",
@@ -65,6 +67,17 @@ static int findCommands(const std::string &cmd)
 /**
  * 등록 전 실행되는 커맨드 함수
  * CAP, PASS, NICK, USER 명령만 처리
+ */
+
+/**
+ * @brief Message 클래스의 registerExecute 함수입니다.
+ *
+ * 이 함수는 서버와 클라이언트, 그리고 Command 객체를 인자로 받아서
+ * 해당하는 명령어를 처리하는 함수입니다.
+ *
+ * @param server 서버 객체
+ * @param client 클라이언트 객체
+ * @param cmd 명령어 객체
  */
 void Message::registerExecute(Server &server, Client &client, Command *cmd)
 {
@@ -105,6 +118,16 @@ void Message::registerExecute(Server &server, Client &client, Command *cmd)
 /**
  * 등록 후 실행되는 커맨드 함수
  * CAP, PASS, NICK, USER, PING, QUIT, JOIN, PART, MODE, TOPIC, INVITE, PRIVMSG, WHO, KICK 처리
+ */
+/**
+ * @brief Message 클래스의 commandExecute 함수입니다.
+ *
+ * 이 함수는 서버와 클라이언트, 그리고 Command 객체를 인자로 받아서
+ * 해당하는 명령을 실행하는 역할을 합니다.
+ *
+ * @param server 서버 객체
+ * @param client 클라이언트 객체
+ * @param cmd 명령 객체
  */
 void Message::commandExecute(Server &server, Client &client, Command *cmd)
 {

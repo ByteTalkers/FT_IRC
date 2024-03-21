@@ -67,6 +67,11 @@ void Client::setUsername(const std::string &username)
     m_username = username;
 }
 
+/**
+ * @brief 클라이언트의 호스트 이름을 설정하는 함수입니다.
+ *
+ * @param clnt_adr 클라이언트의 소켓 주소 구조체입니다.
+ */
 void Client::setHostname(struct sockaddr_in &clnt_adr)
 {
     char hostname[NI_MAXHOST];
@@ -178,6 +183,12 @@ std::string Client::getLeaveMsg()
     return m_leave_msg;
 }
 
+/**
+ * @brief 클라이언트의 연결 수락 및 비차단 처리를 수행하는 함수입니다.
+ *
+ * @param serv_sock 서버 소켓 디스크립터
+ * @throws std::runtime_error accept() 함수 호출 중 오류가 발생한 경우
+ */
 void Client::startListen(int serv_sock)
 {
     struct sockaddr_in clnt_adr;
@@ -195,6 +206,11 @@ void Client::startListen(int serv_sock)
     setHostname(clnt_adr);
 }
 
+/**
+ * @brief 클라이언트의 메시지 파싱을 시작하는 함수입니다.
+ *
+ * @param serv 서버 객체에 대한 참조입니다.
+ */
 void Client::startParseMessage(Server &serv)
 {
     // message 클래스의 객체 넣기
@@ -205,11 +221,16 @@ void Client::startParseMessage(Server &serv)
     msg.execute(serv, *this);
 }
 
+/**
+ * @brief 클라이언트의 데이터를 전송하는 함수입니다.
+ *
+ * 클라이언트 소켓을 통해 m_send_msg에 저장된 메시지를 전송합니다.
+ * 전송 후 m_send_msg는 비워집니다.
+ */
 void Client::startSend()
 {
     int clnt_sock = getsockfd();
     send(clnt_sock, m_send_msg.c_str(), m_send_msg.length(), 0);
-
 
     // m_send_msg 비워주기
     m_send_msg.clear();

@@ -10,6 +10,17 @@
  * - 초대받은 유저가 이미 들어가 있으면 => ERR_USERONCHANNEL_443
  * - 채널 초대목록에 추가
  */
+
+/**
+ * @brief Message 클래스의 inviteExecute 함수입니다.
+ *
+ * 이 함수는 서버와 클라이언트, 그리고 명령어를 인자로 받아서 처리합니다.
+ * 클라이언트가 채널에 초대하는 기능을 수행합니다.
+ *
+ * @param server 서버 객체
+ * @param client 클라이언트 객체
+ * @param cmd 명령어 객체
+ */
 void Message::inviteExecute(Server &server, Client &client, Command *cmd)
 {
     if (cmd->getParamsCount() < 2)

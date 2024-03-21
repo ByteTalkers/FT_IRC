@@ -1,5 +1,11 @@
 #include "Message.hpp"
 
+/**
+ * @brief 주어진 문자열을 구분자로 나누어 채널 이름을 추출하여 벡터에 저장합니다.
+ *
+ * @param param 채널 이름들이 포함된 문자열
+ * @param channelNames 추출된 채널 이름들을 저장할 벡터
+ */
 static void parseChannelParams(const std::string &param, std::vector<std::string> &channelNames)
 {
     std::istringstream iss(param);
@@ -10,6 +16,12 @@ static void parseChannelParams(const std::string &param, std::vector<std::string
     }
 }
 
+/**
+ * @brief 주어진 문자열에서 키 파라미터를 파싱하여 벡터에 저장합니다.
+ *
+ * @param param 파싱할 문자열
+ * @param keys 파싱된 키 파라미터를 저장할 벡터
+ */
 static void parseKeyParams(const std::string &param, std::vector<std::string> &keys)
 {
     std::istringstream keyIss(param);
@@ -20,6 +32,14 @@ static void parseKeyParams(const std::string &param, std::vector<std::string> &k
     }
 }
 
+/**
+ * @brief 채널 초대 여부를 확인하고 처리하는 함수입니다.
+ *
+ * @param server 서버 객체
+ * @param client 클라이언트 객체
+ * @param channel 채널 객체
+ * @param key 채널 키
+ */
 static void checkInviteMode(Server &server, Client &client, Channel &channel, std::string &key)
 {
     if (!channel.isInvited(client.getNick()))
@@ -54,6 +74,16 @@ static void checkInviteMode(Server &server, Client &client, Channel &channel, st
     }
 }
 
+/**
+ * @brief Message 클래스의 joinExecute 함수입니다.
+ *
+ * 이 함수는 서버와 클라이언트, 그리고 명령어(cmd)를 인자로 받아서 JOIN 명령을 처리합니다.
+ * 클라이언트가 채널에 참여하려고 할 때 호출되며, 채널 이름과 옵션으로 키를 받아서 채널에 참여합니다.
+ *
+ * @param server 서버 객체
+ * @param client 클라이언트 객체
+ * @param cmd JOIN 명령어 객체
+ */
 void Message::joinExecute(Server &server, Client &client, Command *cmd)
 {
     if (cmd->getParams().empty())
