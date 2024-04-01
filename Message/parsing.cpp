@@ -4,10 +4,11 @@ static void parsingSpace(std::string &split, Command *cmd);
 static void setCmd(std::string &split, Command *cmd);
 
 /**
- * @brief Message 클래스의 parsingOrigin 함수입니다.
- *        주어진 문자열을 개행 문자('\n')을 기준으로 분리하여 처리합니다.
- *        분리된 문자열을 parsingSpace 함수를 통해 공백 문자(' ')을 기준으로 분리하여 Command 객체로 변환하고,
- *        변환된 Command 객체를 m_cmds 벡터에 추가합니다.
+ * @brief Parses the origin of the message.
+ *
+ * This function parses the origin of the message by splitting it into separate lines and removing any trailing carriage
+ * return characters. It then calls the parsingSpace function to further parse each line and store the resulting Command
+ * objects in the m_cmds vector.
  */
 void Message::parsingOrigin()
 {
@@ -37,10 +38,13 @@ void Message::parsingOrigin()
  */
 
 /**
- * @brief 주어진 문자열을 공백을 기준으로 분리하여 처리하는 함수입니다.
+ * @brief Parses the given string by splitting it at spaces and updates the Command object.
  *
- * @param split 분리할 문자열
- * @param cmd Command 객체에 결과를 저장하기 위한 포인터
+ * This function takes a string and splits it at spaces. The resulting substrings are then used to update the Command
+ * object.
+ *
+ * @param split The string to be parsed.
+ * @param cmd Pointer to the Command object to be updated.
  */
 static void parsingSpace(std::string &split, Command *cmd)
 {
@@ -89,10 +93,12 @@ static void parsingSpace(std::string &split, Command *cmd)
 }
 
 /**
- * @brief 주어진 문자열을 사용하여 Command 객체의 커맨드와 파라미터를 설정합니다.
+ * @brief Sets the command for the given split string.
  *
- * @param split 문자열을 나눈 결과
- * @param cmd Command 객체의 포인터
+ * This function sets the command for the given split string by modifying the provided `cmd` object.
+ *
+ * @param split The split string containing the command.
+ * @param cmd A pointer to the Command object to be modified.
  */
 static void setCmd(std::string &split, Command *cmd)
 {

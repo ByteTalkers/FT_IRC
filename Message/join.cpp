@@ -1,10 +1,10 @@
 #include "Message.hpp"
 
 /**
- * @brief 주어진 문자열을 구분자로 나누어 채널 이름을 추출하여 벡터에 저장합니다.
+ * Parses the given parameter and extracts channel names.
  *
- * @param param 채널 이름들이 포함된 문자열
- * @param channelNames 추출된 채널 이름들을 저장할 벡터
+ * @param param The parameter to parse.
+ * @param channelNames The vector to store the extracted channel names.
  */
 static void parseChannelParams(const std::string &param, std::vector<std::string> &channelNames)
 {
@@ -17,10 +17,13 @@ static void parseChannelParams(const std::string &param, std::vector<std::string
 }
 
 /**
- * @brief 주어진 문자열에서 키 파라미터를 파싱하여 벡터에 저장합니다.
+ * @brief Parses the key parameters from the given string and stores them in the provided vector.
  *
- * @param param 파싱할 문자열
- * @param keys 파싱된 키 파라미터를 저장할 벡터
+ * This function takes a string parameter and a vector reference as input. It parses the key parameters
+ * from the string and stores them in the vector. The key parameters are separated by a delimiter.
+ *
+ * @param param The string containing the key parameters.
+ * @param keys The vector to store the parsed key parameters.
  */
 static void parseKeyParams(const std::string &param, std::vector<std::string> &keys)
 {
@@ -33,12 +36,17 @@ static void parseKeyParams(const std::string &param, std::vector<std::string> &k
 }
 
 /**
- * @brief 채널 초대 여부를 확인하고 처리하는 함수입니다.
+ * @brief Checks the invite mode for a client joining a channel.
  *
- * @param server 서버 객체
- * @param client 클라이언트 객체
- * @param channel 채널 객체
- * @param key 채널 키
+ * This function is responsible for checking the invite mode for a client joining a channel.
+ * It takes references to the `Server`, `Client`, and `Channel` objects, as well as a reference
+ * to a `std::string` representing the invite key. The function performs the necessary checks
+ * and updates the channel's state accordingly.
+ *
+ * @param server The reference to the `Server` object.
+ * @param client The reference to the `Client` object.
+ * @param channel The reference to the `Channel` object.
+ * @param key The reference to the invite key.
  */
 static void checkInviteMode(Server &server, Client &client, Channel &channel, std::string &key)
 {
@@ -75,14 +83,11 @@ static void checkInviteMode(Server &server, Client &client, Channel &channel, st
 }
 
 /**
- * @brief Message 클래스의 joinExecute 함수입니다.
+ * Executes the JOIN command for a client to join one or more channels.
  *
- * 이 함수는 서버와 클라이언트, 그리고 명령어(cmd)를 인자로 받아서 JOIN 명령을 처리합니다.
- * 클라이언트가 채널에 참여하려고 할 때 호출되며, 채널 이름과 옵션으로 키를 받아서 채널에 참여합니다.
- *
- * @param server 서버 객체
- * @param client 클라이언트 객체
- * @param cmd JOIN 명령어 객체
+ * @param server The server object.
+ * @param client The client object.
+ * @param cmd The JOIN command object.
  */
 void Message::joinExecute(Server &server, Client &client, Command *cmd)
 {

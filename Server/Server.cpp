@@ -60,10 +60,10 @@ Server::Server(std::string password) : m_password(password), m_name("ByteTalkers
 }
 
 /**
- * @brief 포트 번호를 확인하고 설정하는 함수입니다.
+ * Checks if the given string represents a valid port number and sets it as the port number for the server.
  *
- * @param str 포트 번호를 나타내는 문자열입니다.
- * @throws std::runtime_error 유효하지 않은 포트 번호일 경우 예외를 던집니다.
+ * @param str The string representing the port number.
+ * @throws std::runtime_error if the string is not a valid port number.
  */
 void Server::checkPortnum(std::string str)
 {
@@ -83,12 +83,10 @@ void Server::checkPortnum(std::string str)
 }
 
 /**
- * @brief 서버 소켓을 초기화하는 함수입니다.
- *
- * @details 서버 소켓을 생성하고 bind, listen 등의 작업을 수행합니다.
- *          소켓 생성에 실패하거나 오류가 발생한 경우 예외를 던집니다.
- *
- * @throws std::runtime_error 소켓 생성, bind, listen, setsockopt, fcntl 함수에서 오류가 발생한 경우
+ * Initializes the server socket.
+ * This function creates a server socket, sets socket options, binds the socket to a specific address and port,
+ * and starts listening for incoming connections.
+ * @throws std::runtime_error if any error occurs during socket creation, option setting, binding, or listening.
  */
 void Server::initServSock()
 {
@@ -128,11 +126,11 @@ void Server::initServSock()
 }
 
 /**
- * @brief Server 클래스의 initKqueue 함수입니다.
+ * Initializes the kqueue for the server.
  *
- * 이 함수는 kqueue를 초기화하고, serv_sock의 read 이벤트를 이벤트 벡터에 등록합니다.
+ * This function creates a kqueue and registers the server socket for read events.
  *
- * @throws std::runtime_error kqueue() 함수 호출에 실패한 경우 예외를 던집니다.
+ * @throws std::runtime_error if kqueue creation fails.
  */
 void Server::initKqueue()
 {
@@ -148,12 +146,15 @@ void Server::initKqueue()
 }
 
 /**
- * @brief kqueue를 처리하는 함수입니다.
+ * Handles the kqueue events for the server.
+ * This function continuously listens for events using kqueue and handles them accordingly.
+ * It checks for events on the server socket, client connections, and data read/write events.
+ * If an event indicates a new client connection, it calls the handleConnect function.
+ * If an event indicates a client disconnection, it calls the handleDisconnect function.
+ * If an event indicates data to be read, it calls the handleRecv function.
+ * If an event indicates data to be sent, it calls the handleSend function.
  *
- * 이 함수는 무한 루프를 돌면서 kqueue 이벤트를 처리합니다.
- * kqueue에서 발생한 이벤트를 처리하고, 연결을 끊거나 데이터를 읽고 쓰는 작업을 수행합니다.
- *
- * @throws std::runtime_error 서버 소켓 에러가 발생한 경우 예외를 던집니다.
+ * @throws std::runtime_error if there is an error with the server socket.
  */
 void Server::handleKqueue()
 {
@@ -187,9 +188,10 @@ void Server::handleKqueue()
 }
 
 /**
- * @brief 클라이언트 연결을 처리하는 함수입니다.
- *
- * 클라이언트 소켓을 생성하고, 이벤트를 활성화시키고, 클라이언트를 서버에 등록합니다.
+ * Handles the connection with a client.
+ * This function starts listening for incoming data from the client socket,
+ * adds read and write events for the client socket, disables the write event,
+ * and registers the client in the server's client map.
  */
 void Server::handleConnect()
 {
@@ -209,9 +211,15 @@ void Server::handleConnect()
 }
 
 /**
- * @brief 클라이언트로부터 데이터를 수신하고 처리하는 함수입니다.
+ * @brief Handles the receiving of data from a client socket.
  *
- * @param fd 파일 디스크립터
+ * This function receives data from the client socket specified by the file descriptor `fd`.
+ * It reads the data into a buffer, checks the buffer for validity, and then performs data parsing.
+ * If the buffer is valid, it sets the received data in the corresponding client object and triggers the appropriate
+ * write events.
+ *
+ * @param fd The file descriptor of the client socket.
+ * @throws std::runtime_error if an error occurs while receiving data.
  */
 void Server::handleRecv(int fd)
 {
@@ -246,9 +254,14 @@ void Server::handleRecv(int fd)
 }
 
 /**
- * @brief 클라이언트 소켓에 데이터를 전송하는 함수입니다.
+ * @brief Handles the send operation for a client socket.
  *
- * @param fd 전송할 클라이언트 소켓의 파일 디스크립터
+ * This function is responsible for handling the send operation for a specific client socket.
+ * It retrieves the client object associated with the given file descriptor and initiates the send operation.
+ * After the send operation is completed, it disables the write event for the client socket and sets the write types to
+ * NONE.
+ *
+ * @param fd The file descriptor of the client socket.
  */
 void Server::handleSend(int fd)
 {
@@ -266,9 +279,17 @@ void Server::handleSend(int fd)
 }
 
 /**
- * @brief 클라이언트의 연결이 끊겼을 때 호출되는 함수입니다.
+ * @brief Handles the disconnection of a client.
  *
- * @param fd 연결이 끊긴 클라이언트의 파일 디스크립터
+ * This function is responsible for handling the disconnection of a client from the server.
+ * It performs the following tasks:
+ * 1. Removes the client from the client list.
+ * 2. Removes the client from any channels they were a part of.
+ * 3. Deletes any empty channels.
+ * 4. Closes the client's socket.
+ *
+ * @param fd The file descriptor of the client's socket.
+ * @throws std::runtime_error if an error occurs while closing the socket.
  */
 void Server::handleDisconnect(int fd)
 {
@@ -294,9 +315,12 @@ void Server::handleDisconnect(int fd)
 }
 
 /**
- * @brief 클라이언트 수를 문자열 형태로 반환하는 함수입니다.
+ * @brief The std::string class represents a sequence of characters.
  *
- * @return 클라이언트 수를 나타내는 문자열
+ * This class provides a convenient way to manipulate strings of characters.
+ * It supports various operations such as concatenation, substring extraction,
+ * and comparison. The string is stored as a sequence of characters in a dynamic
+ * array, allowing it to grow or shrink as needed.
  */
 std::string Server::getClientCount()
 {
@@ -332,10 +356,12 @@ void Server::setCreated(time_t time)
 }
 
 /**
- * @brief 채널을 찾는 함수입니다.
+ * @brief Finds a channel by name.
  *
- * @param ch_name 찾을 채널의 이름
- * @return 찾은 채널의 포인터. 채널을 찾지 못한 경우 NULL을 반환합니다.
+ * This function searches for a channel with the specified name in the server's list of channels.
+ *
+ * @param ch_name The name of the channel to find.
+ * @return A pointer to the found channel, or NULL if the channel is not found.
  */
 Channel *Server::findChannel(const std::string &ch_name)
 {
@@ -351,10 +377,10 @@ Channel *Server::findChannel(const std::string &ch_name)
 }
 
 /**
- * @brief 클라이언트를 찾는 함수입니다.
+ * @brief Finds a client with the specified name.
  *
- * @param client_name 찾을 클라이언트의 이름
- * @return Client* 찾은 클라이언트의 포인터, 찾지 못한 경우 NULL을 반환합니다.
+ * @param client_name The name of the client to find.
+ * @return A pointer to the found client, or NULL if not found.
  */
 Client *Server::findClient(const std::string &client_name)
 {
@@ -370,12 +396,15 @@ Client *Server::findClient(const std::string &client_name)
 }
 
 /**
- * @brief 지정된 닉네임을 가진 클라이언트를 검색합니다.
+ * @brief Searches for a client with the given nickname.
  *
- * @param fd 클라이언트의 파일 디스크립터
- * @param nick 검색할 닉네임
- * @return true 클라이언트를 찾았을 경우
- * @return false 클라이언트를 찾지 못한 경우
+ * This function searches for a client with the specified nickname among the connected clients.
+ * It iterates through the map of clients and checks if the nickname matches the given nickname,
+ * excluding the client with the specified file descriptor.
+ *
+ * @param fd The file descriptor of the client to exclude from the search.
+ * @param nick The nickname to search for.
+ * @return True if a client with the given nickname is found, false otherwise.
  */
 bool Server::searchNick(int fd, const std::string &nick)
 {
@@ -391,11 +420,12 @@ bool Server::searchNick(int fd, const std::string &nick)
 }
 
 /**
- * @brief 서버를 종료하는 함수입니다.
+ * @brief Ends the server and cleans up allocated resources.
  *
- * 이 함수는 서버에서 사용 중인 모든 채널을 삭제하고, 서버의 에러 코드를 반환합니다.
+ * This function iterates through the map of channels and deletes each channel object.
+ * It is responsible for cleaning up any allocated resources before the server is terminated.
  *
- * @return 서버의 에러 코드를 반환합니다.
+ * @return The error code associated with the server.
  */
 int Server::endServ()
 {
@@ -410,10 +440,13 @@ int Server::endServ()
 }
 
 /**
- * @brief 채널을 추가하는 함수입니다.
+ * @brief Adds a channel to the server.
  *
- * @param channelName 추가할 채널의 이름
- * @param channel 추가할 채널의 포인터
+ * This function adds a channel to the server's collection of channels.
+ * The channel is associated with a unique channel name.
+ *
+ * @param channelName The name of the channel to be added.
+ * @param channel A pointer to the Channel object to be added.
  */
 void Server::addChannel(std::string channelName, Channel *channel)
 {
@@ -421,11 +454,19 @@ void Server::addChannel(std::string channelName, Channel *channel)
 }
 
 /**
- * @brief 빈 채널을 삭제하는 함수입니다.
+ * @brief Deletes empty channels from the server.
  *
- * 채널 목록을 돌면서 빈 채널을 찾고, 해당 채널을 삭제합니다.
+ * This function iterates through the list of channels and identifies the empty channels.
+ * Empty channels are those with no users in them. The names of the empty channels are stored
+ * in a separate list. Then, the function iterates through the empty channel list and deletes
+ * the corresponding channels from the server.
  *
- * @return 없음
+ * @note This function assumes that the `m_channels` member variable is a map of channel names
+ *       to Channel objects, where each Channel object represents a channel on the server.
+ *       The `getUserCount()` function is used to determine the number of users in a channel.
+ *
+ * @note This function does not delete the users in the empty channels. It only removes the
+ *       empty channels from the server.
  */
 void Server::delEmptyChannel()
 {
@@ -455,9 +496,14 @@ void Server::delEmptyChannel()
 }
 
 /**
- * @brief 클라이언트를 채널에서 제거하는 함수입니다.
+ * @brief Removes a client from all channels and sends a quit message to the remaining members.
  *
- * @param clnt 제거할 클라이언트 객체
+ * This function removes the specified client from all channels in the server and sends a quit message
+ * to the remaining members of each channel. If the client's leave message is "null", a default quit
+ * message with "Connection: close" is sent. Otherwise, the client's custom leave message is included
+ * in the quit message.
+ *
+ * @param clnt The client to be removed from the channels.
  */
 void Server::delClientFromChannel(Client &clnt)
 {

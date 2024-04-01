@@ -1,10 +1,10 @@
 #include "Server.hpp"
 
 /**
- * @brief 입력된 문자열이 "\r\n"으로 끝나는지 확인하는 함수입니다.
+ * Checks if the given string ends with a carriage return and line feed ("\r\n").
  *
- * @param str 확인할 문자열
- * @return 문자열이 "\r\n"으로 끝나면 true, 그렇지 않으면 false를 반환합니다.
+ * @param str The string to be checked.
+ * @return True if the string ends with "\r\n", false otherwise.
  */
 bool Server::checkBuffer(std::string str)
 {
@@ -15,9 +15,12 @@ bool Server::checkBuffer(std::string str)
 }
 
 /**
- * @brief 소켓에 대한 읽기 이벤트를 추가합니다.
+ * Adds a read event for a given socket file descriptor.
  *
- * @param sockfd 소켓 파일 디스크립터
+ * This function adds a read event to the event vector for the server. The read event is used to monitor
+ * the specified socket file descriptor for incoming data.
+ *
+ * @param sockfd The socket file descriptor to add the read event for.
  */
 void Server::addReadEvent(int sockfd)
 {
@@ -27,9 +30,12 @@ void Server::addReadEvent(int sockfd)
 }
 
 /**
- * @brief 소켓에 대한 쓰기 이벤트를 추가합니다.
+ * Adds a write event for the specified socket file descriptor.
  *
- * @param sockfd 소켓 파일 디스크립터
+ * This function adds a write event to the event vector for the server. The write event
+ * will be monitored by the event loop and trigger when the socket is ready for writing.
+ *
+ * @param sockfd The socket file descriptor to add the write event for.
  */
 void Server::addWriteEvent(int sockfd)
 {
@@ -39,9 +45,12 @@ void Server::addWriteEvent(int sockfd)
 }
 
 /**
- * @brief 소켓의 쓰기 이벤트를 비활성화하는 함수입니다.
+ * Disables the write event for the specified socket file descriptor.
  *
- * @param sockfd 비활성화할 소켓의 파일 디스크립터
+ * This function creates a kevent structure to disable the write event for the given socket file descriptor.
+ * The kevent structure is then added to the change vector of the server.
+ *
+ * @param sockfd The socket file descriptor for which the write event needs to be disabled.
  */
 void Server::disableWriteEvent(int sockfd)
 {
@@ -51,9 +60,13 @@ void Server::disableWriteEvent(int sockfd)
 }
 
 /**
- * @brief 소켓에 대한 쓰기 이벤트를 활성화합니다.
+ * Enables the write event for a given socket file descriptor.
  *
- * @param sockfd 활성화할 소켓의 파일 디스크립터
+ * This function adds a write event to the event change vector of the server.
+ * The write event will be monitored by the event loop and trigger when the socket
+ * is ready for writing.
+ *
+ * @param sockfd The socket file descriptor for which to enable the write event.
  */
 void Server::enableWriteEvent(int sockfd)
 {
@@ -63,9 +76,12 @@ void Server::enableWriteEvent(int sockfd)
 }
 
 /**
- * @brief 클라이언트의 쓰기 이벤트를 활성화하는 함수입니다.
+ * Enables multiple write events for a client in the server.
  *
- * @param clnt 쓰기 이벤트를 활성화할 클라이언트 객체
+ * This function enables write events for all clients in the same channel as the specified client.
+ * If the write event type of the specified client is EVERYBUTME, the write event for the specified client is disabled.
+ *
+ * @param clnt The client for which to enable multiple write events.
  */
 void Server::enableMultipleWrite(Client &clnt)
 {

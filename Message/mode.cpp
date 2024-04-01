@@ -32,14 +32,12 @@ static void modeL(Server &server, Client &client, Channel *channel, bool mode_fl
  */
 
 /**
- * @brief Message 클래스의 modeExecute 함수입니다.
+ * Executes the MODE command.
+ * This function handles the logic for setting modes on a client or a channel.
  *
- * 이 함수는 서버와 클라이언트, 그리고 명령어(cmd)를 인자로 받아서 실행합니다.
- * modeExecute 함수는 주어진 명령어에 따라 채널 모드를 설정하거나 유저 모드를 변경합니다.
- *
- * @param server 서버 객체
- * @param client 클라이언트 객체
- * @param cmd 명령어 객체
+ * @param server The server object.
+ * @param client The client object.
+ * @param cmd The command object containing the MODE command and its parameters.
  */
 void Message::modeExecute(Server &server, Client &client, Command *cmd)
 {
@@ -183,6 +181,15 @@ static eModes checkMode(char c)
  * 인자가 +i && 해당 채널이 Invite 모드가 아닐 때
  * 인자가 -i && 해당 채널이 Invite 모드일 때
  */
+
+/**
+ * Sets the mode of a client or channel to 'I' (invisible).
+ *
+ * @param server The server object.
+ * @param client The client object.
+ * @param channel The channel object (can be nullptr if the mode is for a client).
+ * @param mode_flag The mode flag indicating whether to set or unset the mode.
+ */
 static void modeI(Server &server, Client &client, Channel *channel, bool mode_flag)
 {
     if (!channel->checkOp(client))
@@ -205,6 +212,17 @@ static void modeI(Server &server, Client &client, Channel *channel, bool mode_fl
 /**
  * 인자가 +t && 해당 채널이 Topic 모드가 아닐 때
  * 인자가 -t && 해당 채널이 Topic 모드일 때
+ */
+
+/**
+ * @brief Sets the mode of a client or channel.
+ *
+ * This function is used to set the mode of a client or channel in the server.
+ *
+ * @param server The server object.
+ * @param client The client object.
+ * @param channel The channel object. Pass `nullptr` if the mode is for a client.
+ * @param mode_flag The mode flag indicating the mode to be set.
  */
 static void modeT(Server &server, Client &client, Channel *channel, bool mode_flag)
 {
@@ -231,6 +249,15 @@ static void modeT(Server &server, Client &client, Channel *channel, bool mode_fl
  * 인자가 -k && 해당 채널이 Key 모드일 때
  */
 
+/**
+ * Sets the mode of a client or channel in the IRC server.
+ *
+ * @param server The IRC server object.
+ * @param client The client object.
+ * @param channel The channel object (can be nullptr if the mode is for a client).
+ * @param mode_flag The mode flag indicating whether to set or unset the mode.
+ * @param key The key associated with the mode (optional).
+ */
 static void modeK(Server &server, Client &client, Channel *channel, bool mode_flag, const std::string &key)
 {
     if (mode_flag && key == "")
@@ -262,6 +289,16 @@ static void modeK(Server &server, Client &client, Channel *channel, bool mode_fl
  * 해당 유저가 채널에 존재하지 않을 때 => 무시
  * 인자가 +o && 해당 채널에서 op가 아닐 때
  * 인자가 -o && 해당 채널에서 op일 때
+ */
+
+/**
+ * Sets the mode of a client or channel in the IRC server.
+ *
+ * @param server The IRC server object.
+ * @param client The client object.
+ * @param channel The channel object (can be nullptr if the mode is for a client).
+ * @param mode_flag The mode flag indicating the type of mode to set.
+ * @param nick The nickname of the client.
  */
 static void modeO(Server &server, Client &client, Channel *channel, bool mode_flag, const std::string &nick)
 {
@@ -302,6 +339,16 @@ static void modeO(Server &server, Client &client, Channel *channel, bool mode_fl
 /**
  * 인자가 +l
  * 인자가 -l && 해당 채널이 limit 모드일 때
+ */
+
+/**
+ * Sets the mode of a channel based on the given parameters.
+ *
+ * @param server The server object.
+ * @param client The client object.
+ * @param channel A pointer to the channel object.
+ * @param mode_flag A boolean indicating whether the mode is being set or unset.
+ * @param limit The limit parameter for the mode.
  */
 static void modeL(Server &server, Client &client, Channel *channel, bool mode_flag, const std::string &limit)
 {

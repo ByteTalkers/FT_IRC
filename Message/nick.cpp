@@ -13,11 +13,12 @@ static bool checkChar(char c);
  */
 
 /**
- * @brief Message 클래스의 registerNickExecute 함수는 서버와 클라이언트 간의 닉네임 등록을 처리합니다.
+ * Executes the REGISTER NICK command.
+ * This function is responsible for registering a nickname for a client on the server.
  *
- * @param server 서버 객체
- * @param client 클라이언트 객체
- * @param cmd 수신된 명령어 객체
+ * @param server The server object.
+ * @param client The client object.
+ * @param cmd The command object containing the parameters.
  */
 void Message::registerNickExecute(Server &server, Client &client, Command *cmd)
 {
@@ -80,13 +81,13 @@ void Message::registerNickExecute(Server &server, Client &client, Command *cmd)
  */
 
 /**
- * @brief Message 클래스의 nickExecute 함수입니다.
+ * Executes the NICK command.
+ * Sets the nickname of the client to the specified nickname.
+ * If the command parameters are invalid or insufficient, an error response is sent to the client.
  *
- * 이 함수는 서버와 클라이언트, 그리고 명령어를 인자로 받아서 실행합니다.
- *
- * @param server 서버 객체입니다.
- * @param client 클라이언트 객체입니다.
- * @param cmd 명령어 객체입니다.
+ * @param server The server object.
+ * @param client The client object.
+ * @param cmd The command object representing the NICK command.
  */
 void Message::nickExecute(Server &server, Client &client, Command *cmd)
 {
@@ -111,10 +112,14 @@ void Message::nickExecute(Server &server, Client &client, Command *cmd)
  */
 
 /**
- * @brief 주어진 닉네임이 유효한지 확인하는 함수입니다.
+ * Checks if a given nickname is valid.
+ * A valid nickname must satisfy the following conditions:
+ * - The length of the nickname must not exceed 9 characters.
+ * - The first character of the nickname must not be '#' or '&'.
+ * - All characters in the nickname must pass the checkChar function.
  *
- * @param nick 확인할 닉네임
- * @return 유효한 닉네임인 경우 true, 그렇지 않은 경우 false를 반환합니다.
+ * @param nick The nickname to be checked.
+ * @return True if the nickname is valid, false otherwise.
  */
 static bool validCheck(const std::string &nick)
 {
@@ -137,6 +142,12 @@ static bool validCheck(const std::string &nick)
     return true;
 }
 
+/**
+ * Checks if a character is alphanumeric or one of the following special characters: [ ] { } |
+ *
+ * @param c The character to be checked
+ * @return true if the character is alphanumeric or one of the special characters, false otherwise
+ */
 static bool checkChar(char c)
 {
     if (!std::isalnum(c) && c != '[' && c != ']' && c != '{' && c != '}' && c != '|')

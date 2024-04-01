@@ -1,18 +1,14 @@
 #include "Message.hpp"
 
 /**
- * @brief Message 클래스의 registerPassExecute 함수입니다.
+ * Registers the execution of the PASS command.
+ * This function checks if the command has the required parameters and if the password matches the server's password.
+ * If the password matches, it sets the PASS_REG flag for the client.
+ * If the password does not match, it sends an error message to the client.
  *
- * 이 함수는 서버와 클라이언트, 그리고 명령어를 인자로 받아서 실행합니다.
- * 클라이언트가 전달한 명령어의 파라미터 개수가 1보다 작으면 ERR_NEEDMOREPARAMS_461 응답을 클라이언트에게 전송하고
- * 함수를 종료합니다. 서버의 비밀번호와 클라이언트가 전달한 비밀번호가 일치하지 않으면 ERR_PASSWDMISMATCH_464 응답을
- * 클라이언트에게 전송합니다. 서버의 비밀번호와 클라이언트가 전달한 비밀번호가 일치하면 클라이언트의 등록 플래그를
- * PASS_REG로 설정합니다. 서버의 비밀번호와 클라이언트가 전달한 비밀번호가 일치하지 않으면 클라이언트의 등록 플래그를
- * PASS_REG로 설정하지 않습니다.
- *
- * @param server 서버 객체
- * @param client 클라이언트 객체
- * @param cmd 명령어 객체
+ * @param server The server object.
+ * @param client The client object.
+ * @param cmd The command object.
  */
 void Message::registerPassExecute(Server &server, Client &client, Command *cmd)
 {
@@ -36,15 +32,15 @@ void Message::registerPassExecute(Server &server, Client &client, Command *cmd)
 }
 
 /**
- * @brief Message 클래스의 passExecute 함수입니다.
+ * Executes the "pass" command for a specific client.
  *
- * 이 함수는 서버와 클라이언트, 그리고 Command 객체를 인자로 받아서 실행합니다.
- * cmd 객체의 파라미터 개수가 1보다 작으면 ERR_NEEDMOREPARAMS_461 응답을 클라이언트에게 전송하고 함수를 종료합니다.
- * 그렇지 않으면 ERR_ALREADYREGISTERED_462 응답을 클라이언트에게 전송하고 함수를 종료합니다.
+ * This function is responsible for executing the "pass" command for a specific client.
+ * It takes a reference to a Server object, a reference to a Client object, and a pointer to a Command object as
+ * parameters.
  *
- * @param server 서버 객체
- * @param client 클라이언트 객체
- * @param cmd Command 객체
+ * @param server The Server object representing the server.
+ * @param client The Client object representing the client.
+ * @param cmd    A pointer to the Command object representing the command.
  */
 void Message::passExecute(Server &server, Client &client, Command *cmd)
 {

@@ -62,7 +62,11 @@ void Command::setParams(std::vector<std::string> &params)
 }
 
 /**
- * m_params에 param을 하나씩 추가하는 함수
+ * @brief Adds a parameter to the command.
+ *
+ * This function adds the specified parameter to the command's list of parameters.
+ *
+ * @param param The parameter to be added.
  */
 void Command::addParams(std::string &param)
 {

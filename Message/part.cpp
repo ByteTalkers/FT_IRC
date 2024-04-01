@@ -1,12 +1,11 @@
 #include "Message.hpp"
 
 /**
- * @brief 채널과 이유를 파싱하는 함수입니다.
+ * Parses the channel and reason from the given parameters.
  *
- * @param params 파라미터 벡터로, 첫 번째 요소는 채널 이름들이 쉼표로 구분된 문자열입니다.
- *               두 번째 요소부터는 이유로 처리됩니다.
- * @param channels 파싱된 채널 이름들이 저장될 벡터입니다.
- * @param reason 파싱된 이유가 저장될 문자열입니다.
+ * @param params The vector of strings containing the parameters.
+ * @param channels The vector of strings to store the parsed channels.
+ * @param reason The string to store the parsed reason.
  */
 static void parseChannelAndReason(const std::vector<std::string> &params, std::vector<std::string> &channels,
                                   std::string &reason)
@@ -27,14 +26,15 @@ static void parseChannelAndReason(const std::vector<std::string> &params, std::v
 }
 
 /**
- * @brief Message 클래스의 partExecute 함수입니다.
+ * Executes the PART command for a client in the server.
  *
- * 이 함수는 서버와 클라이언트, 그리고 명령어를 인자로 받아서
- * 클라이언트가 채널에서 나가는 동작을 수행합니다.
+ * This function is responsible for handling the PART command, which allows a client to leave one or more channels.
+ * It checks the parameters provided by the client and performs the necessary actions based on the channel and reason.
+ * If the parameters are invalid or missing, an error response is sent to the client.
  *
- * @param server 서버 객체
- * @param client 클라이언트 객체
- * @param cmd 명령어 객체
+ * @param server The server object.
+ * @param client The client object.
+ * @param cmd The command object containing the parameters.
  */
 void Message::partExecute(Server &server, Client &client, Command *cmd)
 {
