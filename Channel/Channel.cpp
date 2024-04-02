@@ -32,9 +32,11 @@ Channel::~Channel()
 }
 
 /**
- * @brief Channel 클래스의 partChannel 함수는 주어진 클라이언트를 채널에서 제거합니다.
+ * @brief Removes a client from the channel.
  *
- * @param cl 제거할 클라이언트 객체
+ * This function removes the specified client from the channel. The client will no longer be a member of the channel.
+ *
+ * @param cl The client to be removed from the channel.
  */
 void Channel::partChannel(Client &cl)
 {
@@ -59,10 +61,10 @@ void Channel::partChannel(Client &cl)
 }
 
 /**
- * @brief 해당 클라이언트가 채널의 오퍼레이터인지 확인합니다.
+ * Checks if a client is an operator in the channel.
  *
- * @param cl 확인할 클라이언트 객체
- * @return 클라이언트가 오퍼레이터인 경우 true, 그렇지 않은 경우 false를 반환합니다.
+ * @param cl The client to check.
+ * @return True if the client is an operator, false otherwise.
  */
 bool Channel::checkOp(Client &cl)
 {
@@ -204,13 +206,13 @@ void Channel::setTopicExist(bool tf)
 }
 
 /**
- * @brief 모든 클라이언트에게 메시지를 전송하는 함수입니다.
+ * Sends a message to all users in the channel.
  *
- * @param server 서버 객체
- * @param from 메시지를 보내는 클라이언트의 접두사
- * @param cmd 메시지의 명령어
- * @param msg 메시지의 내용
- * @param last 메시지의 마지막 부분
+ * @param server The server object.
+ * @param from The sender of the message.
+ * @param cmd The command associated with the message.
+ * @param msg The content of the message.
+ * @param last The last message in the conversation.
  */
 void Channel::addSendMsgAll(Server &server, const std::string &from, const std::string &cmd, const std::string &msg,
                             const std::string &last)
@@ -227,9 +229,11 @@ void Channel::addSendMsgAll(Server &server, const std::string &from, const std::
 }
 
 /**
- * @brief 채널에 초대장을 추가합니다.
+ * @brief Adds an invitation for a user to join the channel.
  *
- * @param user 초대장을 받을 사용자의 이름
+ * This function adds an invitation for the specified user to join the channel.
+ *
+ * @param user The username of the user to invite.
  */
 void Channel::addInvitation(const std::string &user)
 {
@@ -237,11 +241,10 @@ void Channel::addInvitation(const std::string &user)
 }
 
 /**
- * @brief 해당 사용자가 초대된 사용자인지 확인합니다.
+ * Checks if a user is invited to the channel.
  *
- * @param user 확인할 사용자의 이름
- * @return true 사용자가 초대된 경우
- * @return false 사용자가 초대되지 않은 경우
+ * @param user The username of the user to check.
+ * @return True if the user is invited, false otherwise.
  */
 bool Channel::isInvited(const std::string &user) const
 {
@@ -257,9 +260,13 @@ bool Channel::isInvited(const std::string &user) const
 }
 
 /**
- * @brief 해당 사용자의 초대장을 제거합니다.
+ * @brief Removes an invitation for a user from the channel.
  *
- * @param user 제거할 사용자의 이름
+ * This function removes the specified user from the list of invitations in the channel.
+ * If the user is found in the list, they will be removed and the function will return.
+ * If the user is not found, the function will have no effect.
+ *
+ * @param user The username of the user to remove from the invitations.
  */
 void Channel::removeInvitation(const std::string &user)
 {
@@ -285,10 +292,10 @@ bool Channel::checkPassword(const std::string &password)
 }
 
 /**
- * @brief 해당 클라이언트가 채널의 멤버인지 확인합니다.
+ * Checks if the given client is a member of the channel.
  *
- * @param client 멤버 여부를 확인할 클라이언트 객체
- * @return 클라이언트가 채널의 멤버인 경우 true, 그렇지 않은 경우 false를 반환합니다.
+ * @param client The client to check.
+ * @return True if the client is a member of the channel, false otherwise.
  */
 bool Channel::isMember(Client &client) const
 {
@@ -301,9 +308,9 @@ bool Channel::isMember(Client &client) const
 }
 
 /**
- * @brief Channel에 멤버를 추가합니다.
+ * Adds a member to the channel.
  *
- * @param client 추가할 클라이언트 객체 포인터
+ * @param client A pointer to the client to be added as a member.
  */
 void Channel::addMember(Client *client)
 {
@@ -312,10 +319,10 @@ void Channel::addMember(Client *client)
 }
 
 /**
- * @brief 해당 닉네임이 채널의 멤버인지 확인합니다.
+ * Checks if a given nickname is a member of the channel.
  *
- * @param nick 확인할 닉네임
- * @return 멤버인 경우 true, 아닌 경우 false를 반환합니다.
+ * @param nick The nickname to check.
+ * @return True if the nickname is a member of the channel, false otherwise.
  */
 bool Channel::isMemberNick(std::string &nick) const
 {
@@ -328,9 +335,12 @@ bool Channel::isMemberNick(std::string &nick) const
 }
 
 /**
- * @brief Channel에 운영자를 추가합니다.
+ * @brief Adds an operator to the channel.
  *
- * @param nick 추가할 운영자의 닉네임
+ * This function adds a client with the specified nickname as an operator to the channel.
+ * The client must already be a member of the channel's normal clients list.
+ *
+ * @param nick The nickname of the client to be added as an operator.
  */
 void Channel::addOperator(const std::string &nick)
 {
@@ -345,9 +355,13 @@ void Channel::addOperator(const std::string &nick)
 }
 
 /**
- * @brief Channel 클래스의 popOperator 함수는 주어진 닉네임에 해당하는 오퍼레이터를 제거합니다.
+ * @brief Removes the operator with the specified nickname from the channel.
  *
- * @param nick 제거할 오퍼레이터의 닉네임
+ * This function searches for an operator with the given nickname in the list of operators
+ * and removes it from the channel if found. If multiple operators have the same nickname,
+ * only the first occurrence will be removed.
+ *
+ * @param nick The nickname of the operator to be removed.
  */
 void Channel::popOperator(const std::string &nick)
 {
@@ -362,11 +376,10 @@ void Channel::popOperator(const std::string &nick)
 }
 
 /**
- * @brief 해당 닉네임이 오퍼레이터 닉네임인지 확인합니다.
+ * Checks if a given nickname is an operator in the channel.
  *
- * @param nick 확인할 닉네임
- * @return true 오퍼레이터 닉네임인 경우
- * @return false 오퍼레이터 닉네임이 아닌 경우
+ * @param nick The nickname to check.
+ * @return True if the nickname is an operator, false otherwise.
  */
 bool Channel::checkOpNick(const std::string &nick) const
 {

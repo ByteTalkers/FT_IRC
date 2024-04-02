@@ -1,10 +1,14 @@
 #include "Message.hpp"
 
 /**
- * @brief 클라이언트가 종료 명령을 실행할 때 호출되는 함수입니다.
+ * Executes the quit command for a client.
  *
- * @param client 종료 명령을 실행하는 클라이언트 객체
- * @param cmd 종료 명령 객체
+ * This function sets the leave message for the client, indicating the reason for leaving.
+ * If a reason is provided as a parameter in the command, it will be used as the leave message.
+ * Otherwise, a default leave message ":leaving" will be used.
+ *
+ * @param client The client object for which the quit command is executed.
+ * @param cmd The quit command object containing the parameters.
  */
 void Message::quitExecute(Client &client, Command *cmd)
 {

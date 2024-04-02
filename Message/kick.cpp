@@ -1,11 +1,11 @@
 #include "Message.hpp"
 
 /**
- * @brief 클라이언트를 채널에서 강제로 퇴장시키는 함수입니다.
+ * Executes the KICK command, which allows a client with operator privileges to kick a user from a channel.
  *
- * @param server 서버 객체
- * @param client 클라이언트 객체
- * @param cmd 명령 객체
+ * @param server The server object.
+ * @param client The client object representing the client who issued the command.
+ * @param cmd The command object containing the command parameters.
  */
 void Message::kickExecute(Server &server, Client &client, Command *cmd)
 {

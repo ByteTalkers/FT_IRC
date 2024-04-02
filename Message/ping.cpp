@@ -1,15 +1,13 @@
 #include "Message.hpp"
 
 /**
- * @brief Message 클래스의 pingExecute 함수입니다.
+ * Executes the PING command.
+ * If the command has no parameters, sends a PONG response to the client with an empty parameter.
+ * If the command has a parameter, sends a PONG response to the client with the same parameter.
  *
- * 이 함수는 서버와 클라이언트 간의 PING-PONG 메시지를 처리합니다.
- * 만약 cmd의 파라미터가 비어있는 경우, 서버에 빈 문자열을 포함한 PONG 메시지를 보냅니다.
- * 그렇지 않은 경우, cmd의 첫 번째 파라미터를 포함한 PONG 메시지를 보냅니다.
- *
- * @param server 서버 객체
- * @param client 클라이언트 객체
- * @param cmd Command 객체
+ * @param server The server object.
+ * @param client The client object.
+ * @param cmd The PING command object.
  */
 void Message::pingExecute(Server &server, Client &client, Command *cmd)
 {

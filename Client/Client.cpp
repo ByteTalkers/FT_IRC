@@ -68,9 +68,12 @@ void Client::setUsername(const std::string &username)
 }
 
 /**
- * @brief 클라이언트의 호스트 이름을 설정하는 함수입니다.
+ * @brief Sets the hostname of the client based on the provided sockaddr_in structure.
  *
- * @param clnt_adr 클라이언트의 소켓 주소 구조체입니다.
+ * This function retrieves the hostname and service information from the sockaddr_in structure
+ * and sets the hostname member variable of the Client class.
+ *
+ * @param clnt_adr The sockaddr_in structure containing the client address information.
  */
 void Client::setHostname(struct sockaddr_in &clnt_adr)
 {
@@ -184,10 +187,13 @@ std::string Client::getLeaveMsg()
 }
 
 /**
- * @brief 클라이언트의 연결 수락 및 비차단 처리를 수행하는 함수입니다.
+ * @brief Starts listening for incoming connections on the specified server socket.
  *
- * @param serv_sock 서버 소켓 디스크립터
- * @throws std::runtime_error accept() 함수 호출 중 오류가 발생한 경우
+ * This function accepts a server socket and waits for an incoming connection. Once a connection is established,
+ * it sets the socket file descriptor and performs non-blocking processing. It also sets the hostname of the client.
+ *
+ * @param serv_sock The server socket to listen on.
+ * @throws std::runtime_error if an error occurs during the accept() operation.
  */
 void Client::startListen(int serv_sock)
 {
@@ -207,9 +213,12 @@ void Client::startListen(int serv_sock)
 }
 
 /**
- * @brief 클라이언트의 메시지 파싱을 시작하는 함수입니다.
+ * @brief Parses the received message and executes the corresponding action.
  *
- * @param serv 서버 객체에 대한 참조입니다.
+ * This function parses the received message using the Message class and then executes the
+ * appropriate action based on the parsed message. It clears the received data after parsing.
+ *
+ * @param serv The Server object representing the server.
  */
 void Client::startParseMessage(Server &serv)
 {
@@ -222,10 +231,12 @@ void Client::startParseMessage(Server &serv)
 }
 
 /**
- * @brief 클라이언트의 데이터를 전송하는 함수입니다.
+ * @brief Sends the message stored in `m_send_msg` to the server.
  *
- * 클라이언트 소켓을 통해 m_send_msg에 저장된 메시지를 전송합니다.
- * 전송 후 m_send_msg는 비워집니다.
+ * This function sends the message stored in the `m_send_msg` member variable to the server.
+ * It retrieves the client socket file descriptor using the `getsockfd` function and uses the `send` function
+ * to send the message over the socket connection.
+ * After sending the message, it clears the `m_send_msg` variable.
  */
 void Client::startSend()
 {

@@ -12,14 +12,12 @@
  */
 
 /**
- * @brief Message 클래스의 inviteExecute 함수입니다.
+ * Executes the INVITE command.
+ * This command invites a client to join a specified channel.
  *
- * 이 함수는 서버와 클라이언트, 그리고 명령어를 인자로 받아서 처리합니다.
- * 클라이언트가 채널에 초대하는 기능을 수행합니다.
- *
- * @param server 서버 객체
- * @param client 클라이언트 객체
- * @param cmd 명령어 객체
+ * @param server The server object.
+ * @param client The client object who is sending the invite command.
+ * @param cmd The command object containing the parameters of the invite command.
  */
 void Message::inviteExecute(Server &server, Client &client, Command *cmd)
 {
